@@ -1,6 +1,41 @@
-/vendor/
-/logs/*
-!/logs/README.md
-/templates/cache/*
-!/templates/cache/README.md
+/system/library/vendor
+/system/logs
+!/system/logs/README.md
+/system/templates/cache/*
+!/system/templates/cache/README.md
+/system/config.local.php
+/system/data
+!/system/data/schema.sql
+/build
+
+
+# OS Files
+Thumbs.db
+.DS_Store
 .DS_STORE
+*~
+
+# IDE Files
+.buildpath
+.externalToolBuilders
+.project
+.settings
+nbproject
+*.LCK
+*.kpf
+*.komodoproject
+.tmp_*
+_notes
+.idea
+.cache
+*.sublime-project
+*.sublime-workspace
+crash.txt
+
+# Source Control
+.svn
+.hg
+.hgignore
+.hgexternals
+CVS
+.bzr

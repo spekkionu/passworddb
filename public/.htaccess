@@ -1,10 +1,18 @@
-RewriteEngine On
-
-# Some hosts may require you to use the `RewriteBase` directive.
-# If you need to use the `RewriteBase` directive, it should be the
-# absolute physical path to the directory that contains this htaccess file.
+<IfModule mod_rewrite.c>
+RewriteEngine on
 #
+# # if your app is in a subfolder:
 # RewriteBase /
+#
+# # test string is a valid files
+RewriteCond %{SCRIPT_FILENAME} !-f
+# # test string is a valid directory
+RewriteCond %{SCRIPT_FILENAME} !-d
+#
+RewriteRule ^api$ api.php [NC,L]
+RewriteRule ^api/(.*)$ api.php [NC,L]
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^ index.php [QSA,L]
+# # with QSA flag (query string append),
+# # forces the rewrite engine to append a query string part of the
+# # substitution string to the existing string, instead of replacing it.
+</IfModule>

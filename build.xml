@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="passworddb" default="build" basedir=".">
+
+  <!-- Add Custom Tasks to the include path -->
+  <target name="clean" description="Clean up and create artifact directories">
+    <delete dir="build/api"/>
+    <delete dir="build/code-browser"/>
+    <delete dir="build/coverage"/>
+    <delete dir="build/logs"/>
+    <delete dir="build/pdepend"/>
+
+    <mkdir dir="build/api"/>
+    <mkdir dir="build/code-browser"/>
+    <mkdir dir="build/coverage"/>
+    <mkdir dir="build/logs"/>
+    <mkdir dir="build/pdepend"/>
+  </target>
+
+  <target name="phpunit" description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">
+    <exec command="phpunit" passthru="true" />
+  </target>
+
+  <target name="pdepend" description="Generate jdepend.xml and software metrics charts using PHP_Depend">
+    <phpdepend>
+      <fileset dir="system">
+        <include name="**/*.php" />
+        <exclude name="data/**" />
+        <exclude name="logs/**" />
+        <exclude name="templates/**" />
+        <exclude name="library/vendor/**" />
+      </fileset>
+      <logger type="jdepend-xml" outfile="build/logs/jdepend.xml"/>
+      <logger type="jdepend-chart" outfile="build/pdepend/dependencies.svg"/>
+      <logger type="overview-pyramid" outfile="build/pdepend/overview-pyramid.svg"/>
+    </phpdepend>
+  </target>
+
+  <target name="phpmd" description="Generate pmd.xml using PHPMD">
+    <phpmd rulesets="codesize,design,naming,unusedcode">
+      <fileset dir="system">
+        <include name="**/*.php" />
+        <exclude name="data/**" />
+        <exclude name="logs/**" />
+        <exclude name="templates/**" />
+        <exclude name="library/vendor/**" />
+      </fileset>
+      <formatter type="xml" outfile="build/logs/pmd.xml"/>
+    </phpmd>
+  </target>
+
+
+  <target name="phpcpd" description="Generate pmd-cpd.xml using PHPCPD">
+    <phpcpd>
+      <fileset dir="system">
+        <include name="**/*.php" />
+        <exclude name="data/**" />
+        <exclude name="logs/**" />
+        <exclude name="templates/**" />
+        <exclude name="library/vendor/**" />
+      </fileset>
+      <formatter type="pmd" outfile="build/logs/pmd-cpd.xml"/>
+    </phpcpd>
+  </target>
+
+
+  <target name="phploc" description="Generate phploc.csv">
+    <phploc reportType="csv" reportName="phploc" reportDirectory="build/logs">
+      <fileset dir="system">
+        <include name="**/*.php" />
+        <exclude name="data/**" />
+        <exclude name="logs/**" />
+        <exclude name="templates/**" />
+        <exclude name="library/vendor/**" />
+      </fileset>
+    </phploc>
+  </target>
+
+  <target name="lint" description="Perform syntax check of sourcecode files">
+    <phplint tofile="build/logs/lint.log">
+      <fileset dir="system">
+        <include name="**/*.php" />
+        <exclude name="data/**" />
+        <exclude name="logs/**" />
+        <exclude name="templates/**" />
+        <exclude name="library/vendor/**" />
+      </fileset>
+    </phplint>
+  </target>
+
+  <target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
+    <resolvepath propertyName="standard" file="${project.basedir}/tests/phpcs/Spekkionu"/>
+    <phpcodesniffer standard="${standard}" showWarnings="false">
+      <fileset dir="system">
+        <include name="**/*.php" />
+        <exclude name="api_routes.php" />
+        <exclude name="application.php" />
+        <exclude name="config.php" />
+        <exclude name="config.local.php" />
+        <exclude name="data/**" />
+        <exclude name="logs/**" />
+        <exclude name="templates/**" />
+        <exclude name="library/vendor/**" />
+      </fileset>
+      <formatter type="default" usefile="false"/>
+      <formatter type="checkstyle" outfile="build/logs/checkstyle.xml"/>
+      <formatter type="csv" outfile="build/logs/phpcs.csv"/>
+    </phpcodesniffer>
+  </target>
+
+  <target name="apigen" description="Generate API documentation using apigen">
+    <resolvepath propertyName="system" file="system"/>
+    <apigen source="system" destination="build/api" exclude="${system}/data/*,${system}/logs/*,${system}/templates/*,*/tests/*,*/Tests/*,*/docs/*,*/demos/*" skipdocpath="${system}/library/vendor/*" title="API Documentation" deprecated="true" todo="false" sourcecode="true" />
+  </target>
+
+  <target name="phpcb" description="Aggregate tool output with PHP_CodeBrowser">
+    <exec command="phpcb --log build/logs --source system --output build/code-browser" passthru="true" />
+  </target>
+
+  <target name="build" depends="clean,lint,phpunit,pdepend,phpmd,phpcpd,phpcs,phploc,apigen,phpcb"/>
+
+
+</project>

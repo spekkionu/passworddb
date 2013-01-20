@@ -1,20 +1,58 @@
 {
-    "name": "slim/slim-skeleton",
-    "description": "A Slim Framework skeleton application for rapid development",
-    "keywords": ["microframework","rest","router"],
-    "homepage": "http://github.com/codeguy/Slim-Skeleton",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Josh Lockhart",
-            "email": "info@joshlockhart.com",
-            "homepage": "http://www.joshlockhart.com/"
-        }
-    ],
-    "require": {
-        "php": ">=5.3.0",
-        "slim/slim": "1.6.*",
-        "slim/extras": "dev-release-1.0.3",
-        "twig/twig": ">=1.8.0,<2.0-dev"
+  "name": "spekkionu/password",
+  "description": "A password database for storing website passwords.",
+  "keywords": ["php","rest","password"],
+  "homepage": "http://github.com/spekkionu/passworddb",
+  "license": "MIT",
+  "authors": [
+  {
+    "name": "Jonathan Bernardi",
+    "email": "spekkionu@spekkionu.com",
+    "homepage": "http://www.thedevfiles.com/"
+  }
+  ],
+  "config": {
+    "vendor-dir": "system/library/vendor",
+    "bin-dir" : "bin"
+  },
+  "require": {
+    "php": ">=5.2.4",
+    "slim/slim": "1.*",
+    "phly/zf1-autoloaders": "1.0.0"
+  },
+  "require-dev": {
+    "php": ">=5.3.2",
+    "guzzle/guzzle": "v3.1.0"
+  },
+  "repositories": [
+  {
+    "type": "package",
+    "package": {
+      "name": "phly/zf1-autoloaders",
+      "version": "1.0.0",
+      "dist": {
+        "url": "https://github.com/weierophinney/zf1-autoloaders/archive/master.zip",
+        "type": "zip"
+      },
+      "source": {
+        "url": "https://github.com/weierophinney/zf1-autoloaders",
+        "type": "vcs",
+        "reference": "dev-master"
+      }
     }
+  }
+  ],
+  "autoload": {
+    "classmap": [
+      "system/library/Test/",
+      "system/library/vendor/slim/slim/Slim/Slim.php"
+    ],
+    "psr-0": {
+      "Slim_": "system/library/vendor/slim/slim/",
+      "Model_": "system/library/",
+      "Controller_": "system/library/",
+      "Validate_": "system/library/",
+      "Error_": "system/library/"
+    }
+  }
 }

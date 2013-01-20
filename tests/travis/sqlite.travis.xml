@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit bootstrap="../bootstrap.php">
+  <testsuites>
+    <testsuite name="Password DB Test Suite">
+      <directory suffix="Test.php">./../unit</directory>
+    </testsuite>
+  </testsuites>
+  <filter>
+    <whitelist addUncoveredFilesFromWhitelist="true">
+      <directory suffix=".php">../../system</directory>
+      <exclude>
+        <directory suffix=".php">../../system/data</directory>
+        <directory suffix=".php">../../system/logs</directory>
+        <directory suffix=".php">../../system/templates</directory>
+        <directory suffix=".php">../../system/library/vendor</directory>
+      </exclude>
+    </whitelist>
+  </filter>
+</phpunit>
