@@ -17,6 +17,12 @@
     <mkdir dir="build/pdepend"/>
   </target>
 
+  <target name="init" description="Create required directories and permissions">
+    <mkdir dir="system/data/database" mode="0777"/>
+    <mkdir dir="system/data/logs" mode="0777"/>
+    <mkdir dir="system/templates" mode="0777"/>
+  </target>
+
   <target name="phpunit" description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">
     <exec command="phpunit --configuration phpunit.xml.dist" passthru="true" />
   </target>
@@ -145,7 +151,7 @@
 
   <target name="build" depends="clean,lint,phpunit,pdepend,phpmd,phpcpd,phpcs,phploc,apigen,phpcb"/>
 
-  <target name="cibuild" depends="composer,build"/>
+  <target name="cibuild" depends="composer,init,build"/>
 
 
 </project>
