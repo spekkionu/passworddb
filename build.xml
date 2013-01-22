@@ -2,6 +2,7 @@
 <project name="passworddb" default="build" basedir=".">
 
   <!-- Add Custom Tasks to the include path -->
+
   <target name="clean" description="Clean up and create artifact directories">
     <delete dir="build/api"/>
     <delete dir="build/code-browser"/>
@@ -127,8 +128,19 @@
   </target>
 
   <target name="composer" description="Install dependancies with composer">
-    <exec command="wget -nc http://getcomposer.org/composer.phar" passthru="true" checkreturn="true" />
-    <exec command="composer install --dev" checkreturn="true" passthru="true" />
+    <available file="composer.phar" type="file" filepath="${project.basedir}" property="composer.exists" value="1"/>
+    <if>
+      <equals arg1="${composer.exists}" arg2="1" />
+      <then>
+        <echo message="Composer found. Make sure it is up to date." />
+        <exec command="php composer.phar selfupdate" passthru="true" />
+      </then>
+      <else>
+        <echo message="Composer not found. Downloading it." />
+        <httpget url="http://getcomposer.org/composer.phar" dir="${project.basedir}" filename="composer.phar"/>
+      </else>
+    </if>
+    <exec command="php composer.phar install --dev" passthru="true" />
   </target>
 
   <target name="build" depends="clean,lint,phpunit,pdepend,phpmd,phpcpd,phpcs,phploc,apigen,phpcb"/>
