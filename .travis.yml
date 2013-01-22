@@ -2,10 +2,12 @@ language: php
 
 php:
   - 5.4
+env:
+  - DB=sqlite
 
 before_script:
   - git submodule update --init --recursive
   - composer install --dev
-  - php -S localhost:8000 -t public &
+  - php -S 127.0.0.1:8000 -t public &
 
-script: phpunit --configuration tests/travis/sqlite.travis.xml --coverage-text
+script: phpunit --configuration sqlite.travis.xml --coverage-text
