@@ -61,7 +61,7 @@ class IndexTest extends \Test_DatabaseTest
      */
     public function testListAction()
     {
-        $request = $this->client->get('api');
+        $request = $this->client->get('api/');
         $response = $request->send();
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(200, $response->getStatusCode());
