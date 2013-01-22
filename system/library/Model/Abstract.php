@@ -57,7 +57,7 @@ abstract class Model_Abstract
      * Connects to database
      *
      * @param array $config
-     * @return void
+     * @return PDO
      */
     public static function connect(array $config = null)
     {
@@ -81,6 +81,7 @@ abstract class Model_Abstract
             );
         }
         self::$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return self::$dbh;
     }
 
     /**

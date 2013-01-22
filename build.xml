@@ -24,6 +24,8 @@
     <phpdepend>
       <fileset dir="system">
         <include name="**/*.php" />
+        <exclude name="config.php" />
+        <exclude name="config.local.php" />
         <exclude name="data/**" />
         <exclude name="logs/**" />
         <exclude name="templates/**" />
@@ -39,6 +41,8 @@
     <phpmd rulesets="codesize,design,naming,unusedcode">
       <fileset dir="system">
         <include name="**/*.php" />
+        <exclude name="config.php" />
+        <exclude name="config.local.php" />
         <exclude name="data/**" />
         <exclude name="logs/**" />
         <exclude name="templates/**" />
@@ -53,6 +57,8 @@
     <phpcpd>
       <fileset dir="system">
         <include name="**/*.php" />
+        <exclude name="config.php" />
+        <exclude name="config.local.php" />
         <exclude name="data/**" />
         <exclude name="logs/**" />
         <exclude name="templates/**" />
@@ -67,6 +73,8 @@
     <phploc reportType="csv" reportName="phploc" reportDirectory="build/logs">
       <fileset dir="system">
         <include name="**/*.php" />
+        <exclude name="config.php" />
+        <exclude name="config.local.php" />
         <exclude name="data/**" />
         <exclude name="logs/**" />
         <exclude name="templates/**" />
@@ -79,6 +87,8 @@
     <phplint tofile="build/logs/lint.log">
       <fileset dir="system">
         <include name="**/*.php" />
+        <exclude name="config.php" />
+        <exclude name="config.local.php" />
         <exclude name="data/**" />
         <exclude name="logs/**" />
         <exclude name="templates/**" />
@@ -116,7 +126,14 @@
     <exec command="phpcb --log build/logs --source system --output build/code-browser" passthru="true" />
   </target>
 
+  <target name="composer" description="Install dependancies with composer">
+    <exec command="wget -nc http://getcomposer.org/composer.phar" passthru="true" checkreturn="true" />
+    <exec command="composer install --dev" checkreturn="true" passthru="true" />
+  </target>
+
   <target name="build" depends="clean,lint,phpunit,pdepend,phpmd,phpcpd,phpcs,phploc,apigen,phpcb"/>
+
+  <target name="cibuild" depends="composer,build"/>
 
 
 </project>

@@ -43,6 +43,17 @@ class Model_WebsiteTest extends Test_DatabaseTest
     }
 
     /**
+     * Model_Website::getWebsites
+     */
+    public function testGetWebsiteListWithDetails()
+    {
+        $mgr = new Model_Website();
+        $websites = $mgr->getWebsites(true);
+        $website = array_shift($websites);
+        $this->assertArrayHasKey('admin', $website);
+    }
+
+    /**
      * Model_Website::getWebsite
      */
     public function testGetWebsite()
@@ -102,6 +113,21 @@ class Model_WebsiteTest extends Test_DatabaseTest
     }
 
     /**
+     * Model_Website::addWebsite
+     * @expectedException Validate_Exception
+     */
+    public function testAddWebsiteFail()
+    {
+        $mgr = new Model_Website();
+        $website = array(
+          'name' => null,
+          'domain' => 'domain.com',
+          'url' => 'http://url.com'
+        );
+        $mgr->addWebsite($website);
+    }
+
+    /**
      * Model_Website::updateWebsite
      */
     public function testUpdateWebsite()
@@ -125,6 +151,21 @@ class Model_WebsiteTest extends Test_DatabaseTest
           'domain' => $new['domain'],
           'url' => $new['url']
         ));
+    }
+
+    /**
+     * Model_Website::updateWebsite
+     * @expectedException Validate_Exception
+     */
+    public function testUpdateWebsiteFail()
+    {
+        $mgr = new Model_Website();
+        $id = 1;
+        $website = $mgr->getWebsite($id, false);
+        $this->assertEquals($id, $website['id']);
+        $website['name'] = null;
+        $website['domain'] = 'newdomain.com';
+        $mgr->updateWebsite($id, $website);
     }
 
     /**
@@ -175,6 +216,46 @@ class Model_WebsiteTest extends Test_DatabaseTest
         $this->assertTrue($errors->hasErrors());
         $messages = $errors->getErrors();
         $this->assertEquals(array('name' => array('Website name is required.')), $messages);
+    }
+
+    /**
+     * Model_Website::validate
+     */
+    public function testFailedWebsiteValidationLength()
+    {
+        $mgr = new Model_Website();
+        $data = array(
+          'name' => str_repeat('-', 101),
+          'domain' => str_repeat('-', 101),
+          'url' => str_repeat('-', 256),
+          'notes' => null
+        );
+        $errors = $mgr->validate($data);
+        $this->assertInstanceOf('Error_Stack', $errors);
+        $this->assertTrue($errors->hasErrors());
+        $messages = $errors->getErrors();
+        $this->assertEquals(array('Website name must not be more than 100 characters.'), $messages['name']);
+        $this->assertEquals(array('Website domain must not be more than 100 characters.'), $messages['domain']);
+        $this->assertEquals(array('Website URL must not be more than 255 characters.'), $messages['url']);
+    }
+
+    /**
+     * Model_Website::validate
+     */
+    public function testFailedWebsiteValidationDuplicate()
+    {
+        $mgr = new Model_Website();
+        $data = array(
+          'name' => 'First Website',
+          'domain' => 'domain.com',
+          'url' => 'http://url.com',
+          'notes' => null
+        );
+        $errors = $mgr->validate($data);
+        $this->assertInstanceOf('Error_Stack', $errors);
+        $this->assertTrue($errors->hasErrors());
+        $messages = $errors->getErrors();
+        $this->assertEquals(array('name' => array('Website with name First Website already exists.')), $messages);
     }
 
 }

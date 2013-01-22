@@ -145,7 +145,7 @@ class Model_Database extends Model_Abstract
             $errors->addError('username', 'Username must not be more than 100 characters.');
         }
         if (mb_strlen($data['password']) > 100) {
-            $errors->addError('username', 'Password must not be more than 100 characters.');
+            $errors->addError('password', 'Password must not be more than 100 characters.');
         }
         if (mb_strlen($data['url']) > 255) {
             $errors->addError('url', 'URL must not be more than 255 characters.');

@@ -89,6 +89,25 @@ class Model_FTPTest extends Test_DatabaseTest
     }
 
     /**
+     * Model_FTP::addFTP
+     * @expectedException Validate_Exception
+     */
+    public function testAddFTPLoginFail()
+    {
+        $mgr = new Model_FTP();
+        $website_id = null;
+        $result = array(
+          'type' => 'badtype',
+          'username' => 'pickle',
+          'password' => 'password',
+          'hostname' => 'example.com',
+          'path' => '/var/www',
+          'notes' => 'ftp notes'
+        );
+        $mgr->addFTP($website_id, $result);
+    }
+
+    /**
      * Model_FTP::updateFTP
      */
     public function testUpdateFTPLogin()
@@ -103,6 +122,22 @@ class Model_FTPTest extends Test_DatabaseTest
         $updated = $mgr->getFTPDetails($id, $website_id);
         $this->assertEquals($updated, $result);
         $this->assertEquals('newusername', $updated['username']);
+    }
+
+    /**
+     * Model_FTP::updateFTP
+     * @expectedException Validate_Exception
+     */
+    public function testUpdateFTPLoginFail()
+    {
+        $mgr = new Model_FTP();
+        $website_id = 1;
+        $id = 1;
+        $result = $mgr->getFTPDetails($id, $website_id);
+        $result['type'] = 'badtype';
+        $result['username'] = 'newusername';
+        $result['password'] = 'newpassword';
+        $mgr->updateFTP($id, $result, $website_id);
     }
 
     /**
@@ -150,18 +185,23 @@ class Model_FTPTest extends Test_DatabaseTest
         $website_id = 'bad-id';
         $data = array(
           'website_id' => $website_id,
-          'type' => 'ftp',
-          'username' => 'pickel',
-          'password' => 'password',
-          'hostname' => 'example.com',
-          'path' => '/var/www',
-          'notes' => 'ftp notes'
+          'type' => null,
+          'username' => str_repeat('-', 101),
+          'password' => str_repeat('-', 101),
+          'hostname' => str_repeat('-', 101),
+          'path' => str_repeat('-', 256),
+          'notes' => null
         );
         $errors = $mgr->validate($data);
         $this->assertInstanceOf('Error_Stack', $errors);
         $this->assertTrue($errors->hasErrors());
         $messages = $errors->getErrors();
-        $this->assertEquals(array('website_id' => array('Website does not exist.')), $messages);
+        $this->assertEquals(array('Website does not exist.'), $messages['website_id']);
+        $this->assertEquals(array('FTP type is required.'), $messages['type']);
+        $this->assertEquals(array('Username must not be more than 100 characters.'), $messages['username']);
+        $this->assertEquals(array('Password must not be more than 100 characters.'), $messages['password']);
+        $this->assertEquals(array('Hostname must not be more than 100 characters.'), $messages['hostname']);
+        $this->assertEquals(array('Path must not be more than 255 characters.'), $messages['path']);
     }
 
 }

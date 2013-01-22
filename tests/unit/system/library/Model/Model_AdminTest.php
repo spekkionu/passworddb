@@ -86,6 +86,22 @@ class Model_AdminTest extends Test_DatabaseTest
     }
 
     /**
+     * Model_Admin::addAdminLogin
+     * @expectedException Validate_Exception
+     */
+    public function testAddAdminLoginFail()
+    {
+        $mgr = new Model_Admin();
+        $website_id = 'bad-id';
+        $result = array(
+          'username' => 'pickle',
+          'password' => 'password',
+          'url' => 'http://url.com'
+        );
+        $mgr->addAdminLogin($website_id, $result);
+    }
+
+    /**
      * Model_Admin::updateAdminLogin
      */
     public function testUpdateAdminLogin()
@@ -100,6 +116,21 @@ class Model_AdminTest extends Test_DatabaseTest
         $updated = $mgr->getAdminLoginDetails($id, $website_id);
         $this->assertEquals($updated, $admin);
         $this->assertEquals('newusername', $updated['username']);
+    }
+
+    /**
+     * Model_Admin::updateAdminLogin
+     * @expectedException Validate_Exception
+     */
+    public function testUpdateAdminLoginFail()
+    {
+        $mgr = new Model_Admin();
+        $website_id = null;
+        $id = 1;
+        $admin = $mgr->getAdminLoginDetails($id, $website_id);
+        $admin['username'] = 'newusername';
+        $admin['password'] = 'newpassword';
+        $mgr->updateAdminLogin($id, $admin, $website_id);
     }
 
     /**
@@ -145,16 +176,19 @@ class Model_AdminTest extends Test_DatabaseTest
         $website_id = 'bad-id';
         $data = array(
           'website_id' => $website_id,
-          'username' => 'pickel',
-          'password' => 'password',
-          'url' => 'http://url.com',
+          'username' => str_repeat('-', 101),
+          'password' => str_repeat('-', 101),
+          'url' => str_repeat('-', 256),
           'notes' => null
         );
         $errors = $mgr->validate($data);
         $this->assertInstanceOf('Error_Stack', $errors);
         $this->assertTrue($errors->hasErrors());
         $messages = $errors->getErrors();
-        $this->assertEquals(array('website_id' => array('Website does not exist.')), $messages);
+        $this->assertEquals(array('Website does not exist.'), $messages['website_id']);
+        $this->assertEquals(array('Username must not be more than 100 characters.'), $messages['username']);
+        $this->assertEquals(array('Password must not be more than 100 characters.'), $messages['password']);
+        $this->assertEquals(array('URL must not be more than 255 characters.'), $messages['url']);
     }
 
 }

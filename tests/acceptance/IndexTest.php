@@ -1,5 +1,10 @@
 <?php
 
+namespace Test\Acceptance;
+
+use Guzzle\Http\Client;
+use Symfony\Component\EventDispatcher\Event;
+
 /**
  * Test class for Controller_Index.
  *
@@ -8,7 +13,7 @@
  * @package Test
  * @subpackage Controller
  */
-class Controller_IndexTest extends Test_DatabaseTest
+class IndexTest extends \Test_DatabaseTest
 {
 
     /**
@@ -32,10 +37,10 @@ class Controller_IndexTest extends Test_DatabaseTest
         global $config;
         parent::setUp();
         // Register the connection
-        Model_Abstract::setConnection($this->dbh);
+        \Model_Abstract::setConnection($this->dbh);
         $url = $config['test']['hostname'] . $config['test']['base_url'];
-        $this->client = new Guzzle\Http\Client($url);
-        $this->client->getEventDispatcher()->addListener('request.before_send', function(Symfony\Component\EventDispatcher\Event $event) {
+        $this->client = new Client($url);
+        $this->client->getEventDispatcher()->addListener('request.before_send', function(Event $event) {
               $event['request']->addHeader('X-SERVER-MODE', 'test');
           });
         $this->config = $config;
@@ -47,7 +52,7 @@ class Controller_IndexTest extends Test_DatabaseTest
      */
     protected function tearDown()
     {
-        Model_Abstract::close();
+        \Model_Abstract::close();
         parent::tearDown();
     }
 

@@ -195,10 +195,10 @@ class Model_Website extends Model_Abstract
             }
         }
         if (mb_strlen($data['domain']) > 100) {
-            $errors->addError('name', 'Website domain must not be more than 100 characters.');
+            $errors->addError('domain', 'Website domain must not be more than 100 characters.');
         }
         if (mb_strlen($data['url']) > 255) {
-            $errors->addError('name', 'Website URL must not be more than 255 characters.');
+            $errors->addError('url', 'Website URL must not be more than 255 characters.');
         }
         return $errors;
     }

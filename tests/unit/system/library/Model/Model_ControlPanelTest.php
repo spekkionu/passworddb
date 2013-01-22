@@ -86,12 +86,46 @@ class Model_ControlPanelTest extends Test_DatabaseTest
     }
 
     /**
+     * Model_ControlPanel::addControlPanelLogin
+     * @expectedException Validate_Exception
+     */
+    public function testAddControlPanelLoginFail()
+    {
+        $mgr = new Model_ControlPanel();
+        $website_id = 'bad-id';
+        $result = array(
+          'username' => 'pickle',
+          'password' => 'password',
+          'url' => 'http://url.com'
+        );
+        $mgr->addControlPanelLogin($website_id, $result);
+    }
+
+    /**
      * Model_ControlPanel::updateControlPanelLogin
      */
     public function testUpdateControlPanelLogin()
     {
         $mgr = new Model_ControlPanel();
         $website_id = 1;
+        $id = 1;
+        $result = $mgr->getControlPanelDetails($id, $website_id);
+        $result['username'] = 'newusername';
+        $result['password'] = 'newpassword';
+        $mgr->updateControlPanelLogin($id, $result, $website_id);
+        $updated = $mgr->getControlPanelDetails($id, $website_id);
+        $this->assertEquals($updated, $result);
+        $this->assertEquals('newusername', $updated['username']);
+    }
+
+    /**
+     * Model_ControlPanel::updateControlPanelLogin
+     * @expectedException Validate_Exception
+     */
+    public function testUpdateControlPanelLoginFail()
+    {
+        $mgr = new Model_ControlPanel();
+        $website_id = null;
         $id = 1;
         $result = $mgr->getControlPanelDetails($id, $website_id);
         $result['username'] = 'newusername';
@@ -145,16 +179,19 @@ class Model_ControlPanelTest extends Test_DatabaseTest
         $website_id = 'bad-id';
         $data = array(
           'website_id' => $website_id,
-          'username' => 'pickel',
-          'password' => 'password',
-          'url' => 'http://url.com',
+          'username' => str_repeat('-', 101),
+          'password' => str_repeat('-', 101),
+          'url' => str_repeat('-', 256),
           'notes' => null
         );
         $errors = $mgr->validate($data);
         $this->assertInstanceOf('Error_Stack', $errors);
         $this->assertTrue($errors->hasErrors());
         $messages = $errors->getErrors();
-        $this->assertEquals(array('website_id' => array('Website does not exist.')), $messages);
+        $this->assertEquals(array('Website does not exist.'), $messages['website_id']);
+        $this->assertEquals(array('Username must not be more than 100 characters.'), $messages['username']);
+        $this->assertEquals(array('Password must not be more than 100 characters.'), $messages['password']);
+        $this->assertEquals(array('URL must not be more than 255 characters.'), $messages['url']);
     }
 
 }

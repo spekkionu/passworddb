@@ -5,8 +5,14 @@
          strict="true"
          verbose="true">
   <testsuites>
-    <testsuite name="Password DB Test Suite">
+    <testsuite name="Unit">
       <directory suffix="Test.php">tests/unit</directory>
+    </testsuite>
+    <testsuite name="Acceptance">
+      <directory suffix="Test.php">tests/acceptance</directory>
+    </testsuite>
+    <testsuite name="Functional">
+      <directory suffix="Test.php">tests/functional</directory>
     </testsuite>
   </testsuites>
   <logging>

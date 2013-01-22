@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <phpunit bootstrap="../bootstrap.php">
   <testsuites>
-    <testsuite name="Password DB Test Suite">
+    <testsuite name="Unit">
       <directory suffix="Test.php">./../unit</directory>
+    </testsuite>
+    <testsuite name="Acceptance">
+      <directory suffix="Test.php">./../acceptance</directory>
     </testsuite>
   </testsuites>
   <filter>

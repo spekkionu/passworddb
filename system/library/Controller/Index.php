@@ -16,6 +16,7 @@ class Controller_Index
         $app = Slim::getInstance();
         $response = $app->response();
         $response->header('Content-Type', 'application/json');
-        return $response->body(json_encode(array('success' => true, 'methods' => array('api/website'))));
+        $response->body(json_encode(array('success' => true, 'methods' => array('api/website'))));
+        return $response;
     }
 }

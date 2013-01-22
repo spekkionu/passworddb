@@ -142,7 +142,7 @@ class Model_FTP extends Model_Abstract
             $errors->addError('username', 'Username must not be more than 100 characters.');
         }
         if (mb_strlen($data['password']) > 100) {
-            $errors->addError('username', 'Password must not be more than 100 characters.');
+            $errors->addError('password', 'Password must not be more than 100 characters.');
         }
         if (mb_strlen($data['path']) > 255) {
             $errors->addError('path', 'Path must not be more than 255 characters.');

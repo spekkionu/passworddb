@@ -50,7 +50,8 @@ class Error_StackTest extends PHPUnit_Framework_TestCase
         $error = new Error_Stack();
         $element = 'name';
         $message = 'error message';
-        $error->addError($element, $message);
+        $label = 'label';
+        $error->addError($element, $message, $label);
         $this->assertTrue($error->hasErrors());
     }
 
@@ -82,6 +83,23 @@ class Error_StackTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array($element => array($message)), $errors);
         $error->clearErrors();
         $this->assertFalse($error->hasErrors());
+    }
+
+    /**
+     * Error_Stack::clearErrors
+     */
+    public function testClearErrorByName()
+    {
+        $error = new Error_Stack();
+        $error->addError('one', 'message one');
+        $error->addError('two', 'message two');
+        $errors = $error->getErrors();
+        $this->assertArrayHasKey('one', $errors);
+        $this->assertArrayHasKey('two', $errors);
+        $error->clearErrors('two');
+        $errors = $error->getErrors();
+        $this->assertArrayHasKey('one', $errors);
+        $this->assertArrayNotHasKey('two', $errors);
     }
 
     /**

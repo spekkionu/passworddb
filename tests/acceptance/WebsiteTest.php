@@ -1,14 +1,19 @@
 <?php
 
+namespace Test\Acceptance;
+
+use Guzzle\Http\Client;
+use Symfony\Component\EventDispatcher\Event;
+
 /**
- * Test class for Controller_Database.
+ * Test class for Controller_Website.
  *
  * @author Jonathan Bernardi <spekkionu@spekkionu.com>
  * @license MIT http://opensource.org/licenses/MIT
  * @package Test
  * @subpackage Controller
  */
-class Controller_DatabaseTest extends Test_DatabaseTest
+class WebsiteTest extends \Test_DatabaseTest
 {
 
     /**
@@ -32,10 +37,10 @@ class Controller_DatabaseTest extends Test_DatabaseTest
         global $config;
         parent::setUp();
         // Register the connection
-        Model_Abstract::setConnection($this->dbh);
+        \Model_Abstract::setConnection($this->dbh);
         $url = $config['test']['hostname'] . $config['test']['base_url'];
-        $this->client = new Guzzle\Http\Client($url);
-        $this->client->getEventDispatcher()->addListener('request.before_send', function(Symfony\Component\EventDispatcher\Event $event) {
+        $this->client = new Client($url);
+        $this->client->getEventDispatcher()->addListener('request.before_send', function(Event $event) {
               $event['request']->addHeader('X-SERVER-MODE', 'test');
           });
         $this->config = $config;
@@ -47,33 +52,31 @@ class Controller_DatabaseTest extends Test_DatabaseTest
      */
     protected function tearDown()
     {
-        Model_Abstract::close();
+        \Model_Abstract::close();
         parent::tearDown();
     }
 
     /**
-     * Controller_Database::listAction
+     * Controller_Website::listAction
      */
     public function testListAction()
     {
-        $website_id = 1;
-        $request = $this->client->get("api/database/{$website_id}");
+        $request = $this->client->get('api/website');
         $response = $request->send();
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(200, $response->getStatusCode());
         $body = json_decode($response->getBody(true), true);
         $this->assertTrue($body['success']);
-        $this->assertCount(1, $body['records']);
+        $this->assertCount(5, $body['records']);
     }
 
     /**
-     * Controller_Database::detailsAction
+     * Controller_Website::detailsAction
      */
     public function testDetailsAction()
     {
         $id = 1;
-        $website_id = 1;
-        $request = $this->client->get("api/database/{$website_id}/{$id}");
+        $request = $this->client->get('api/website/' . $id);
         $response = $request->send();
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(200, $response->getStatusCode());
@@ -83,80 +86,68 @@ class Controller_DatabaseTest extends Test_DatabaseTest
     }
 
     /**
-     * Controller_Database::addAction
+     * Controller_Website::addAction
      */
     public function testAddAction()
     {
-        $website_id = 1;
-        $result = array(
-          'type' => 'mysql',
-          'hostname' => 'localhost',
-          'username' => 'pickle',
-          'password' => 'password',
-          'database' => 'dbname',
-          'url' => 'http://url.com'
+        $website = array(
+          'name' => 'New Website',
+          'domain' => 'domain.com',
+          'url' => 'http://url.com',
+          'notes' => 'new website'
         );
-        $request = $this->client->post("api/database/{$website_id}")->addPostFields($result);
+        $request = $this->client->post('api/website')->addPostFields($website);
         $response = $request->send();
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(201, $response->getStatusCode());
         $body = json_decode($response->getBody(true), true);
         $this->assertTrue($body['success']);
-        $this->assertEquals($result, array(
-          'type' => $body['record']['type'],
-          'username' => $body['record']['username'],
-          'password' => $body['record']['password'],
-          'hostname' => $body['record']['hostname'],
+        $this->assertEquals($website, array(
+          'name' => $body['record']['name'],
+          'domain' => $body['record']['domain'],
           'url' => $body['record']['url'],
-          'database' => $body['record']['database']
+          'notes' => $body['record']['notes']
         ));
     }
 
     /**
-     * Controller_Database::updateAction
+     * Controller_Website::updateAction
      */
     public function testUpdateAction()
     {
         $id = 1;
-        $website_id = 1;
-        $result = array(
-          'type' => 'mysql',
-          'hostname' => 'localhost',
-          'username' => 'pickle',
-          'password' => 'password',
-          'database' => 'dbname',
-          'url' => 'http://url.com'
+        $website = array(
+          'name' => 'New Website',
+          'domain' => 'domain.com',
+          'url' => 'http://url.com',
+          'notes' => 'new website'
         );
-        $request = $this->client->post("api/database/{$website_id}/{$id}")->addPostFields($result);
+        $request = $this->client->post('api/website/' . $id)->addPostFields($website);
         $request->addHeader('X-HTTP-Method-Override', 'PUT');
         $response = $request->send();
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(200, $response->getStatusCode());
         $body = json_decode($response->getBody(true), true);
         $this->assertTrue($body['success']);
-        $this->assertEquals($result, array(
-          'type' => $body['record']['type'],
-          'username' => $body['record']['username'],
-          'password' => $body['record']['password'],
-          'hostname' => $body['record']['hostname'],
+        $this->assertEquals($website, array(
+          'name' => $body['record']['name'],
+          'domain' => $body['record']['domain'],
           'url' => $body['record']['url'],
-          'database' => $body['record']['database']
+          'notes' => $body['record']['notes']
         ));
     }
 
     /**
-     * Controller_Database::deleteAction
+     * Controller_Website::deleteAction
      */
     public function testDeleteAction()
     {
         $id = 1;
-        $website_id = 1;
-        $request = $this->client->post("api/database/{$website_id}/{$id}");
+        $request = $this->client->post('api/website/' . $id);
         $request->addHeader('X-HTTP-Method-Override', 'DELETE');
         $response = $request->send();
         $this->assertEquals(204, $response->getStatusCode());
     }
 
 }
-
 

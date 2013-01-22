@@ -26,15 +26,18 @@ class Controller_Admin
             $website = $mgr->websiteExists($website_id);
             if (!$website) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
+                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
+                return $response;
             }
             $mgr = new Model_Admin();
             $results = $mgr->getAdminLogins($website_id);
-            return $response->body(json_encode(array('success' => true, 'records' => $results)));
+            $response->body(json_encode(array('success' => true, 'records' => $results)));
+            return $response;
         } catch (Exception $e) {
             $app->getLog()->error("Error listing admins for website ".$website_id.". - " . $e->getMessage());
             $response->status(500);
-            return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            return $response;
         }
     }
 
@@ -53,19 +56,23 @@ class Controller_Admin
             $website = $mgr->websiteExists($website_id);
             if (!$website) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
+                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
+                return $response;
             }
             $mgr = new Model_Admin();
             $results = $mgr->getAdminLoginDetails($id, $website_id);
             if (!$results) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "Admin login credentials not found")));
+                $response->body(json_encode(array('success' => false, 'message' => "Admin login credentials not found")));
+                return $response;
             }
-            return $response->body(json_encode(array('success' => true, 'record' => $results)));
+            $response->body(json_encode(array('success' => true, 'record' => $results)));
+            return $response;
         } catch (Exception $e) {
             $app->getLog()->error("Error showing admin {$id} for website " . $website_id . ". - " . $e->getMessage());
             $response->status(500);
-            return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            return $response;
         }
     }
 
@@ -84,21 +91,25 @@ class Controller_Admin
             $website = $mgr->websiteExists($website_id);
             if (!$website) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
+                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
+                return $response;
             }
             $mgr = new Model_Admin();
-            $results = $mgr->addAdminLogin($website_id, $_POST);
+            $results = $mgr->addAdminLogin($website_id, $app->request()->post());
             $app->getLog()->info("Admin {$results['id']} added for website " . $website_id . ".");
             $response->status(201);
-            return $response->body(json_encode(array('success' => true, 'message' => 'Admin Login has been added.', 'record' => $results)));
+            $response->body(json_encode(array('success' => true, 'message' => 'Admin Login has been added.', 'record' => $results)));
+            return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {
                 $response->status(400);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                return $response;
             } else {
                 $app->getLog()->error("Error adding admin for website " . $website_id . ". - " . $e->getMessage());
                 $response->status(500);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                return $response;
             }
         }
     }
@@ -118,27 +129,32 @@ class Controller_Admin
             $website = $mgr->getWebsite($website_id);
             if (!$website) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
+                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
+                return $response;
             }
             $mgr = new Model_Admin();
             $results = $mgr->getAdminLoginDetails($id, $website_id);
             if (!$results) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "Admin login credentials not found")));
+                $response->body(json_encode(array('success' => false, 'message' => "Admin login credentials not found")));
+                return $response;
             }
-            $results = array_merge($results, array_intersect_key($_POST, $results));
+            $results = array_merge($results, array_intersect_key($app->request()->post(), $results));
             $results = $mgr->updateAdminLogin($id, $results, $website_id);
             $app->getLog()->info("Admin {$id} updated for website " . $website_id . ".");
             $response->status(200);
-            return $response->body(json_encode(array('success' => true, 'message' => 'Admin login has been updated.', 'record' => $results)));
+            $response->body(json_encode(array('success' => true, 'message' => 'Admin login has been updated.', 'record' => $results)));
+            return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {
                 $response->status(400);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                return $response;
             } else {
                 $app->getLog()->error("Error updating admin {$id} for website " . $website_id . ". - " . $e->getMessage());
                 $response->status(500);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                return $response;
             }
         }
     }
@@ -158,26 +174,31 @@ class Controller_Admin
             $website = $mgr->getWebsite($website_id);
             if (!$website) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
+                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
+                return $response;
             }
             $mgr = new Model_Admin();
             $results = $mgr->getAdminLoginDetails($id, $website_id);
             if (!$results) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "Admin login credentials not found")));
+                $response->body(json_encode(array('success' => false, 'message' => "Admin login credentials not found")));
+                return $response;
             }
             $results = $mgr->deleteAdminLogin($id);
             $app->getLog()->info("Admin {$id} deleted from website " . $website_id . ".");
             $response->status(204);
-            return $response->body(json_encode(array('success' => true, 'message' => 'Admin login has been deleted.')));
+            $response->body(json_encode(array('success' => true, 'message' => 'Admin login has been deleted.')));
+            return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {
                 $response->status(400);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                return $response;
             } else {
                 $app->getLog()->error("Error deleting admin {$id} for website " . $website_id . ". - " . $e->getMessage());
                 $response->status(500);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                return $response;
             }
         }
     }

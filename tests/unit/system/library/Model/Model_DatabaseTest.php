@@ -89,6 +89,25 @@ class Model_DatabaseTest extends Test_DatabaseTest
     }
 
     /**
+     * Model_Database::addDB
+     * @expectedException Validate_Exception
+     */
+    public function testAddDatabaseLoginFail()
+    {
+        $mgr = new Model_Database();
+        $website_id = null;
+        $result = array(
+          'type' => 'badtype',
+          'hostname' => 'localhost',
+          'username' => 'pickle',
+          'password' => 'password',
+          'database' => 'dbname',
+          'url' => 'http://url.com'
+        );
+        $mgr->addDB($website_id, $result);
+    }
+
+    /**
      * Model_Database::updateDB
      */
     public function testUpdateDatabaseLogin()
@@ -97,6 +116,27 @@ class Model_DatabaseTest extends Test_DatabaseTest
         $website_id = 1;
         $id = 1;
         $result = $mgr->getDBDetails($id, $website_id);
+        $result['hostname'] = 'newhostname';
+        $result['username'] = 'newusername';
+        $result['password'] = 'newpassword';
+        $result['database'] = 'newdatabase';
+        $mgr->updateDB($id, $result, $website_id);
+        $updated = $mgr->getDBDetails($id, $website_id);
+        $this->assertEquals($updated, $result);
+        $this->assertEquals('newusername', $updated['username']);
+    }
+
+    /**
+     * Model_Database::updateDB
+     * @expectedException Validate_Exception
+     */
+    public function testUpdateDatabaseLoginFail()
+    {
+        $mgr = new Model_Database();
+        $website_id = 496;
+        $id = 1;
+        $result = $mgr->getDBDetails($id, $website_id);
+        $result['type'] = 'badtype';
         $result['hostname'] = 'newhostname';
         $result['username'] = 'newusername';
         $result['password'] = 'newpassword';
@@ -153,19 +193,25 @@ class Model_DatabaseTest extends Test_DatabaseTest
         $website_id = 'bad-id';
         $data = array(
           'website_id' => $website_id,
-          'type' => 'mysql',
-          'hostname' => 'localhost',
-          'username' => 'pickel',
-          'password' => 'password',
-          'url' => 'http://url.com',
-          'database' => 'dbname',
+          'type' => null,
+          'hostname' => str_repeat('-', 101),
+          'username' => str_repeat('-', 101),
+          'password' => str_repeat('-', 101),
+          'url' => str_repeat('-', 256),
+          'database' => str_repeat('-', 101),
           'notes' => null
         );
         $errors = $mgr->validate($data);
         $this->assertInstanceOf('Error_Stack', $errors);
         $this->assertTrue($errors->hasErrors());
         $messages = $errors->getErrors();
-        $this->assertEquals(array('website_id' => array('Website does not exist.')), $messages);
+        $this->assertEquals(array('Website does not exist.'), $messages['website_id']);
+        $this->assertEquals(array('Database type is required.'), $messages['type']);
+        $this->assertEquals(array('Hostname must not be more than 100 characters.'), $messages['hostname']);
+        $this->assertEquals(array('Username must not be more than 100 characters.'), $messages['username']);
+        $this->assertEquals(array('Password must not be more than 100 characters.'), $messages['password']);
+        $this->assertEquals(array('URL must not be more than 255 characters.'), $messages['url']);
+        $this->assertEquals(array('Database must not be more than 100 characters.'), $messages['database']);
     }
 
 }

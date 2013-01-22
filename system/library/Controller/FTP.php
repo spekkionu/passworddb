@@ -26,15 +26,18 @@ class Controller_FTP
             $website = $mgr->websiteExists($website_id);
             if (!$website) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
+                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
+                return $response;
             }
             $mgr = new Model_FTP();
             $results = $mgr->getFTPLogins($website_id);
-            return $response->body(json_encode(array('success' => true, 'records' => $results)));
+            $response->body(json_encode(array('success' => true, 'records' => $results)));
+            return $response;
         } catch (Exception $e) {
             $app->getLog()->error("Error listing ftp logins for website " . $website_id . ". - " . $e->getMessage());
             $response->status(500);
-            return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            return $response;
         }
     }
 
@@ -53,19 +56,22 @@ class Controller_FTP
             $website = $mgr->websiteExists($website_id);
             if (!$website) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
+                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
+                return $response;
             }
             $mgr = new Model_FTP();
             $results = $mgr->getFTPDetails($id, $website_id);
             if (!$results) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "FTP login credentials not found")));
+                $response->body(json_encode(array('success' => false, 'message' => "FTP login credentials not found")));
+                return $response;
             }
             return $response->body(json_encode(array('success' => true, 'record' => $results)));
         } catch (Exception $e) {
             $app->getLog()->error("Error showing ftp {$id} for website " . $website_id . ". - " . $e->getMessage());
             $response->status(500);
-            return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            return $response;
         }
     }
 
@@ -84,21 +90,25 @@ class Controller_FTP
             $website = $mgr->websiteExists($website_id);
             if (!$website) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
+                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
+                return $response;
             }
             $mgr = new Model_FTP();
-            $results = $mgr->addFTP($website_id, $_POST);
+            $results = $mgr->addFTP($website_id, $app->request()->post());
             $app->getLog()->info("FTP {$results['id']} added for website " . $website_id . ".");
             $response->status(201);
-            return $response->body(json_encode(array('success' => true, 'message' => 'FTP Login has been added.', 'record' => $results)));
+            $response->body(json_encode(array('success' => true, 'message' => 'FTP Login has been added.', 'record' => $results)));
+            return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {
                 $response->status(400);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                return $response;
             } else {
                 $app->getLog()->error("Error adding ftp for website " . $website_id . ". - " . $e->getMessage());
                 $response->status(500);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                return $response;
             }
         }
     }
@@ -118,27 +128,32 @@ class Controller_FTP
             $website = $mgr->getWebsite($website_id);
             if (!$website) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
+                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
+                return $response;
             }
             $mgr = new Model_FTP();
             $results = $mgr->getFTPDetails($id, $website_id);
             if (!$results) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "FTP login credentials not found")));
+                $response->body(json_encode(array('success' => false, 'message' => "FTP login credentials not found")));
+                return $response;
             }
-            $results = array_merge($results, array_intersect_key($_POST, $results));
+            $results = array_merge($results, array_intersect_key($app->request()->post(), $results));
             $results = $mgr->updateFTP($id, $results, $website_id);
             $app->getLog()->info("FTP {$id} updated for website " . $website_id . ".");
             $response->status(200);
-            return $response->body(json_encode(array('success' => true, 'message' => 'FTP login has been updated.', 'record' => $results)));
+            $response->body(json_encode(array('success' => true, 'message' => 'FTP login has been updated.', 'record' => $results)));
+            return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {
                 $response->status(400);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                return $response;
             } else {
                 $app->getLog()->error("Error updating ftp {$id} for website " . $website_id . ". - " . $e->getMessage());
                 $response->status(500);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                return $response;
             }
         }
     }
@@ -158,26 +173,31 @@ class Controller_FTP
             $website = $mgr->getWebsite($website_id);
             if (!$website) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
+                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
+                return $response;
             }
             $mgr = new Model_FTP();
             $results = $mgr->getFTPDetails($id, $website_id);
             if (!$results) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "FTP login credentials not found")));
+                $response->body(json_encode(array('success' => false, 'message' => "FTP login credentials not found")));
+                return $response;
             }
             $results = $mgr->deleteFTP($id);
             $app->getLog()->info("FTP {$id} deleted from website " . $website_id . ".");
             $response->status(204);
-            return $response->body(json_encode(array('success' => true, 'message' => 'FTP login has been deleted.')));
+            $response->body(json_encode(array('success' => true, 'message' => 'FTP login has been deleted.')));
+            return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {
                 $response->status(400);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                return $response;
             } else {
                 $app->getLog()->error("Error deleting ftp {$id} for website " . $website_id . ". - " . $e->getMessage());
                 $response->status(500);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                return $response;
             }
         }
     }

@@ -24,11 +24,13 @@ class Controller_Website
         try {
             $mgr = new Model_Website();
             $websites = $mgr->getWebsites();
-            return $response->body(json_encode(array('success' => true, 'records' => $websites)));
+            $response->body(json_encode(array('success' => true, 'records' => $websites)));
+            return $response;
         } catch (Exception $e) {
             $app->getLog()->error("Error listing websites. - " . $e->getMessage());
             $response->status(500);
-            return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            return $response;
         }
     }
 
@@ -47,13 +49,16 @@ class Controller_Website
             $website = $mgr->getWebsite($id);
             if (!$website) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => 'Requested URI is not found.')));
+                $response->body(json_encode(array('success' => false, 'message' => 'Requested URI is not found.')));
+                return $response;
             }
-            return $response->body(json_encode(array('success' => true, 'record' => $website)));
+            $response->body(json_encode(array('success' => true, 'record' => $website)));
+            return $response;
         } catch (Exception $e) {
             $app->getLog()->error("Error showing website {$id}. - " . $e->getMessage());
             $response->status(500);
-            return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            return $response;
         }
     }
 
@@ -69,18 +74,21 @@ class Controller_Website
         $response->header('Content-Type', 'application/json');
         try {
             $mgr = new Model_Website();
-            $website = $mgr->addWebsite($_POST);
+            $website = $mgr->addWebsite($app->request()->post());
             $app->getLog()->info("Website {$website['id']} added.");
             $response->status(201);
-            return $response->body(json_encode(array('success' => true, 'message' => 'Website has been added.', 'record' => $website)));
+            $response->body(json_encode(array('success' => true, 'message' => 'Website has been added.', 'record' => $website)));
+            return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {
                 $response->status(400);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                return $response;
             } else {
                 $app->getLog()->error("Error adding website. - " . $e->getMessage());
                 $response->status(500);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                return $response;
             }
         }
     }
@@ -100,21 +108,25 @@ class Controller_Website
             $website = $mgr->getWebsite($id);
             if (!$website) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
+                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
+                return $response;
             }
-            $website = array_merge($website, array_intersect_key($_POST, $website));
+            $website = array_merge($website, array_intersect_key($app->request()->post(), $website));
             $website = $mgr->updateWebsite($id, $website);
             $app->getLog()->info("Website {$id} updated.");
             $response->status(200);
-            return $response->body(json_encode(array('success' => true, 'message' => 'Website has been updated.', 'record' => $website)));
+            $response->body(json_encode(array('success' => true, 'message' => 'Website has been updated.', 'record' => $website)));
+            return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {
                 $response->status(400);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                return $response;
             } else {
                 $app->getLog()->error("Error updating website {$id}. - " . $e->getMessage());
                 $response->status(500);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                return $response;
             }
         }
     }
@@ -134,20 +146,24 @@ class Controller_Website
             $website = $mgr->getWebsite($id);
             if (!$website) {
                 $response->status(404);
-                return $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
+                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
+                return $response;
             }
             $website = $mgr->deleteWebsite($id);
             $app->getLog()->info("Website {$id} deleted.");
             $response->status(204);
-            return $response->body(json_encode(array('success' => true, 'message' => 'Website has been deleted.')));
+            $response->body(json_encode(array('success' => true, 'message' => 'Website has been deleted.')));
+            return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {
                 $response->status(400);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+                return $response;
             } else {
                 $app->getLog()->error("Error deleting website {$id}. - " . $e->getMessage());
                 $response->status(500);
-                return $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+                return $response;
             }
         }
     }

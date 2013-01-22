@@ -64,9 +64,9 @@ if (SERVER_MODE == 'test') {
     // Init DB
     Model_Abstract::setCredentials(array(
       'phptype' => 'sqlite',
-      'database' => SYSTEM . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'password.sqlite'
+      'database' => SYSTEM . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'password.sqlite'
     ));
-    if (!file_exists(SYSTEM . '/data/password.sqlite')) {
+    if (!file_exists(SYSTEM . '/data/database/password.sqlite')) {
         $dbh = Model_Abstract::getConnection();
         Test_Database::initTestDatabase(SYSTEM . '/data/schema.sql', $dbh);
     }

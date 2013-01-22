@@ -1,7 +1,7 @@
 <?php
 $config = array();
 
-$config['test']['hostname'] = 'http://localhost';
+$config['test']['hostname'] = 'http://127.0.0.1:8000';
 $config['test']['base_url'] = '/api.php/';
 
 // Include local config with overrides

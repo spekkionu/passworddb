@@ -7,6 +7,7 @@
 /system/data
 !/system/data/schema.sql
 /build
+composer.phar
 
 
 # OS Files

@@ -134,10 +134,10 @@ class Model_ControlPanel extends Model_Abstract
             $errors->addError('username', 'Username must not be more than 100 characters.');
         }
         if (mb_strlen($data['password']) > 100) {
-            $errors->addError('username', 'Password must not be more than 100 characters.');
+            $errors->addError('password', 'Password must not be more than 100 characters.');
         }
         if (mb_strlen($data['url']) > 255) {
-            $errors->addError('name', 'URL must not be more than 255 characters.');
+            $errors->addError('url', 'URL must not be more than 255 characters.');
         }
         return $errors;
     }
