@@ -140,7 +140,7 @@
         <httpget url="http://getcomposer.org/composer.phar" dir="${project.basedir}" filename="composer.phar"/>
       </else>
     </if>
-    <exec command="php composer.phar install --dev" passthru="true" />
+    <exec command="php composer.phar install --dev" passthru="true" checkreturn="true" />
   </target>
 
   <target name="build" depends="clean,lint,phpunit,pdepend,phpmd,phpcpd,phpcs,phploc,apigen,phpcb"/>
