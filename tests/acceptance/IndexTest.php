@@ -2,7 +2,6 @@
 
 namespace Test\Acceptance;
 
-use Guzzle\Http\Client;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -18,7 +17,7 @@ class IndexTest extends \Test_DatabaseTest
 
     /**
      * Guzzle client
-     * @var Guzzle\Http\Client $client
+     * @var \Guzzle\Http\Client $client
      */
     protected $client;
 
@@ -39,9 +38,9 @@ class IndexTest extends \Test_DatabaseTest
         // Register the connection
         \Model_Abstract::setConnection($this->dbh);
         $url = $config['test']['hostname'] . $config['test']['base_url'];
-        $this->client = new Client($url);
+        $this->client = new \Guzzle\Http\Client($url);
         $this->client->getEventDispatcher()->addListener('request.before_send', function(Event $event) {
-              $event['request']->addHeader('X-SERVER-MODE', 'test');
+              $event['request']->addHeader('X-SERVER-MODE', 'test')->setAuth('admin', 'password');
           });
         $this->config = $config;
     }
@@ -56,6 +55,62 @@ class IndexTest extends \Test_DatabaseTest
         parent::tearDown();
     }
 
+
+    /**
+     * Test HTTP Authentication
+     */
+    public function testAuth()
+    {
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+        $client = new \Guzzle\Http\Client($url);
+        $request = $client->get('api/');
+        $request->addHeader('X-SERVER-MODE', 'test');
+        $request->setAuth('admin', 'password');
+        $response = $request->send();
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    /**
+     * Test request with missing authentication
+     * @expectedException \Guzzle\Http\Exception\ClientErrorResponseException
+     */
+    public function testAuthMissing()
+    {
+        try{
+            $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+            $client = new \Guzzle\Http\Client($url);
+            $request = $client->get('api/');
+            $request->addHeader('X-SERVER-MODE', 'test');
+            $request->setAuth('bad_username', 'bad_password');
+            $response = $request->send();
+        }catch(\Guzzle\Http\Exception\BadResponseException $e){
+            $response = $e->getResponse();
+            $this->assertEquals(401, $response->getStatusCode());
+            throw $e;
+        }
+    }
+
+
+    /**
+     * Test request with invalid login credentials
+     * @expectedException \Guzzle\Http\Exception\ClientErrorResponseException
+     */
+    public function testAuthFail()
+    {
+        try{
+            $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+            $client = new \Guzzle\Http\Client($url);
+            $request = $client->get('api/');
+            $request->addHeader('X-SERVER-MODE', 'test');
+            $request->setAuth('bad_username', 'bad_password');
+            $response = $request->send();
+        }catch(\Guzzle\Http\Exception\BadResponseException $e){
+            $response = $e->getResponse();
+            $this->assertEquals(401, $response->getStatusCode());
+            throw $e;
+        }
+    }
+
     /**
      * Controller_Index::listAction
      */
@@ -68,6 +123,8 @@ class IndexTest extends \Test_DatabaseTest
         $body = json_decode($response->getBody(true), true);
         $this->assertEquals(array('success' => true, 'methods' => array('api/website')), $body);
     }
+
+
 
 }
 

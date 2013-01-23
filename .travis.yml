@@ -6,7 +6,11 @@ env:
   - DB=sqlite
 
 before_script:
-  - git submodule update --init --recursive
+  - mkdir system/logs
+  - chmod -R 0777 system/logs
+  - mkdir system/data/database
+  - chmod -R 0777 system/data/database
+  - mkdir system/template
   - composer install --dev
   - php -S 127.0.0.1:8000 -t public &
 

@@ -1,19 +1,22 @@
 <?php
 // Define Paths
 if (!defined('SYSTEM')) {
-    define("SYSTEM", realpath(dirname(__FILE__)));
+    define("SYSTEM", dirname(__FILE__));
+}
+if (!defined('APP_ROOT')) {
+    define("APP_ROOT", dirname(SYSTEM));
 }
 if (!defined('LIBRARY')) {
-    define("LIBRARY", realpath(SYSTEM . '/library'));
+    define("LIBRARY", SYSTEM . DIRECTORY_SEPARATOR . 'library');
 }
 if (!defined('VENDOR')) {
-    define("VENDOR", realpath(LIBRARY . '/vendor'));
+    define("VENDOR", LIBRARY . DIRECTORY_SEPARATOR . 'vendor');
 }
 if (!defined('WEBROOT')) {
-    define('WEBROOT', realpath(dirname(SYSTEM) . '/public'));
+    define('WEBROOT', APP_ROOT . DIRECTORY_SEPARATOR . 'public');
 }
 if (!defined('TESTDIR')) {
-    define('TESTDIR', realpath(dirname(SYSTEM) . '/tests'));
+    define('TESTDIR', APP_ROOT . DIRECTORY_SEPARATOR . 'tests');
 }
 
 if (!defined('SERVER_MODE')) {

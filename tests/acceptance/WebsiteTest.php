@@ -41,7 +41,7 @@ class WebsiteTest extends \Test_DatabaseTest
         $url = $config['test']['hostname'] . $config['test']['base_url'];
         $this->client = new Client($url);
         $this->client->getEventDispatcher()->addListener('request.before_send', function(Event $event) {
-              $event['request']->addHeader('X-SERVER-MODE', 'test');
+              $event['request']->addHeader('X-SERVER-MODE', 'test')->setAuth('admin', 'password');
           });
         $this->config = $config;
     }

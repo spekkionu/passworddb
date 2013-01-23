@@ -2,6 +2,57 @@
 PRAGMA foreign_keys = OFF;
 
 -- ----------------------------
+-- Table structure for "logins"
+-- ----------------------------
+DROP TABLE "main"."logins";
+CREATE TABLE "logins" (
+"id"  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+"username"  TEXT(25) NOT NULL,
+"password"  TEXT(60),
+"email"  TEXT(127) NOT NULL,
+"name"  TEXT(100)
+);
+
+-- ----------------------------
+-- Records of logins
+-- ----------------------------
+INSERT INTO "main"."logins" VALUES (1, 'admin', 'password', 'email@example.com', 'Administrator');
+
+-- ----------------------------
+-- Indexes structure for table logins
+-- ----------------------------
+CREATE UNIQUE INDEX "main"."email" ON "logins" ("email" ASC);
+CREATE UNIQUE INDEX "main"."username" ON "logins" ("username" ASC);
+
+-- ----------------------------
+-- Table structure for "main"."websites"
+-- ----------------------------
+DROP TABLE "main"."websites";
+CREATE TABLE "websites" (
+"id"  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+"name"  TEXT(100),
+"domain"  TEXT(100),
+"url"  TEXT(255),
+"notes"  TEXT
+);
+
+-- ----------------------------
+-- Records of websites
+-- ----------------------------
+INSERT INTO "main"."websites" ("id","name","domain","url","notes") VALUES (1, "First Website", "first.com", "http://www.first.com", "Notes for first website.");
+INSERT INTO "main"."websites" ("id","name","domain","url","notes") VALUES (2, "Second Website", "second.com", "http://www.second.com", "Notes for second website.");
+INSERT INTO "main"."websites" ("id","name","domain","url","notes") VALUES (3, "Third Website", "third.com", "http://www.third.com", "Notes for third website.");
+INSERT INTO "main"."websites" ("id","name","domain","url","notes") VALUES (4, "Fourth Website", "fourth.com", "http://www.fourth.com", "Notes for fourth website.");
+INSERT INTO "main"."websites" ("id","name","domain","url","notes") VALUES (5, "Fifth Website", "fifth.com", "http://www.fifth.com", "Notes for fifth website.");
+
+-- ----------------------------
+-- Indexes structure for table websites
+-- ----------------------------
+CREATE INDEX "main"."search"
+ON "websites" ("name" ASC, "domain" ASC, "url" ASC);
+
+
+-- ----------------------------
 -- Table structure for "main"."admin_logins"
 -- ----------------------------
 DROP TABLE "main"."admin_logins";
@@ -83,44 +134,3 @@ CONSTRAINT "website" FOREIGN KEY ("website_id") REFERENCES "websites" ("id") ON 
 -- ----------------------------
 INSERT INTO "main"."ftp_data" ("id","website_id","type","hostname","username","password","path","notes") VALUES (1, 1, "sftp", "first.com", "username", "password", "/var/www", "Notes for first ftp login.");
 
--- ----------------------------
--- Table structure for "main"."sqlite_sequence"
--- ----------------------------
-DROP TABLE "main"."sqlite_sequence";
-CREATE TABLE sqlite_sequence(name,seq);
-
--- ----------------------------
--- Records of sqlite_sequence
--- ----------------------------
-INSERT INTO "main"."sqlite_sequence" VALUES ('admin_logins', 1);
-INSERT INTO "main"."sqlite_sequence" VALUES ('control_panels', 1);
-INSERT INTO "main"."sqlite_sequence" VALUES ('websites', 1);
-INSERT INTO "main"."sqlite_sequence" VALUES ('ftp_data', 1);
-INSERT INTO "main"."sqlite_sequence" VALUES ('database_data', 1);
-
--- ----------------------------
--- Table structure for "main"."websites"
--- ----------------------------
-DROP TABLE "main"."websites";
-CREATE TABLE "websites" (
-"id"  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-"name"  TEXT(100),
-"domain"  TEXT(100),
-"url"  TEXT(255),
-"notes"  TEXT
-);
-
--- ----------------------------
--- Records of websites
--- ----------------------------
-INSERT INTO "main"."websites" ("id","name","domain","url","notes") VALUES (1, "First Website", "first.com", "http://www.first.com", "Notes for first website.");
-INSERT INTO "main"."websites" ("id","name","domain","url","notes") VALUES (2, "Second Website", "second.com", "http://www.second.com", "Notes for second website.");
-INSERT INTO "main"."websites" ("id","name","domain","url","notes") VALUES (3, "Third Website", "third.com", "http://www.third.com", "Notes for third website.");
-INSERT INTO "main"."websites" ("id","name","domain","url","notes") VALUES (4, "Fourth Website", "fourth.com", "http://www.fourth.com", "Notes for fourth website.");
-INSERT INTO "main"."websites" ("id","name","domain","url","notes") VALUES (5, "Fifth Website", "fifth.com", "http://www.fifth.com", "Notes for fifth website.");
-
--- ----------------------------
--- Indexes structure for table websites
--- ----------------------------
-CREATE INDEX "main"."search"
-ON "websites" ("name" ASC, "domain" ASC, "url" ASC);

@@ -56,7 +56,9 @@
       "Model_": "system/library/",
       "Controller_": "system/library/",
       "Validate_": "system/library/",
-      "Error_": "system/library/"
+      "Error_": "system/library/",
+      "Middleware_": "system/library/",
+      "Auth_": "system/library/"
     }
   }
 }
