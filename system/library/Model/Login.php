@@ -25,10 +25,10 @@ class Model_Login extends Model_Abstract
         $sth->execute();
         $row = $sth->fetch(PDO::FETCH_ASSOC);
         $sth->closeCursor();
-        if(!$row){
+        if (!$row) {
             throw new Auth_Exception("Invalid login credentials", Auth_Exception::NOT_FOUND);
         }
-        if(!self::checkHash($password, $row['password'])){
+        if (!self::checkHash($password, $row['password'])) {
             throw new Auth_Exception("Invalid login credentials", Auth_Exception::BAD_CREDENTIALS);
         }
         return $row;
@@ -59,6 +59,4 @@ class Model_Login extends Model_Abstract
     {
         return (self::hash($string) == $check);
     }
-
-
 }

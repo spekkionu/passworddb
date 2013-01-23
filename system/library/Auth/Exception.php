@@ -7,7 +7,8 @@
  * @package Auth
  * @subpackage Exception
  */
-class Auth_Exception extends Exception {
+class Auth_Exception extends Exception
+{
 
     /**
      * User was not found
@@ -23,5 +24,4 @@ class Auth_Exception extends Exception {
      * User account was not active
      */
     const NOT_ACTIVE = 3;
-
 }

@@ -42,10 +42,10 @@ class Middleware_HttpApplicationAuth extends Slim_Middleware
         if ($authUser && $authPass) {
             // Check login
             $mgr = new Model_Login();
-            try{
+            try {
                 $mgr->checkLogin($authUser, $authPass);
                 $this->next->call();
-            }catch(Exception $e){
+            } catch (Exception $e) {
                 $res->status(401);
                 $res->header('WWW-Authenticate', sprintf('Basic realm="%s"', $this->realm));
             }
