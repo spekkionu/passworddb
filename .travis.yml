@@ -6,7 +6,8 @@ env:
   - DB=sqlite
 
 before_script:
-  - composer install --dev
+  - curl -s https://getcomposer.org/installer | php
+  - php composer.phar install --dev
   - php -S 127.0.0.1:8000 -t public &
 
 script: phpunit --configuration sqlite.travis.xml --coverage-text
