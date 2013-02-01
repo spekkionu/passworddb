@@ -22,6 +22,12 @@ class IndexTest extends \Test_DatabaseTest
     protected $client;
 
     /**
+     * Mink Session
+     * @var \Behat\Mink\Session $session
+     */
+    protected $session;
+
+    /**
      * Site config
      * @var array $config
      */
@@ -42,6 +48,11 @@ class IndexTest extends \Test_DatabaseTest
         $this->client->getEventDispatcher()->addListener('request.before_send', function(Event $event) {
               $event['request']->addHeader('X-SERVER-MODE', 'test')->setAuth('admin', 'password');
           });
+        $client = new \Behat\Mink\Driver\Goutte\Client();
+        $client->setClient($this->client);
+        $driver = new \Behat\Mink\Driver\GoutteDriver($client);
+        $this->session = new \Behat\Mink\Session($driver);
+        $this->session->start();
         $this->config = $config;
     }
 
@@ -52,9 +63,9 @@ class IndexTest extends \Test_DatabaseTest
     protected function tearDown()
     {
         \Model_Abstract::close();
+        $this->session->restart();
         parent::tearDown();
     }
-
 
     /**
      * Test HTTP Authentication
@@ -63,7 +74,7 @@ class IndexTest extends \Test_DatabaseTest
     {
         $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
         $client = new \Guzzle\Http\Client($url);
-        $request = $client->get('api/');
+        $request = $client->get('/');
         $request->addHeader('X-SERVER-MODE', 'test');
         $request->setAuth('admin', 'password');
         $response = $request->send();
@@ -76,20 +87,19 @@ class IndexTest extends \Test_DatabaseTest
      */
     public function testAuthMissing()
     {
-        try{
+        try {
             $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
             $client = new \Guzzle\Http\Client($url);
-            $request = $client->get('api/');
+            $request = $client->get('/');
             $request->addHeader('X-SERVER-MODE', 'test');
             $request->setAuth('bad_username', 'bad_password');
             $response = $request->send();
-        }catch(\Guzzle\Http\Exception\BadResponseException $e){
+        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
             $response = $e->getResponse();
             $this->assertEquals(401, $response->getStatusCode());
             throw $e;
         }
     }
-
 
     /**
      * Test request with invalid login credentials
@@ -97,34 +107,17 @@ class IndexTest extends \Test_DatabaseTest
      */
     public function testAuthFail()
     {
-        try{
+        try {
             $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
             $client = new \Guzzle\Http\Client($url);
-            $request = $client->get('api/');
+            $request = $client->get('/');
             $request->addHeader('X-SERVER-MODE', 'test');
             $request->setAuth('bad_username', 'bad_password');
             $response = $request->send();
-        }catch(\Guzzle\Http\Exception\BadResponseException $e){
+        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
             $response = $e->getResponse();
             $this->assertEquals(401, $response->getStatusCode());
             throw $e;
         }
     }
-
-    /**
-     * Controller_Index::listAction
-     */
-    public function testListAction()
-    {
-        $request = $this->client->get('api/');
-        $response = $request->send();
-        $this->assertEquals('application/json', $response->getContentType());
-        $this->assertEquals(200, $response->getStatusCode());
-        $body = json_decode($response->getBody(true), true);
-        $this->assertEquals(array('success' => true, 'methods' => array('api/website')), $body);
-    }
-
-
-
 }
-

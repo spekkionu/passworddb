@@ -23,6 +23,12 @@ class FTPTest extends \Test_DatabaseTest
     protected $client;
 
     /**
+     * Mink Session
+     * @var \Behat\Mink\Session $session
+     */
+    protected $session;
+
+    /**
      * Site config
      * @var array $config
      */
@@ -39,10 +45,15 @@ class FTPTest extends \Test_DatabaseTest
         // Register the connection
         \Model_Abstract::setConnection($this->dbh);
         $url = $config['test']['hostname'] . $config['test']['base_url'];
-        $this->client = new Client($url);
+        $this->client = new \Guzzle\Http\Client($url);
         $this->client->getEventDispatcher()->addListener('request.before_send', function(Event $event) {
               $event['request']->addHeader('X-SERVER-MODE', 'test')->setAuth('admin', 'password');
           });
+        $client = new \Behat\Mink\Driver\Goutte\Client();
+        $client->setClient($this->client);
+        $driver = new \Behat\Mink\Driver\GoutteDriver($client);
+        $this->session = new \Behat\Mink\Session($driver);
+        $this->session->start();
         $this->config = $config;
     }
 
@@ -53,6 +64,7 @@ class FTPTest extends \Test_DatabaseTest
     protected function tearDown()
     {
         \Model_Abstract::close();
+        $this->session->restart();
         parent::tearDown();
     }
 
@@ -62,13 +74,11 @@ class FTPTest extends \Test_DatabaseTest
     public function testListAction()
     {
         $website_id = 1;
-        $request = $this->client->get("api/ftp/{$website_id}");
-        $response = $request->send();
-        $this->assertEquals('application/json', $response->getContentType());
-        $this->assertEquals(200, $response->getStatusCode());
-        $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertCount(1, $body['records']);
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'] . "website/{$website_id}";
+        $this->session->visit($url);
+        $page = $this->session->getPage();
+        $el = $page->findAll('css', '#website-ftp > li');
+        $this->assertCount(1, $el);
     }
 
     /**
@@ -78,13 +88,15 @@ class FTPTest extends \Test_DatabaseTest
     {
         $id = 1;
         $website_id = 1;
-        $request = $this->client->get("api/ftp/{$website_id}/{$id}");
-        $response = $request->send();
-        $this->assertEquals('application/json', $response->getContentType());
-        $this->assertEquals(200, $response->getStatusCode());
-        $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertEquals($id, $body['record']['id']);
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+        $url .= "ftp/{$website_id}/{$id}/edit";
+        $this->session->visit($url);
+        $page = $this->session->getPage();
+        $this->assertEquals('sftp', $page->findById('form-ftp-type')->getValue());
+        $this->assertEquals('first.com', $page->findById('form-ftp-hostname')->getValue());
+        $this->assertEquals('username', $page->findById('form-ftp-username')->getValue());
+        $this->assertEquals('password', $page->findById('form-ftp-password')->getValue());
+        $this->assertEquals('/var/www', $page->findById('form-ftp-path')->getValue());
     }
 
     /**
@@ -101,20 +113,20 @@ class FTPTest extends \Test_DatabaseTest
           'path' => '/var/www',
           'notes' => 'ftp notes'
         );
-        $request = $this->client->post("api/ftp/{$website_id}")->addPostFields($result);
-        $response = $request->send();
-        $this->assertEquals('application/json', $response->getContentType());
-        $this->assertEquals(201, $response->getStatusCode());
-        $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertEquals($result, array(
-          'type' => $body['record']['type'],
-          'username' => $body['record']['username'],
-          'password' => $body['record']['password'],
-          'hostname' => $body['record']['hostname'],
-          'path' => $body['record']['path'],
-          'notes' => $body['record']['notes']
-        ));
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+        $url .= "ftp/{$website_id}/add";
+        $this->session->visit($url);
+        $page = $this->session->getPage();
+        $page->findById('form-ftp-type')->selectOption($result['type']);
+        $page->findById('form-ftp-hostname')->setValue($result['hostname']);
+        $page->findById('form-ftp-username')->setValue($result['username']);
+        $page->findById('form-ftp-password')->setValue($result['password']);
+        $page->findById('form-ftp-path')->setValue($result['path']);
+        $page->findById('form-ftp-notes')->setValue($result['notes']);
+        $page->find('css', '.form-actions > .btn-primary')->press();
+        $el = $page->find('css', '.flash-messages .alert');
+        $this->assertEquals('alert alert-success', $el->getAttribute('class'));
+        $this->assertContains('FTP added for website First Website.', $el->getText());
     }
 
     /**
@@ -132,21 +144,20 @@ class FTPTest extends \Test_DatabaseTest
           'path' => '/var/www',
           'notes' => 'ftp notes'
         );
-        $request = $this->client->post("api/ftp/{$website_id}/{$id}")->addPostFields($result);
-        $request->addHeader('X-HTTP-Method-Override', 'PUT');
-        $response = $request->send();
-        $this->assertEquals('application/json', $response->getContentType());
-        $this->assertEquals(200, $response->getStatusCode());
-        $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertEquals($result, array(
-          'type' => $body['record']['type'],
-          'username' => $body['record']['username'],
-          'password' => $body['record']['password'],
-          'hostname' => $body['record']['hostname'],
-          'path' => $body['record']['path'],
-          'notes' => $body['record']['notes']
-        ));
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+        $url .= "ftp/{$website_id}/{$id}/edit";
+        $this->session->visit($url);
+        $page = $this->session->getPage();
+        $page->findById('form-ftp-type')->selectOption($result['type']);
+        $page->findById('form-ftp-hostname')->setValue($result['hostname']);
+        $page->findById('form-ftp-username')->setValue($result['username']);
+        $page->findById('form-ftp-password')->setValue($result['password']);
+        $page->findById('form-ftp-path')->setValue($result['path']);
+        $page->findById('form-ftp-notes')->setValue($result['notes']);
+        $page->find('css', '.form-actions > .btn-primary')->press();
+        $el = $page->find('css', '.flash-messages .alert');
+        $this->assertEquals('alert alert-success', $el->getAttribute('class'));
+        $this->assertContains("FTP login {$id} has been updated for website First Website.", $el->getText());
     }
 
     /**
@@ -156,10 +167,14 @@ class FTPTest extends \Test_DatabaseTest
     {
         $id = 1;
         $website_id = 1;
-        $request = $this->client->post("api/ftp/{$website_id}/{$id}");
-        $request->addHeader('X-HTTP-Method-Override', 'DELETE');
-        $response = $request->send();
-        $this->assertEquals(204, $response->getStatusCode());
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+        $url .= "ftp/{$website_id}/{$id}/delete";
+        $this->session->visit($url);
+        $page = $this->session->getPage();
+        $page->find('css', '.form-actions > .btn-danger')->press();
+        $el = $page->find('css', '.flash-messages .alert');
+        $this->assertEquals('alert alert-info', $el->getAttribute('class'));
+        $this->assertContains("FTP {$id} deleted from website First Website.", $el->getText());
     }
 
 }

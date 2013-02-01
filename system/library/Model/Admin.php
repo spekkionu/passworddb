@@ -12,6 +12,17 @@ class Model_Admin extends Model_Abstract
 {
 
     /**
+     * Default values
+     * @var array
+     */
+    public static $default = array(
+      'username' => null,
+      'password' => null,
+      'url' => null,
+      'notes' => null,
+    );
+
+    /**
      * Returns Admin Logins for a website
      *
      * @param int $website_id

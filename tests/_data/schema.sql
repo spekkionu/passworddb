@@ -2,29 +2,6 @@
 PRAGMA foreign_keys = OFF;
 
 -- ----------------------------
--- Table structure for "logins"
--- ----------------------------
-DROP TABLE "main"."logins";
-CREATE TABLE "logins" (
-"id"  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-"username"  TEXT(25) NOT NULL,
-"password"  TEXT(60),
-"email"  TEXT(127) NOT NULL,
-"name"  TEXT(100)
-);
-
--- ----------------------------
--- Records of logins
--- ----------------------------
-INSERT INTO "main"."logins" VALUES (1, 'admin', 'password', 'email@example.com', 'Administrator');
-
--- ----------------------------
--- Indexes structure for table logins
--- ----------------------------
-CREATE UNIQUE INDEX "main"."email" ON "logins" ("email" ASC);
-CREATE UNIQUE INDEX "main"."username" ON "logins" ("username" ASC);
-
--- ----------------------------
 -- Table structure for "main"."websites"
 -- ----------------------------
 DROP TABLE "main"."websites";
@@ -90,6 +67,7 @@ CONSTRAINT "website" FOREIGN KEY ("website_id") REFERENCES "websites" ("id") ON 
 -- Records of control_panels
 -- ----------------------------
 INSERT INTO "main"."control_panels" ("id","website_id","username","password","url","notes") VALUES (1, 1, "username", "password", "http://www.first.com/cpanel", "Notes for first cpanel login.");
+INSERT INTO "main"."control_panels" ("id","website_id","username","password","url","notes") VALUES (2, 1, "username", "password", "http://www.first.com/cpanel2", "Notes for second cpanel login.");
 
 -- ----------------------------
 -- Table structure for "main"."database_data"

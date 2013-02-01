@@ -23,6 +23,12 @@ class WebsiteTest extends \Test_DatabaseTest
     protected $client;
 
     /**
+     * Mink Session
+     * @var \Behat\Mink\Session $session
+     */
+    protected $session;
+
+    /**
      * Site config
      * @var array $config
      */
@@ -39,10 +45,15 @@ class WebsiteTest extends \Test_DatabaseTest
         // Register the connection
         \Model_Abstract::setConnection($this->dbh);
         $url = $config['test']['hostname'] . $config['test']['base_url'];
-        $this->client = new Client($url);
+        $this->client = new \Guzzle\Http\Client($url);
         $this->client->getEventDispatcher()->addListener('request.before_send', function(Event $event) {
               $event['request']->addHeader('X-SERVER-MODE', 'test')->setAuth('admin', 'password');
           });
+        $client = new \Behat\Mink\Driver\Goutte\Client();
+        $client->setClient($this->client);
+        $driver = new \Behat\Mink\Driver\GoutteDriver($client);
+        $this->session = new \Behat\Mink\Session($driver);
+        $this->session->start();
         $this->config = $config;
     }
 
@@ -53,6 +64,7 @@ class WebsiteTest extends \Test_DatabaseTest
     protected function tearDown()
     {
         \Model_Abstract::close();
+        $this->session->restart();
         parent::tearDown();
     }
 
@@ -61,13 +73,19 @@ class WebsiteTest extends \Test_DatabaseTest
      */
     public function testListAction()
     {
-        $request = $this->client->get('api/website');
-        $response = $request->send();
-        $this->assertEquals('application/json', $response->getContentType());
-        $this->assertEquals(200, $response->getStatusCode());
-        $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertCount(5, $body['records']);
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+        $this->session->visit($url);
+        $this->assertEquals(200, $this->session->getStatusCode());
+        $page = $this->session->getPage();
+        $el = $page->find('css', '.page-header > h1');
+        // Make sure the page has the right header
+        $this->assertEquals('Websites', $el->getText());
+        $el = $page->findAll('css', 'table > tbody > tr');
+        // Make sure there are 5 websites
+        $this->assertCount(5, $el);
+        $first = array_shift($el);
+        // Make sure the first website matches
+        $this->assertEquals('Fifth Website', $first->find('css', 'td:nth-child(2)')->getText());
     }
 
     /**
@@ -76,13 +94,11 @@ class WebsiteTest extends \Test_DatabaseTest
     public function testDetailsAction()
     {
         $id = 1;
-        $request = $this->client->get('api/website/' . $id);
-        $response = $request->send();
-        $this->assertEquals('application/json', $response->getContentType());
-        $this->assertEquals(200, $response->getStatusCode());
-        $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertEquals($id, $body['record']['id']);
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+        $url .= "website/{$id}";
+        $this->session->visit($url);
+        $page = $this->session->getPage();
+        $this->assertEquals('First Website', $page->find('css', '.page-header > h1')->getText());
     }
 
     /**
@@ -90,24 +106,24 @@ class WebsiteTest extends \Test_DatabaseTest
      */
     public function testAddAction()
     {
-        $website = array(
+        $result = array(
           'name' => 'New Website',
           'domain' => 'domain.com',
           'url' => 'http://url.com',
           'notes' => 'new website'
         );
-        $request = $this->client->post('api/website')->addPostFields($website);
-        $response = $request->send();
-        $this->assertEquals('application/json', $response->getContentType());
-        $this->assertEquals(201, $response->getStatusCode());
-        $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertEquals($website, array(
-          'name' => $body['record']['name'],
-          'domain' => $body['record']['domain'],
-          'url' => $body['record']['url'],
-          'notes' => $body['record']['notes']
-        ));
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+        $url .= "website/add";
+        $this->session->visit($url);
+        $page = $this->session->getPage();
+        $page->findById('form-website-name')->setValue($result['name']);
+        $page->findById('form-website-domain')->setValue($result['domain']);
+        $page->findById('form-website-url')->setValue($result['url']);
+        $page->findById('form-website-notes')->setValue($result['notes']);
+        $page->find('css', '.form-actions > .btn-primary')->press();
+        $el = $page->find('css', '.flash-messages .alert');
+        $this->assertEquals('alert alert-success', $el->getAttribute('class'));
+        $this->assertContains("Website {$result['name']} added.", $el->getText());
     }
 
     /**
@@ -116,25 +132,24 @@ class WebsiteTest extends \Test_DatabaseTest
     public function testUpdateAction()
     {
         $id = 1;
-        $website = array(
+        $result = array(
           'name' => 'New Website',
           'domain' => 'domain.com',
           'url' => 'http://url.com',
           'notes' => 'new website'
         );
-        $request = $this->client->post('api/website/' . $id)->addPostFields($website);
-        $request->addHeader('X-HTTP-Method-Override', 'PUT');
-        $response = $request->send();
-        $this->assertEquals('application/json', $response->getContentType());
-        $this->assertEquals(200, $response->getStatusCode());
-        $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertEquals($website, array(
-          'name' => $body['record']['name'],
-          'domain' => $body['record']['domain'],
-          'url' => $body['record']['url'],
-          'notes' => $body['record']['notes']
-        ));
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+        $url .= "website/{$id}/edit";
+        $this->session->visit($url);
+        $page = $this->session->getPage();
+        $page->findById('form-website-name')->setValue($result['name']);
+        $page->findById('form-website-domain')->setValue($result['domain']);
+        $page->findById('form-website-url')->setValue($result['url']);
+        $page->findById('form-website-notes')->setValue($result['notes']);
+        $page->find('css', '.form-actions > .btn-primary')->press();
+        $el = $page->find('css', '.flash-messages .alert');
+        $this->assertEquals('alert alert-success', $el->getAttribute('class'));
+        $this->assertContains("Website {$result['name']} updated.", $el->getText());
     }
 
     /**
@@ -143,11 +158,13 @@ class WebsiteTest extends \Test_DatabaseTest
     public function testDeleteAction()
     {
         $id = 1;
-        $request = $this->client->post('api/website/' . $id);
-        $request->addHeader('X-HTTP-Method-Override', 'DELETE');
-        $response = $request->send();
-        $this->assertEquals(204, $response->getStatusCode());
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+        $url .= "website/{$id}/delete";
+        $this->session->visit($url);
+        $page = $this->session->getPage();
+        $page->find('css', '.form-actions > .btn-danger')->press();
+        $el = $page->find('css', '.flash-messages .alert');
+        $this->assertEquals('alert alert-info', $el->getAttribute('class'));
+        $this->assertContains("Website deleted.", $el->getText());
     }
-
 }
-

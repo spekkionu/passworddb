@@ -12,71 +12,6 @@ class Controller_Admin
 {
 
     /**
-     * Returns list of admin logins
-     * @url /api/admin/:website_id
-     * @method GET
-     */
-    public static function listAction($website_id)
-    {
-        $app = Slim::getInstance();
-        $response = $app->response();
-        $response->header('Content-Type', 'application/json');
-        try {
-            $mgr = new Model_Website();
-            $website = $mgr->websiteExists($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
-                return $response;
-            }
-            $mgr = new Model_Admin();
-            $results = $mgr->getAdminLogins($website_id);
-            $response->body(json_encode(array('success' => true, 'records' => $results)));
-            return $response;
-        } catch (Exception $e) {
-            $app->getLog()->error("Error listing admins for website ".$website_id.". - " . $e->getMessage());
-            $response->status(500);
-            $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
-            return $response;
-        }
-    }
-
-    /**
-     * Returns details for an admin login
-     * @url /api/admin/:website_id/:id
-     * @method GET
-     */
-    public static function detailsAction($website_id, $id)
-    {
-        $app = Slim::getInstance();
-        $response = $app->response();
-        $response->header('Content-Type', 'application/json');
-        try {
-            $mgr = new Model_Website();
-            $website = $mgr->websiteExists($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
-                return $response;
-            }
-            $mgr = new Model_Admin();
-            $results = $mgr->getAdminLoginDetails($id, $website_id);
-            if (!$results) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Admin login credentials not found")));
-                return $response;
-            }
-            $response->body(json_encode(array('success' => true, 'record' => $results)));
-            return $response;
-        } catch (Exception $e) {
-            $app->getLog()->error("Error showing admin {$id} for website " . $website_id . ". - " . $e->getMessage());
-            $response->status(500);
-            $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
-            return $response;
-        }
-    }
-
-    /**
      * Adds a new admin login
      * @url /api/admin/:website_id
      * @method POST
@@ -85,33 +20,30 @@ class Controller_Admin
     {
         $app = Slim::getInstance();
         $response = $app->response();
-        $response->header('Content-Type', 'application/json');
-        try {
-            $mgr = new Model_Website();
-            $website = $mgr->websiteExists($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
-                return $response;
-            }
-            $mgr = new Model_Admin();
-            $results = $mgr->addAdminLogin($website_id, $app->request()->post());
-            $app->getLog()->info("Admin {$results['id']} added for website " . $website_id . ".");
-            $response->status(201);
-            $response->body(json_encode(array('success' => true, 'message' => 'Admin Login has been added.', 'record' => $results)));
+        $mgr = new Model_Website();
+        $website = $mgr->getWebsite($website_id, false);
+        if (!$website) {
+            $app->render('error/not-found.twig', array('message' => 'The website you requested does not exist.'), 404);
             return $response;
-        } catch (Exception $e) {
-            if ($e instanceof Validate_Exception) {
-                $response->status(400);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+        }
+        $results = Model_Admin::$default;
+        if ($app->request()->isPost()) {
+            try {
+                $results = array_merge($results, array_intersect_key($app->request()->post('admin'), $results));
+                $mgr = new Model_Admin();
+                $results = $mgr->addAdminLogin($website_id, $results);
+                $app->flash('success', "Admin login {$results['id']} added for website {$website['name']}.");
+                $response->redirect("/website/{$website['id']}");
                 return $response;
-            } else {
-                $app->getLog()->error("Error adding admin for website " . $website_id . ". - " . $e->getMessage());
-                $response->status(500);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            } catch (Validate_Exception $e) {
+                $app->render('admin/add.twig', array('website' => $website, 'results' => $results, 'errors' => $e->getErrors()));
+                return $response;
+            } catch (Exception $e) {
+                $app->render('error/error.twig', array('exception' => $e, 'message' => 'Error adding admin login.'), 500);
                 return $response;
             }
         }
+        $app->render('admin/add.twig', array('website' => $website, 'results' => $results));
     }
 
     /**
@@ -123,40 +55,35 @@ class Controller_Admin
     {
         $app = Slim::getInstance();
         $response = $app->response();
-        $response->header('Content-Type', 'application/json');
-        try {
-            $mgr = new Model_Website();
-            $website = $mgr->getWebsite($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
-                return $response;
-            }
-            $mgr = new Model_Admin();
-            $results = $mgr->getAdminLoginDetails($id, $website_id);
-            if (!$results) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Admin login credentials not found")));
-                return $response;
-            }
-            $results = array_merge($results, array_intersect_key($app->request()->post(), $results));
-            $results = $mgr->updateAdminLogin($id, $results, $website_id);
-            $app->getLog()->info("Admin {$id} updated for website " . $website_id . ".");
-            $response->status(200);
-            $response->body(json_encode(array('success' => true, 'message' => 'Admin login has been updated.', 'record' => $results)));
+        $mgr = new Model_Website();
+        $website = $mgr->getWebsite($website_id);
+        if (!$website) {
+            $app->render('error/not-found.twig', array('message' => 'The website you requested does not exist.'), 404);
             return $response;
-        } catch (Exception $e) {
-            if ($e instanceof Validate_Exception) {
-                $response->status(400);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+        }
+        $mgr = new Model_Admin();
+        $results = $mgr->getAdminLoginDetails($id, $website_id);
+        if (!$results) {
+            $app->render('error/not-found.twig', array('message' => 'Admin login credentials not found.'), 404);
+            return $response;
+        }
+        if ($app->request()->isPost() || $app->request()->isPut()) {
+            try {
+
+                $results = array_merge($results, array_intersect_key($app->request()->post('admin'), $results));
+                $results = $mgr->updateAdminLogin($id, $results, $website_id);
+                $app->flash('success', "Admin login {$id} has been updated for website {$website['name']}.");
+                $response->redirect("/website/{$website['id']}");
                 return $response;
-            } else {
-                $app->getLog()->error("Error updating admin {$id} for website " . $website_id . ". - " . $e->getMessage());
-                $response->status(500);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            } catch (Validate_Exception $e) {
+                $app->render('admin/edit.twig', array('website' => $website, 'results' => $results, 'errors' => $e->getErrors()));
+                return $response;
+            } catch (Exception $e) {
+                $app->render('error/error.twig', array('exception' => $e, 'message' => 'Error updating admin login.'), 500);
                 return $response;
             }
         }
+        $app->render('admin/edit.twig', array('website' => $website, 'results' => $results));
     }
 
     /**
@@ -168,38 +95,33 @@ class Controller_Admin
     {
         $app = Slim::getInstance();
         $response = $app->response();
-        $response->header('Content-Type', 'application/json');
-        try {
-            $mgr = new Model_Website();
-            $website = $mgr->getWebsite($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
-                return $response;
-            }
-            $mgr = new Model_Admin();
-            $results = $mgr->getAdminLoginDetails($id, $website_id);
-            if (!$results) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Admin login credentials not found")));
-                return $response;
-            }
-            $results = $mgr->deleteAdminLogin($id);
-            $app->getLog()->info("Admin {$id} deleted from website " . $website_id . ".");
-            $response->status(204);
-            $response->body(json_encode(array('success' => true, 'message' => 'Admin login has been deleted.')));
+        $mgr = new Model_Website();
+        $website = $mgr->getWebsite($website_id);
+        if (!$website) {
+            $app->render('error/not-found.twig', array('message' => 'The website you requested does not exist.'), 404);
             return $response;
-        } catch (Exception $e) {
-            if ($e instanceof Validate_Exception) {
-                $response->status(400);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+        }
+        $mgr = new Model_Admin();
+        $results = $mgr->getAdminLoginDetails($id, $website_id);
+        if (!$results) {
+            $app->render('error/not-found.twig', array('message' => 'Admin login credentials not found.'), 404);
+            return $response;
+        }
+        if ($app->request()->isPost() || $app->request()->isDelete()) {
+            try {
+
+                $results = $mgr->deleteAdminLogin($id);
+                $app->flash('info', "Admin login {$id} deleted from website {$website['name']}.");
+                $response->redirect("/website/{$website_id}");
                 return $response;
-            } else {
-                $app->getLog()->error("Error deleting admin {$id} for website " . $website_id . ". - " . $e->getMessage());
-                $response->status(500);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            } catch (Validate_Exception $e) {
+                $app->render('admin/delete.twig', array('website' => $website, 'errors' => $e->getErrors()));
+                return $response;
+            } catch (Exception $e) {
+                $app->render('error/error.twig', array('exception' => $e, 'message' => "Error deleting admin login {$id} for website {$website['name']}."), 500);
                 return $response;
             }
         }
+        $app->render('admin/delete.twig', array('website' => $website, 'results' => $results));
     }
 }

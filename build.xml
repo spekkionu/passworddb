@@ -19,8 +19,13 @@
 
   <target name="init" description="Create required directories and permissions">
     <mkdir dir="system/data/database" mode="0777"/>
-    <mkdir dir="system/data/logs" mode="0777"/>
+    <mkdir dir="system/data/cache" mode="0777"/>
     <mkdir dir="system/templates"/>
+  </target>
+
+  <target name="clear-cache" description="Clear Twig Cache">
+    <delete dir="system/data/cache"/>
+    <mkdir dir="system/data/cache" mode="0777"/>
   </target>
 
   <target name="phpunit" description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">

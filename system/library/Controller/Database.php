@@ -12,193 +12,114 @@ class Controller_Database
 {
 
     /**
-     * Returns list of admin logins
-     * @url /api/database/:website_id
-     * @method GET
-     */
-    public static function listAction($website_id)
-    {
-        $app = Slim::getInstance();
-        $response = $app->response();
-        $response->header('Content-Type', 'application/json');
-        try {
-            $mgr = new Model_Website();
-            $website = $mgr->websiteExists($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
-                return $response;
-            }
-            $mgr = new Model_Database();
-            $results = $mgr->getDBLogins($website_id);
-            $response->body(json_encode(array('success' => true, 'records' => $results)));
-            return $response;
-        } catch (Exception $e) {
-            $app->getLog()->error("Error listing databases for website " . $website_id . ". - " . $e->getMessage());
-            $response->status(500);
-            $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
-            return $response;
-        }
-    }
-
-    /**
-     * Returns details for an admin login
-     * @url /api/database/:website_id/:id
-     * @method GET
-     */
-    public static function detailsAction($website_id, $id)
-    {
-        $app = Slim::getInstance();
-        $response = $app->response();
-        $response->header('Content-Type', 'application/json');
-        try {
-            $mgr = new Model_Website();
-            $website = $mgr->websiteExists($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
-                return $response;
-            }
-            $mgr = new Model_Database();
-            $results = $mgr->getDBDetails($id, $website_id);
-            if (!$results) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Database login credentials not found")));
-                return $response;
-            }
-            return $response->body(json_encode(array('success' => true, 'record' => $results)));
-        } catch (Exception $e) {
-            $app->getLog()->error("Error showing database {$id} for website " . $website_id . ". - " . $e->getMessage());
-            $response->status(500);
-            $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
-            return $response;
-        }
-    }
-
-    /**
-     * Adds a new admin login
-     * @url /api/database/:website_id
-     * @method POST
+     * Adds a new database login
+     * @url /database/:website_id/add
+     * @method GET,POST
      */
     public static function addAction($website_id)
     {
         $app = Slim::getInstance();
         $response = $app->response();
-        $response->header('Content-Type', 'application/json');
-        try {
-            $mgr = new Model_Website();
-            $website = $mgr->websiteExists($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
-                return $response;
-            }
-            $mgr = new Model_Database();
-            $results = $mgr->addDB($website_id, $app->request()->post());
-            $app->getLog()->info("Database {$results['id']} added for website " . $website_id . ".");
-            $response->status(201);
-            $response->body(json_encode(array('success' => true, 'message' => 'Database Login has been added.', 'record' => $results)));
+        $mgr = new Model_Website();
+        $website = $mgr->getWebsite($website_id, false);
+        if (!$website) {
+            $app->render('error/not-found.twig', array('message' => 'The website you requested does not exist.'), 404);
             return $response;
-        } catch (Exception $e) {
-            if ($e instanceof Validate_Exception) {
-                $response->status(400);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+        }
+        $results = Model_Database::$default;
+        if ($app->request()->isPost()) {
+            try {
+                $results = array_merge($results, array_intersect_key($app->request()->post('database'), $results));
+                $mgr = new Model_Database();
+                $results = $mgr->addDB($website_id, $results);
+                $app->flash('success', "Database {$results['id']} added for website {$website['name']}.");
+                $response->redirect("/website/{$website['id']}");
                 return $response;
-            } else {
-                $app->getLog()->error("Error adding database for website " . $website_id . ". - " . $e->getMessage());
-                $response->status(500);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            } catch (Validate_Exception $e) {
+                $app->render('database/add.twig', array('website' => $website, 'results' => $results, 'errors' => $e->getErrors()));
+                return $response;
+            } catch (Exception $e) {
+                $app->render('error/error.twig', array('exception' => $e, 'message' => 'Error adding Database info.'), 500);
                 return $response;
             }
         }
+        $app->render('database/add.twig', array('website' => $website, 'results' => $results));
     }
 
     /**
-     * Updates an admin login
-     * @url /api/database/:website_id/:id
-     * @method PUT
+     * Updates a database login
+     * @url /database/:website_id/:id/edit
+     * @method GET,POST,PUT
      */
     public static function updateAction($website_id, $id)
     {
         $app = Slim::getInstance();
         $response = $app->response();
-        $response->header('Content-Type', 'application/json');
-        try {
-            $mgr = new Model_Website();
-            $website = $mgr->getWebsite($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
-                return $response;
-            }
-            $mgr = new Model_Database();
-            $results = $mgr->getDBDetails($id, $website_id);
-            if (!$results) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Database login credentials not found")));
-                return $response;
-            }
-            $results = array_merge($results, array_intersect_key($app->request()->post(), $results));
-            $results = $mgr->updateDB($id, $results, $website_id);
-            $app->getLog()->info("Database {$id} updated for website " . $website_id . ".");
-            $response->status(200);
-            $response->body(json_encode(array('success' => true, 'message' => 'Database login has been updated.', 'record' => $results)));
+        $mgr = new Model_Website();
+        $website = $mgr->getWebsite($website_id, false);
+        if (!$website) {
+            $app->render('error/not-found.twig', array('message' => 'The website you requested does not exist.'), 404);
             return $response;
-        } catch (Exception $e) {
-            if ($e instanceof Validate_Exception) {
-                $response->status(400);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+        }
+        $mgr = new Model_Database();
+        $results = $mgr->getDBDetails($id, $website_id);
+        if (!$results) {
+            $app->render('error/not-found.twig', array('message' => 'Database login credentials not found.'), 404);
+            return $response;
+        }
+        if ($app->request()->isPost() || $app->request()->isPut()) {
+            try {
+                $results = array_merge($results, array_intersect_key($app->request()->post('database'), $results));
+                $results = $mgr->updateDB($id, $results, $website_id);
+                $app->flash('success', "Database login {$id} has been updated for website {$website['name']}.");
+                $response->redirect("/website/{$website['id']}");
                 return $response;
-            } else {
-                $app->getLog()->error("Error updating database {$id} for website " . $website_id . ". - " . $e->getMessage());
-                $response->status(500);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            } catch (Validate_Exception $e) {
+                $app->render('database/edit.twig', array('website' => $website, 'results' => $results, 'errors' => $e->getErrors()));
+                return $response;
+            } catch (Exception $e) {
+                $app->render('error/error.twig', array('exception' => $e, 'message' => 'Error updating database info.'), 500);
                 return $response;
             }
         }
+        $app->render('database/edit.twig', array('website' => $website, 'results' => $results));
     }
 
     /**
-     * Deletes an admin login
-     * @url /api/database/:website_id/:id
-     * @method DELETE
+     * Deletes a database login
+     * @url /database/:website_id/:id/delete
+     * @method GET,POST,DELETE
      */
     public static function deleteAction($website_id, $id)
     {
         $app = Slim::getInstance();
         $response = $app->response();
-        $response->header('Content-Type', 'application/json');
-        try {
-            $mgr = new Model_Website();
-            $website = $mgr->getWebsite($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
-                return $response;
-            }
-            $mgr = new Model_Database();
-            $results = $mgr->getDBDetails($id, $website_id);
-            if (!$results) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Database login credentials not found")));
-                return $response;
-            }
-            $results = $mgr->deleteDB($id);
-            $app->getLog()->info("Database {$id} deleted from website " . $website_id . ".");
-            $response->status(204);
-            $response->body(json_encode(array('success' => true, 'message' => 'Database login has been deleted.')));
+        $mgr = new Model_Website();
+        $website = $mgr->getWebsite($website_id, false);
+        if (!$website) {
+            $app->render('error/not-found.twig', array('message' => 'The website you requested does not exist.'), 404);
             return $response;
-        } catch (Exception $e) {
-            if ($e instanceof Validate_Exception) {
-                $response->status(400);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+        }
+        $mgr = new Model_Database();
+        $results = $mgr->getDBDetails($id, $website_id);
+        if (!$results) {
+            $app->render('error/not-found.twig', array('message' => 'Database login credentials not found.'), 404);
+            return $response;
+        }
+        if ($app->request()->isPost() || $app->request()->isDelete()) {
+            try {
+                $results = $mgr->deleteDB($id);
+                $app->flash('info', "Database {$id} deleted from website {$website['name']}.");
+                $response->redirect("/website/{$website_id}");
                 return $response;
-            } else {
-                $app->getLog()->error("Error deleting database {$id} for website " . $website_id . ". - " . $e->getMessage());
-                $response->status(500);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            } catch (Validate_Exception $e) {
+                $app->render('database/delete.twig', array('website' => $website, 'errors' => $e->getErrors()));
+                return $response;
+            } catch (Exception $e) {
+                $app->render('error/error.twig', array('exception' => $e, 'message' => "Error deleting database {$id} for website {$website['name']}."), 500);
                 return $response;
             }
         }
+        $app->render('database/delete.twig', array('website' => $website, 'results' => $results));
     }
 }

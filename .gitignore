@@ -8,7 +8,8 @@
 !/system/data/schema.sql
 /build
 composer.phar
-
+.sass-cache
+/public/vendor
 
 # OS Files
 Thumbs.db

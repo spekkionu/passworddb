@@ -13,158 +13,159 @@ class Controller_Website
 
     /**
      * Returns list of Websites
-     * @url /api/website
+     * @url /:page
      * @method GET
      */
-    public static function listAction()
+    public static function listAction($page = 1)
     {
         $app = Slim::getInstance();
         $response = $app->response();
-        $response->header('Content-Type', 'application/json');
+        $request = $app->request();
+        $limit = 25;
+        $search = trim($request->params('s'));
         try {
             $mgr = new Model_Website();
-            $websites = $mgr->getWebsites();
-            $response->body(json_encode(array('success' => true, 'records' => $websites)));
+            $total = $mgr->countWebsites($search);
+            if ($total > 0) {
+                $websites = $mgr->getWebsiteList($search, $page, $limit);
+            } else {
+                $websites = array();
+            }
+            $pagination = new Pagination_Sliding(array(
+                'totalItems' => $total,
+                'page' => $page,
+                'itemsPerPage' => $limit
+              ));
+            $pagination = $pagination->getData();
+            $pagination['link'] = $app->urlFor('home') . "%d";
+            if (!empty($search)) {
+                $pagination['link'] .= "?s=" . str_replace("%", "%%", $search);
+            }
+            $app->render('website/list.twig', array('websites' => $websites, 'pagination' => $pagination, 'total' => $total, 'page' => $page, 'search' => $search));
             return $response;
         } catch (Exception $e) {
-            $app->getLog()->error("Error listing websites. - " . $e->getMessage());
-            $response->status(500);
-            $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            $app->render('error/error.twig', array('exception' => $e, 'message' => "There was an error listing websites."), 500);
             return $response;
         }
     }
 
     /**
      * Returns details for a website
-     * @url /api/website/:id
+     * @url /website/:id
      * @method GET
      */
     public static function detailsAction($id)
     {
         $app = Slim::getInstance();
         $response = $app->response();
-        $response->header('Content-Type', 'application/json');
         try {
             $mgr = new Model_Website();
             $website = $mgr->getWebsite($id);
             if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => 'Requested URI is not found.')));
+                $app->render('error/not-found.twig', array('message' => 'The website you requested does not exist.'), 404);
                 return $response;
             }
-            $response->body(json_encode(array('success' => true, 'record' => $website)));
+            $app->render('website/details.twig', array('website' => $website));
             return $response;
         } catch (Exception $e) {
-            $app->getLog()->error("Error showing website {$id}. - " . $e->getMessage());
-            $response->status(500);
-            $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            $app->render('error/error.twig', array('exception' => $e, 'message' => "Error showing website {$id}"), 500);
             return $response;
         }
     }
 
     /**
      * Adds a new website
-     * @url /api/website
-     * @method POST
+     * @url /website/add
+     * @method GET,POST
      */
     public static function addAction()
     {
         $app = Slim::getInstance();
         $response = $app->response();
-        $response->header('Content-Type', 'application/json');
-        try {
-            $mgr = new Model_Website();
-            $website = $mgr->addWebsite($app->request()->post());
-            $app->getLog()->info("Website {$website['id']} added.");
-            $response->status(201);
-            $response->body(json_encode(array('success' => true, 'message' => 'Website has been added.', 'record' => $website)));
-            return $response;
-        } catch (Exception $e) {
-            if ($e instanceof Validate_Exception) {
-                $response->status(400);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+        $website = Model_Website::$default;
+        if ($app->request()->isPost()) {
+            try {
+                $website = array_merge($website, array_intersect_key($app->request()->post('website'), $website));
+                $mgr = new Model_Website();
+                $website = $mgr->addWebsite($website);
+                $app->flash('success', "Website {$website['name']} added.");
+                $response->redirect("/website/{$website['id']}");
                 return $response;
-            } else {
-                $app->getLog()->error("Error adding website. - " . $e->getMessage());
-                $response->status(500);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            } catch (Validate_Exception $e) {
+                $app->render('website/add.twig', array('website' => $website, 'errors' => $e->getErrors()));
+                return $response;
+            } catch (Exception $e) {
+                $app->render('error/error.twig', array('exception'=>$e, 'message' => 'Error adding website.'), 500);
                 return $response;
             }
         }
+        $app->render('website/add.twig', array('website' => $website));
     }
 
     /**
      * Updates a website
-     * @url /api/website/:id
-     * @method PUT
+     * @url /api/website/:id/edit
+     * @method GET,POST,PUT
      */
     public static function updateAction($id)
     {
         $app = Slim::getInstance();
         $response = $app->response();
-        $response->header('Content-Type', 'application/json');
-        try {
-            $mgr = new Model_Website();
-            $website = $mgr->getWebsite($id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
-                return $response;
-            }
-            $website = array_merge($website, array_intersect_key($app->request()->post(), $website));
-            $website = $mgr->updateWebsite($id, $website);
-            $app->getLog()->info("Website {$id} updated.");
-            $response->status(200);
-            $response->body(json_encode(array('success' => true, 'message' => 'Website has been updated.', 'record' => $website)));
+        $mgr = new Model_Website();
+        $website = $mgr->getWebsite($id);
+        if (!$website) {
+            $app->render('error/not-found.twig', array('message' => 'The website you requested does not exist.'), 404);
             return $response;
-        } catch (Exception $e) {
-            if ($e instanceof Validate_Exception) {
-                $response->status(400);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+        }
+        if ($app->request()->isPost() || $app->request()->isPut()) {
+            try {
+                $website = array_merge($website, array_intersect_key($app->request()->post('website'), $website));
+                $website = $mgr->updateWebsite($id, $website);
+                $app->flash('success', "Website {$website['name']} updated.");
+                $response->redirect("/website/{$website['id']}");
                 return $response;
-            } else {
-                $app->getLog()->error("Error updating website {$id}. - " . $e->getMessage());
-                $response->status(500);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            } catch (Validate_Exception $e) {
+                $app->render('website/edit.twig', array('website' => $website, 'errors' => $e->getErrors()));
+                return $response;
+            } catch (Exception $e) {
+                $app->flash('error', 'Error updating website.');
+                $response->redirect("/website/{$id}/edit");
                 return $response;
             }
         }
+        $app->render('website/edit.twig', array('website' => $website));
     }
 
     /**
      * Deletes a website
      * @url /api/website/:id
-     * @method DELETE
+     * @method GET,POST,DELETE
      */
     public static function deleteAction($id)
     {
         $app = Slim::getInstance();
         $response = $app->response();
-        $response->header('Content-Type', 'application/json');
-        try {
-            $mgr = new Model_Website();
-            $website = $mgr->getWebsite($id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
-                return $response;
-            }
-            $website = $mgr->deleteWebsite($id);
-            $app->getLog()->info("Website {$id} deleted.");
-            $response->status(204);
-            $response->body(json_encode(array('success' => true, 'message' => 'Website has been deleted.')));
+        $mgr = new Model_Website();
+        $website = $mgr->getWebsite($id);
+        if (!$website) {
+            $app->render('error/not-found.twig', array('message' => 'The website you requested does not exist.'), 404);
             return $response;
-        } catch (Exception $e) {
-            if ($e instanceof Validate_Exception) {
-                $response->status(400);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage(), 'errors' => $e->getErrors()->getErrors())));
+        }
+        if ($app->request()->isPost() || $app->request()->isDelete()) {
+            try {
+                $website = $mgr->deleteWebsite($id);
+                $app->flash('info', "Website {$website['name']} deleted.");
+                $response->redirect("/");
                 return $response;
-            } else {
-                $app->getLog()->error("Error deleting website {$id}. - " . $e->getMessage());
-                $response->status(500);
-                $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            } catch (Validate_Exception $e) {
+                $app->render('website/delete.twig', array('website' => $website, 'errors' => $e->getErrors()));
+                return $response;
+            } catch (Exception $e) {
+                $app->flash('error', 'Error deleting website.');
+                $response->redirect("/website/{$id}/delete");
                 return $response;
             }
         }
+        $app->render('website/delete.twig', array('website' => $website));
     }
 }

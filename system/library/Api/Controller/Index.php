@@ -8,7 +8,7 @@
  * @package Controller
  * @subpackage API
  */
-class Controller_Index
+class Api_Controller_Index
 {
 
     public static function listAction()

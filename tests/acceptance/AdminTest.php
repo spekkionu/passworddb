@@ -23,6 +23,12 @@ class AdminTest extends \Test_DatabaseTest
     protected $client;
 
     /**
+     * Mink Session
+     * @var \Behat\Mink\Session $session
+     */
+    protected $session;
+
+    /**
      * Site config
      * @var array $config
      */
@@ -39,10 +45,15 @@ class AdminTest extends \Test_DatabaseTest
         // Register the connection
         \Model_Abstract::setConnection($this->dbh);
         $url = $config['test']['hostname'] . $config['test']['base_url'];
-        $this->client = new Client($url);
+        $this->client = new \Guzzle\Http\Client($url);
         $this->client->getEventDispatcher()->addListener('request.before_send', function(Event $event) {
               $event['request']->addHeader('X-SERVER-MODE', 'test')->setAuth('admin', 'password');
           });
+        $client = new \Behat\Mink\Driver\Goutte\Client();
+        $client->setClient($this->client);
+        $driver = new \Behat\Mink\Driver\GoutteDriver($client);
+        $this->session = new \Behat\Mink\Session($driver);
+        $this->session->start();
         $this->config = $config;
     }
 
@@ -53,6 +64,7 @@ class AdminTest extends \Test_DatabaseTest
     protected function tearDown()
     {
         \Model_Abstract::close();
+        $this->session->restart();
         parent::tearDown();
     }
 
@@ -62,13 +74,11 @@ class AdminTest extends \Test_DatabaseTest
     public function testListAction()
     {
         $website_id = 1;
-        $request = $this->client->get("api/admin/{$website_id}");
-        $response = $request->send();
-        $this->assertEquals('application/json', $response->getContentType());
-        $this->assertEquals(200, $response->getStatusCode());
-        $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertCount(2, $body['records']);
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'] . "website/{$website_id}";
+        $this->session->visit($url);
+        $page = $this->session->getPage();
+        $el = $page->findAll('css', '#website-admin > li');
+        $this->assertCount(2, $el);
     }
 
     /**
@@ -78,13 +88,12 @@ class AdminTest extends \Test_DatabaseTest
     {
         $id = 1;
         $website_id = 1;
-        $request = $this->client->get("api/admin/{$website_id}/{$id}");
-        $response = $request->send();
-        $this->assertEquals('application/json', $response->getContentType());
-        $this->assertEquals(200, $response->getStatusCode());
-        $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertEquals($id, $body['record']['id']);
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+        $url .= "admin/{$website_id}/{$id}/edit";
+        $this->session->visit($url);
+        $page = $this->session->getPage();
+        $this->assertEquals('admin', $page->findById('form-admin-username')->getValue());
+        $this->assertEquals('password', $page->findById('form-admin-password')->getValue());
     }
 
     /**
@@ -98,17 +107,17 @@ class AdminTest extends \Test_DatabaseTest
           'password' => 'password',
           'url' => 'http://url.com'
         );
-        $request = $this->client->post("api/admin/{$website_id}")->addPostFields($result);
-        $response = $request->send();
-        $this->assertEquals('application/json', $response->getContentType());
-        $this->assertEquals(201, $response->getStatusCode());
-        $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertEquals($result, array(
-          'username' => $body['record']['username'],
-          'password' => $body['record']['password'],
-          'url' => $body['record']['url']
-        ));
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+        $url .= "admin/{$website_id}/add";
+        $this->session->visit($url);
+        $page = $this->session->getPage();
+        $page->findById('form-admin-username')->setValue($result['username']);
+        $page->findById('form-admin-password')->setValue($result['password']);
+        $page->findById('form-admin-url')->setValue($result['url']);
+        $page->find('css', '.form-actions > .btn-primary')->press();
+        $el = $page->find('css', '.flash-messages .alert');
+        $this->assertEquals('alert alert-success', $el->getAttribute('class'));
+        $this->assertContains('Admin login 3 added for website First Website', $el->getText());
     }
 
     /**
@@ -123,18 +132,17 @@ class AdminTest extends \Test_DatabaseTest
           'password' => 'password',
           'url' => 'http://url.com'
         );
-        $request = $this->client->post("api/admin/{$website_id}/{$id}")->addPostFields($result);
-        $request->addHeader('X-HTTP-Method-Override', 'PUT');
-        $response = $request->send();
-        $this->assertEquals('application/json', $response->getContentType());
-        $this->assertEquals(200, $response->getStatusCode());
-        $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertEquals($result, array(
-          'username' => $body['record']['username'],
-          'password' => $body['record']['password'],
-          'url' => $body['record']['url']
-        ));
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+        $url .= "admin/{$website_id}/{$id}/edit";
+        $this->session->visit($url);
+        $page = $this->session->getPage();
+        $page->findById('form-admin-username')->setValue($result['username']);
+        $page->findById('form-admin-username')->setValue($result['password']);
+        $page->findById('form-admin-url')->setValue($result['url']);
+        $page->find('css', '.form-actions > .btn-primary')->press();
+        $el = $page->find('css', '.flash-messages .alert');
+        $this->assertEquals('alert alert-success', $el->getAttribute('class'));
+        $this->assertContains('Admin login 1 has been updated for website First Website.', $el->getText());
     }
 
     /**
@@ -144,11 +152,13 @@ class AdminTest extends \Test_DatabaseTest
     {
         $id = 1;
         $website_id = 1;
-        $request = $this->client->post("api/admin/{$website_id}/{$id}");
-        $request->addHeader('X-HTTP-Method-Override', 'DELETE');
-        $response = $request->send();
-        $this->assertEquals(204, $response->getStatusCode());
+        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+        $url .= "admin/{$website_id}/{$id}/delete";
+        $this->session->visit($url);
+        $page = $this->session->getPage();
+        $page->find('css', '.form-actions > .btn-danger')->press();
+        $el = $page->find('css', '.flash-messages .alert');
+        $this->assertEquals('alert alert-info', $el->getAttribute('class'));
+        $this->assertContains('Admin login 1 deleted from website First Website.', $el->getText());
     }
-
 }
-

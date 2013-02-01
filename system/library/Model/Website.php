@@ -11,6 +11,13 @@
 class Model_Website extends Model_Abstract
 {
 
+    public static $default = array(
+      'name' => null,
+      'domain' => null,
+      'url' => null,
+      'notes' => null,
+    );
+
     /**
      * Returns array of websites
      * @return array
@@ -39,6 +46,53 @@ class Model_Website extends Model_Abstract
         }
         return $websites;
     }
+
+    /**
+     * Returns total number of websites
+     *
+     * @param string $search Search filter
+     * @return int
+     */
+    public function countWebsites($search = null)
+    {
+        if (empty($search)) {
+            $sth = self::getConnection()->query("SELECT COUNT(*) FROM `websites`");
+        } else {
+            $sth = self::getConnection()->prepare("SELECT COUNT(*) FROM `websites` WHERE (`name` LIKE :search) OR (`domain` LIKE :search) OR (`url` LIKE :search)");
+            $searchstring = "%".str_replace("%", "\\%", $search)."%";
+            $sth->bindValue(":search", $searchstring);
+            $sth->execute();
+        }
+        $total = $sth->fetchColumn();
+        $sth->closeCursor();
+        return $total;
+    }
+
+    /**
+     * Returns array of websites
+     *
+     * @param string $search Search filter
+     * @param int $page The page of websites to return
+     * @param int $limit The total number of websites to return
+     * @return array
+     */
+    public function getWebsiteList($search = null, $page = 1, $limit = 25)
+    {
+        $offset = ($page - 1) * $limit;
+        if (empty($search)) {
+            $sth = self::getConnection()->prepare("SELECT * FROM `websites` ORDER BY `name` ASC LIMIT :offset, :limit");
+        } else {
+            $sth = self::getConnection()->prepare("SELECT * FROM `websites` WHERE (`name` LIKE :search) OR (`domain` LIKE :search) OR (`url` LIKE :search) ORDER BY `name` ASC LIMIT :offset, :limit");
+            $searchstring = "%".str_replace("%", "\\%", $search)."%";
+            $sth->bindValue(":search", $searchstring);
+        }
+        $sth->bindValue(":offset", $offset, PDO::PARAM_INT);
+        $sth->bindValue(":limit", $limit, PDO::PARAM_INT);
+        $sth->execute();
+        return $sth->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
 
     /**
      * Returns data for a single website

@@ -1,0 +1,125 @@
+{% extends "layouts/layout.twig" %}
+
+{% block content %}
+<div class="page-header">
+  <h1>{{website.name}}</h1>
+</div>
+<div class="row-fluid">
+    <form method="POST" action="{{urlFor('database_edit', {'website_id': website.id,'id':results.id})}}" class="form-horizontal">
+      <fieldset>
+        <legend>Update Database Credentials</legend>
+        <div class="control-group">
+          <label for="form-database-domain" class="control-label">Website</label>
+          <div class="controls">
+            <span class="span2 uneditable-input" id="form-database-name">{{website.name}}{% if website.domain %} ({{website.domain}}){% endif %}</span>
+            <p class="help-block">The website the Database credentials are for.</p>
+          </div>
+        </div>
+        <div class="control-group {% if errors.hasErrors('type') %}error{% endif %}">
+          <label for="form-database-type" class="control-label required">Database Type</label>
+          <div class="controls">
+            <select class="span1" id="form-database-type" name="database[type]">
+              <option value="mysql" {% if results.type == 'mysql' %}selected="selected"{% endif %}>MySQL</option>
+              <option value="sqlite" {% if results.type == 'sqlite' %}selected="selected"{% endif %}>SQLite</option>
+              <option value="mssql" {% if results.type == 'mssql' %}selected="selected"{% endif %}>MSSQL</option>
+              <option value="oracle" {% if results.type == 'oracle' %}selected="selected"{% endif %}>Oracle DB</option>
+              <option value="pgsql" {% if results.type == 'pgsql' %}selected="selected"{% endif %}>PostgreSQL</option>
+              <option value="access" {% if results.type == 'access' %}selected="selected"{% endif %}>Microsift Access</option>
+              <option value="other" {% if results.type == 'other' %}selected="selected"{% endif %}>Other</option>
+            </select>
+            {% if errors.hasErrors('type') %}
+              <div class="help-inline control-error">
+                <i class="icon-exclamation-sign"></i>
+                {{errors.getErrors('type')|join(' ')}}
+              </div>
+            {% endif %}
+            <p class="help-block">The type of database.</p>
+          </div>
+        </div>
+        <div class="control-group {% if errors.hasErrors('hostname') %}error{% endif %}">
+          <label for="form-database-hostname" class="control-label">Hostname</label>
+          <div class="controls">
+            <input type="text" class="span3" id="form-database-hostname" name="database[hostname]" value="{{results.hostname}}" maxlength="100" placeholder="localhost" />
+            {% if errors.hasErrors('hostname') %}
+              <div class="help-inline control-error">
+                <i class="icon-exclamation-sign"></i>
+                {{errors.getErrors('hostname')|join(' ')}}
+              </div>
+            {% endif %}
+            <p class="help-block">The hostname of the database server.</p>
+          </div>
+        </div>
+        <div class="control-group {% if errors.hasErrors('username') %}error{% endif %}">
+          <label for="form-database-username" class="control-label">Username</label>
+          <div class="controls">
+            <input type="text" class="span2" id="form-database-username" name="database[username]" value="{{results.username}}" maxlength="100" />
+            {% if errors.hasErrors('username') %}
+              <div class="help-inline control-error">
+                <i class="icon-exclamation-sign"></i>
+                {{errors.getErrors('username')|join(' ')}}
+              </div>
+            {% endif %}
+            <p class="help-block">The database username.</p>
+          </div>
+        </div>
+        <div class="control-group {% if errors.hasErrors('password') %}error{% endif %}">
+          <label for="form-database-password" class="control-label">Password</label>
+          <div class="controls">
+            <input type="text" class="span2" id="form-database-password" name="database[password]" value="{{results.password}}" maxlength="100" />
+            {% if errors.hasErrors('password') %}
+              <div class="help-inline control-error">
+                <i class="icon-exclamation-sign"></i>
+                {{errors.getErrors('password')|join(' ')}}
+              </div>
+            {% endif %}
+            <p class="help-block">The database password.</p>
+          </div>
+        </div>
+        <div class="control-group {% if errors.hasErrors('database') %}error{% endif %}">
+          <label for="form-database-database" class="control-label">Database</label>
+          <div class="controls">
+            <input type="text" class="span3" id="form-database-database" name="database[database]" value="{{results.database}}" maxlength="100" />
+            {% if errors.hasErrors('database') %}
+              <div class="help-inline control-error">
+                <i class="icon-exclamation-sign"></i>
+                {{errors.getErrors('database')|join(' ')}}
+              </div>
+            {% endif %}
+            <p class="help-block">The database name.</p>
+          </div>
+        </div>
+        <div class="control-group {% if errors.hasErrors('url') %}error{% endif %}">
+          <label for="form-database-url" class="control-label">Admin URL</label>
+          <div class="controls">
+            <input type="text" class="span3" id="form-database-url" name="database[url]" value="{{results.url}}" maxlength="255" />
+            {% if errors.hasErrors('url') %}
+              <div class="help-inline control-error">
+                <i class="icon-exclamation-sign"></i>
+                {{errors.getErrors('url')|join(' ')}}
+              </div>
+            {% endif %}
+            <p class="help-block">URL of the phpMyAdmin or other basabase management.</p>
+          </div>
+        </div>
+        <div class="control-group {% if errors.hasErrors('notes') %}error{% endif %}">
+          <label for="form-database-notes" class="control-label">Notes</label>
+          <div class="controls">
+            <textarea class="span4" rows="5" id="form-database-notes" name="database[notes]">{{results.notes}}</textarea>
+            {% if errors.hasErrors('notes') %}
+              <div class="help-inline control-error">
+                <i class="icon-exclamation-sign"></i>
+                {{errors.getErrors('notes')|join(' ')}}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="form-actions">
+          <input type="submit" class="btn btn-primary" value="Save" />
+          <a class="btn" href="{{urlFor('website', {"id":website.id})}}">Cancel</a>
+        </div>
+      </fieldset>
+      <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,74 @@
+{% if pagination.totalItems > 0 %}
+
+  <div class="pagination">
+    <div class="summary">
+      Showing Results {{pagination.firstItem}} to {{pagination.lastItem}} of {{pagination.totalItems}}
+    </div>
+    {% if pagination.totalPages > 1 %}
+    <ul class="links">
+
+      {# First page link #}
+        {% if pagination.first != pagination.page %}
+          <li class="first">
+            <a href="{{pagination.link|format(pagination.first)}}">&#171; First</a>
+          </li>
+        {% else %}
+          <li class="first disabled">
+          <a>&#171; First</a>
+        </li>
+        {% endif %}
+      </li>
+
+      {# Previous page link #}
+      {% if pagination.previous != pagination.page %}
+        <li class="prev">
+          <a href="{{pagination.link|format(pagination.previous)}}">&larr; Previous</a>
+        </li>
+      {% else %}
+        <li class="prev disabled">
+          <a>&larr; Previous</a>
+        </li>
+      {% endif %}
+
+      {# Numbered page links #}
+      {% for page in pagination.range %}
+        {% if page != pagination.page %}
+          <li>
+            <a href="{{pagination.link|format(page)}}">
+              {{page}}
+            </a>
+          </li>
+        {% else %}
+           <li class="active">
+            <a>{{page}}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      {# Next page link #}
+      {% if pagination.next != pagination.page %}
+        <li class="next">
+          <a href="{{pagination.link|format(pagination.next)}}">Next &rarr;</a>
+        </li>
+      {% else %}
+        <li class="next disabled">
+          <a>Next &rarr;</a>
+        </li>
+      {% endif %}
+
+
+      {# Last page link #}
+      {% if pagination.last != pagination.page %}
+        <li class="last">
+          <a href="{{pagination.link|format(pagination.last)}}">Last &#187;</a>
+        </li>
+      {% else %}
+        <li class="last disabled">
+          <a>Last &#187;</a>
+        </li>
+      {% endif %}
+
+    </ul>
+    {% endif %}
+  </div>
+{% endif %}

@@ -4,13 +4,18 @@ RewriteEngine on
 # # if your app is in a subfolder:
 # RewriteBase /
 #
-# # test string is a valid files
-RewriteCond %{SCRIPT_FILENAME} !-f
-# # test string is a valid directory
-RewriteCond %{SCRIPT_FILENAME} !-d
-#
+# Let existing files / directories through
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [NC,L]
+
+# Rewrite API Routes
 RewriteRule ^api$ api.php [NC,L]
 RewriteRule ^api/(.*)$ api.php [NC,L]
+
+# Send the rest to the bootstrap
+RewriteRule ^.*$ index.php [NC,L]
 
 # # with QSA flag (query string append),
 # # forces the rewrite engine to append a query string part of the

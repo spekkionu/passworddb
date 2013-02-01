@@ -1,0 +1,110 @@
+{% extends "layouts/layout.twig" %}
+
+{% block content %}
+<div class="page-header">
+  <h1>{{website.name}}</h1>
+</div>
+<div class="row-fluid">
+    <form method="POST" action="{{urlFor('ftp_edit', {'website_id': website.id, 'id': results.id})}}" class="form-horizontal">
+      <fieldset>
+        <legend>Update FTP Credentials</legend>
+        <div class="control-group">
+          <label for="form-ftp-domain" class="control-label">Website</label>
+          <div class="controls">
+            <span class="span2 uneditable-input" id="form-ftp-name">{{website.name}}{% if website.domain %} ({{website.domain}}){% endif %}</span>
+            <p class="help-block">The website the FTP credentials are for.</p>
+          </div>
+        </div>
+        <div class="control-group {% if errors.hasErrors('type') %}error{% endif %}">
+          <label for="form-ftp-type" class="control-label required">FTP Type</label>
+          <div class="controls">
+            <select class="span1" id="form-ftp-type" name="ftp[type]">
+              <option value="ftp" {% if results.type == 'ftp' %}selected="selected"{% endif %}>FTP</option>
+              <option value="sftp" {% if results.type == 'sftp' %}selected="selected"{% endif %}>SFTP</option>
+              <option value="ftps" {% if results.type == 'ftps' %}selected="selected"{% endif %}>FTPS</option>
+              <option value="webdav" {% if results.type == 'webdav' %}selected="selected"{% endif %}>WEBDAV</option>
+              <option value="other" {% if results.type == 'other' %}selected="selected"{% endif %}>Other</option>
+            </select>
+            {% if errors.hasErrors('type') %}
+              <div class="help-inline control-error">
+                <i class="icon-exclamation-sign"></i>
+                {{errors.getErrors('type')|join(' ')}}
+              </div>
+            {% endif %}
+            <p class="help-block">The type of connection.</p>
+          </div>
+        </div>
+        <div class="control-group {% if errors.hasErrors('hostname') %}error{% endif %}">
+          <label for="form-ftp-hostname" class="control-label">Hostname</label>
+          <div class="controls">
+            <input type="text" class="span3" id="form-ftp-hostname" name="ftp[hostname]" value="{{results.hostname}}" maxlength="100" placeholder="example.com" />
+            {% if errors.hasErrors('hostname') %}
+              <div class="help-inline control-error">
+                <i class="icon-exclamation-sign"></i>
+                {{errors.getErrors('hostname')|join(' ')}}
+              </div>
+            {% endif %}
+            <p class="help-block">The hostname of the FTP server.</p>
+          </div>
+        </div>
+        <div class="control-group {% if errors.hasErrors('username') %}error{% endif %}">
+          <label for="form-ftp-username" class="control-label">Username</label>
+          <div class="controls">
+            <input type="text" class="span2" id="form-ftp-username" name="ftp[username]" value="{{results.username}}" maxlength="100" />
+            {% if errors.hasErrors('username') %}
+              <div class="help-inline control-error">
+                <i class="icon-exclamation-sign"></i>
+                {{errors.getErrors('username')|join(' ')}}
+              </div>
+            {% endif %}
+            <p class="help-block">The FTP username.</p>
+          </div>
+        </div>
+        <div class="control-group {% if errors.hasErrors('password') %}error{% endif %}">
+          <label for="form-ftp-password" class="control-label">Password</label>
+          <div class="controls">
+            <input type="text" class="span2" id="form-ftp-password" name="ftp[password]" value="{{results.password}}" maxlength="100" />
+            {% if errors.hasErrors('password') %}
+              <div class="help-inline control-error">
+                <i class="icon-exclamation-sign"></i>
+                {{errors.getErrors('password')|join(' ')}}
+              </div>
+            {% endif %}
+            <p class="help-block">The FTP password.</p>
+          </div>
+        </div>
+        <div class="control-group {% if errors.hasErrors('path') %}error{% endif %}">
+          <label for="form-ftp-path" class="control-label">Server Path</label>
+          <div class="controls">
+            <input type="text" class="span3" id="form-ftp-path" name="ftp[path]" value="{{results.path}}" maxlength="255" placeholder="/public_html" />
+            {% if errors.hasErrors('path') %}
+              <div class="help-inline control-error">
+                <i class="icon-exclamation-sign"></i>
+                {{errors.getErrors('path')|join(' ')}}
+              </div>
+            {% endif %}
+            <p class="help-block">The FTP password.</p>
+          </div>
+        </div>
+        <div class="control-group {% if errors.hasErrors('notes') %}error{% endif %}">
+          <label for="form-ftp-notes" class="control-label">Notes</label>
+          <div class="controls">
+            <textarea class="span4" rows="5" id="form-ftp-notes" name="ftp[notes]">{{results.notes}}</textarea>
+            {% if errors.hasErrors('notes') %}
+              <div class="help-inline control-error">
+                <i class="icon-exclamation-sign"></i>
+                {{errors.getErrors('notes')|join(' ')}}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="form-actions">
+          <input type="submit" class="btn btn-primary" value="Save" />
+          <a class="btn" href="{{urlFor('website', {"id":website.id})}}">Cancel</a>
+        </div>
+      </fieldset>
+      <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+    </form>
+</div>
+
+{% endblock %}

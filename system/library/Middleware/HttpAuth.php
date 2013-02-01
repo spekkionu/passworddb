@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HTTP Authentication
  *
@@ -7,12 +8,20 @@
  * @package Auth
  * @subpackage Middleware
  */
-class Middleware_HttpApplicationAuth extends Slim_Middleware
+class Middleware_HttpAuth extends Slim_Middleware
 {
+
     /**
+     * HTTP Auth Realm
      * @var string
      */
     protected $realm;
+
+    /**
+     * Login Credentials
+     * @var array
+     */
+    protected $credentials = array();
 
     /**
      * Constructor
@@ -21,9 +30,10 @@ class Middleware_HttpApplicationAuth extends Slim_Middleware
      * @param   string  $password   The HTTP Authentication password
      * @param   string  $realm      The HTTP Authentication realm
      */
-    public function __construct($realm = 'Protected Area')
+    public function __construct($realm = 'Protected Area', array $credentials)
     {
         $this->realm = $realm;
+        $this->credentials = $credentials;
     }
 
     /**
@@ -39,13 +49,11 @@ class Middleware_HttpApplicationAuth extends Slim_Middleware
         $res = $this->app->response();
         $authUser = $req->headers('PHP_AUTH_USER');
         $authPass = $req->headers('PHP_AUTH_PW');
-        if ($authUser && $authPass) {
+        if (!empty($authUser) && !empty($authPass)) {
             // Check login
-            $mgr = new Model_Login();
-            try {
-                $mgr->checkLogin($authUser, $authPass);
+            if (array_key_exists($authUser, $this->credentials) && $this->credentials[$authUser] == $authPass) {
                 $this->next->call();
-            } catch (Exception $e) {
+            } else {
                 $res->status(401);
                 $res->header('WWW-Authenticate', sprintf('Basic realm="%s"', $this->realm));
             }

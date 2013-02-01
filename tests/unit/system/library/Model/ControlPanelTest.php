@@ -40,7 +40,7 @@ class Model_ControlPanelTest extends Test_DatabaseTest
         $mgr = new Model_ControlPanel();
         $website_id = 1;
         $results = $mgr->getControlPanelLogins($website_id);
-        $this->assertCount(1, $results, "Make sure 1 control panel is returned");
+        $this->assertCount(2, $results, "Make sure 2 control panel is returned");
     }
 
     /**

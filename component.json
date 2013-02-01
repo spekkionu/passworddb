@@ -1,0 +1,9 @@
+{
+  "name": "passworddb",
+  "dependencies": {
+    "jquery": "1.8.*",
+    "bootstrap-sass": "v2.2.2",
+    "font-awesome": "v3.0.2",
+    "html5shiv-dist": "v3.6.1"
+  }
+}

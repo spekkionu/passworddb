@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Acceptance;
+namespace Test\Acceptance\Api;
 
 use Guzzle\Http\Client;
 use Symfony\Component\EventDispatcher\Event;

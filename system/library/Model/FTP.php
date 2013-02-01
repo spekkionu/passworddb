@@ -12,6 +12,19 @@ class Model_FTP extends Model_Abstract
 {
 
     /**
+     * Default values
+     * @var array
+     */
+    public static $default = array(
+      'username' => null,
+      'password' => null,
+      'path' => null,
+      'hostname' => null,
+      'type' => 'ftp',
+      'notes' => null,
+    );
+
+    /**
      * Returns FTP Logins for a website
      *
      * @param int $website_id

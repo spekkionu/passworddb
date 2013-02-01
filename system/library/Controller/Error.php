@@ -15,9 +15,15 @@ class Controller_Error
     {
         $app = Slim::getInstance();
         $response = $app->response();
-        $response->status(404);
-        $response->header('Content-Type', 'application/json');
-        $response->body(json_encode(array('success' => false, 'message' => 'Requested URI is not found.')));
+        $app->render('error/not-found.twig', array(), 404);
+        return $response;
+    }
+
+    public static function errorAction()
+    {
+        $app = Slim::getInstance();
+        $response = $app->response();
+        $app->render('error/error.twig', array(), 500);
         return $response;
     }
 }

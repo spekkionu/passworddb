@@ -12,6 +12,20 @@ class Model_Database extends Model_Abstract
 {
 
     /**
+     * Default values
+     * @var array
+     */
+    public static $default = array(
+      'hostname' => null,
+      'username' => null,
+      'password' => null,
+      'database' => null,
+      'url' => null,
+      'type' => 'mysql',
+      'notes' => null,
+    );
+
+    /**
      * Returns Database Logins for a website
      *
      * @param int $website_id

@@ -18,12 +18,15 @@
   "require": {
     "php": ">=5.2.4",
     "slim/slim": "1.*",
+    "twig/twig": "1.*",
     "phly/zf1-autoloaders": "1.0.0"
   },
   "require-dev": {
     "php": ">=5.3.3",
-    "guzzle/guzzle": "3.1.*",
-    "symfony/event-dispatcher": "2.1.*"
+    "guzzle/guzzle": "3.0.*",
+    "symfony/event-dispatcher": "2.1.*",
+    "behat/mink": "1.4@stable",
+    "behat/mink-goutte-driver": "1.*"
   },
   "suggest": {
     "phpunit/phpunit": "3.7.*"
@@ -55,6 +58,9 @@
       "Slim_": "system/library/vendor/slim/slim/",
       "Model_": "system/library/",
       "Controller_": "system/library/",
+      "View_": "system/library/",
+      "Pagination_": "system/library/",
+      "Api_": "system/library/",
       "Validate_": "system/library/",
       "Error_": "system/library/",
       "Middleware_": "system/library/",
