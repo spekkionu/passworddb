@@ -19,7 +19,8 @@ $config['logins'] = array(
 
 // Settings for testing
 $config['test']['hostname'] = 'http://127.0.0.1:8000';
-$config['test']['base_url'] = '/api.php/';
+$config['test']['base_url'] = '/index.php/';
+$config['test']['api_url'] = '/api.php/';
 
 // Include local config with overrides
 if (file_exists(dirname(__FILE__) . '/config.local.php')) {

@@ -38,7 +38,7 @@ class FTPTest extends \Test_DatabaseTest
         parent::setUp();
         // Register the connection
         \Model_Abstract::setConnection($this->dbh);
-        $url = $config['test']['hostname'] . $config['test']['base_url'];
+        $url = $config['test']['hostname'] . $config['test']['api_url'];
         $this->client = new Client($url);
         $this->client->getEventDispatcher()->addListener('request.before_send', function(Event $event) {
               $event['request']->addHeader('X-SERVER-MODE', 'test')->setAuth('admin', 'password');

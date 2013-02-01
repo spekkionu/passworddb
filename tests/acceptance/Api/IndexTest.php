@@ -37,7 +37,7 @@ class IndexTest extends \Test_DatabaseTest
         parent::setUp();
         // Register the connection
         \Model_Abstract::setConnection($this->dbh);
-        $url = $config['test']['hostname'] . $config['test']['base_url'];
+        $url = $config['test']['hostname'] . $config['test']['api_url'];
         $this->client = new \Guzzle\Http\Client($url);
         $this->client->getEventDispatcher()->addListener('request.before_send', function(Event $event) {
               $event['request']->addHeader('X-SERVER-MODE', 'test')->setAuth('admin', 'password');
@@ -61,7 +61,7 @@ class IndexTest extends \Test_DatabaseTest
      */
     public function testAuth()
     {
-        $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+        $url = $this->config['test']['hostname'] . $this->config['test']['api_url'];
         $client = new \Guzzle\Http\Client($url);
         $request = $client->get('api/');
         $request->addHeader('X-SERVER-MODE', 'test');
@@ -77,7 +77,7 @@ class IndexTest extends \Test_DatabaseTest
     public function testAuthMissing()
     {
         try{
-            $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+            $url = $this->config['test']['hostname'] . $this->config['test']['api_url'];
             $client = new \Guzzle\Http\Client($url);
             $request = $client->get('api/');
             $request->addHeader('X-SERVER-MODE', 'test');
@@ -98,7 +98,7 @@ class IndexTest extends \Test_DatabaseTest
     public function testAuthFail()
     {
         try{
-            $url = $this->config['test']['hostname'] . $this->config['test']['base_url'];
+            $url = $this->config['test']['hostname'] . $this->config['test']['api_url'];
             $client = new \Guzzle\Http\Client($url);
             $request = $client->get('api/');
             $request->addHeader('X-SERVER-MODE', 'test');
