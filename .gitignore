@@ -8,6 +8,7 @@
 !/system/data/schema.sql
 /build
 composer.phar
+phpinfo.php
 .sass-cache
 /public/vendor
 

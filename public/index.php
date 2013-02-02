@@ -10,7 +10,7 @@ $twigView = new View_Twig();
 
 View_Twig::$twigOptions = array(
   'debug' => false,
-  'cache' => SYSTEM . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'cache',
+  'cache' => (SERVER_MODE != 'test') ? SYSTEM . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'cache' : null,
   'charset' => 'utf-8',
   'auto_reload' => true,
   'strict_variables' => false,
