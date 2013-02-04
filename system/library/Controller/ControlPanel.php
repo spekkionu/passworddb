@@ -33,7 +33,7 @@ class Controller_ControlPanel
                 $mgr = new Model_ControlPanel();
                 $results = $mgr->addControlPanelLogin($website_id, $results);
                 $app->flash('success', "Control panel {$results['id']} added for website {$website['name']}.");
-                $response->redirect("/website/{$website['id']}");
+                $response->redirect($app->config('base_url')."website/{$website['id']}");
                 return $response;
             } catch (Validate_Exception $e) {
                 $app->render('controlpanel/add.twig', array('website' => $website, 'results' => $results, 'errors' => $e->getErrors()));
@@ -72,7 +72,7 @@ class Controller_ControlPanel
                 $results = array_merge($results, array_intersect_key($app->request()->post('controlpanel'), $results));
                 $results = $mgr->updateControlPanelLogin($id, $results, $website_id);
                 $app->flash('success', "Control panel credentials {$id} have been updated for website {$website['name']}.");
-                $response->redirect("/website/{$website['id']}");
+                $response->redirect($app->config('base_url')."website/{$website['id']}");
                 return $response;
             } catch (Validate_Exception $e) {
                 $app->render('controlpanel/edit.twig', array('website' => $website, 'results' => $results, 'errors' => $e->getErrors()));
@@ -110,7 +110,7 @@ class Controller_ControlPanel
             try {
                 $results = $mgr->deleteControlPanelLogin($id);
                 $app->flash('info', "Control panel {$id} deleted from website {$website['name']}.");
-                $response->redirect("/website/{$website_id}");
+                $response->redirect($app->config('base_url')."website/{$website_id}");
                 return $response;
             } catch (Validate_Exception $e) {
                 $app->render('controlpanel/delete.twig', array('website' => $website, 'errors' => $e->getErrors()));

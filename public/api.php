@@ -15,7 +15,8 @@ $app = new Slim(array(
     'cookies.path' => $config['base_url'],
     'cookies.domain' => isset($config['domain']) ? $config['domain'] : null,
     'cookies.secure' => (bool) $config['ssl'],
-    'cookies.httponly' => true
+    'cookies.httponly' => true,
+    'base_url' => $config['api_url']
   ));
 
 // Add HTTP Authentication middleware

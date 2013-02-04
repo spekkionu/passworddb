@@ -33,7 +33,7 @@ class Controller_Admin
                 $mgr = new Model_Admin();
                 $results = $mgr->addAdminLogin($website_id, $results);
                 $app->flash('success', "Admin login {$results['id']} added for website {$website['name']}.");
-                $response->redirect("/website/{$website['id']}");
+                $response->redirect($app->config('base_url')."website/{$website['id']}");
                 return $response;
             } catch (Validate_Exception $e) {
                 $app->render('admin/add.twig', array('website' => $website, 'results' => $results, 'errors' => $e->getErrors()));
@@ -73,7 +73,7 @@ class Controller_Admin
                 $results = array_merge($results, array_intersect_key($app->request()->post('admin'), $results));
                 $results = $mgr->updateAdminLogin($id, $results, $website_id);
                 $app->flash('success', "Admin login {$id} has been updated for website {$website['name']}.");
-                $response->redirect("/website/{$website['id']}");
+                $response->redirect($app->config('base_url')."website/{$website['id']}");
                 return $response;
             } catch (Validate_Exception $e) {
                 $app->render('admin/edit.twig', array('website' => $website, 'results' => $results, 'errors' => $e->getErrors()));
@@ -112,7 +112,7 @@ class Controller_Admin
 
                 $results = $mgr->deleteAdminLogin($id);
                 $app->flash('info', "Admin login {$id} deleted from website {$website['name']}.");
-                $response->redirect("/website/{$website_id}");
+                $response->redirect($app->config('base_url')."website/{$website_id}");
                 return $response;
             } catch (Validate_Exception $e) {
                 $app->render('admin/delete.twig', array('website' => $website, 'errors' => $e->getErrors()));

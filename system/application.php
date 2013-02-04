@@ -19,21 +19,27 @@ if (!defined('TESTDIR')) {
     define('TESTDIR', APP_ROOT . DIRECTORY_SEPARATOR . 'tests');
 }
 
+// Load Config
+$config = require (SYSTEM . '/config.php');
+
 if (!defined('SERVER_MODE')) {
+    $mode = 'production';
+    if (isset($config['mode']) && $config['mode']) {
+        $mode = mb_strtolower($config['mode']);
+    }
     if (isset($_SERVER['HTTP_X_SERVER_MODE'])) {
         $mode = mb_strtolower($_SERVER['HTTP_X_SERVER_MODE']);
-        if (!in_array($mode, array('development', 'production', 'test'))) {
-            $mode = 'production';
-        }
-    } else {
+    }
+    if (getenv('SLIM_MODE')) {
+        $mode = mb_strtolower(getenv('SLIM_MODE'));
+    }
+    if (!in_array($mode, array('development', 'production', 'test'))) {
         $mode = 'production';
     }
-    define("SERVER_MODE", $mode);
+    define('SERVER_MODE', $mode);
 }
 
 
-// Load Config
-$config = require (SYSTEM . '/config.php');
 if (version_compare(PHP_VERSION, '5.3.2') >= 0) {
     require (VENDOR . '/autoload.php');
 } else {
@@ -56,6 +62,8 @@ if (version_compare(PHP_VERSION, '5.3.2') >= 0) {
 }
 
 if (SERVER_MODE == 'test') {
+    $config['base_url'] = $config['test']['base_url'];
+    $config['api_url'] = $config['test']['api_url'];
     // Init DB
     $dbh = Test_Database::initTestDatabase(TESTDIR . '/_data/schema.sql');
     Model_Abstract::setCredentials(array(
@@ -81,5 +89,5 @@ if (!function_exists('http_get_request_body')) {
     {
         return @file_get_contents('php://input');
     }
-
 }
+

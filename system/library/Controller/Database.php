@@ -33,7 +33,7 @@ class Controller_Database
                 $mgr = new Model_Database();
                 $results = $mgr->addDB($website_id, $results);
                 $app->flash('success', "Database {$results['id']} added for website {$website['name']}.");
-                $response->redirect("/website/{$website['id']}");
+                $response->redirect($app->config('base_url')."website/{$website['id']}");
                 return $response;
             } catch (Validate_Exception $e) {
                 $app->render('database/add.twig', array('website' => $website, 'results' => $results, 'errors' => $e->getErrors()));
@@ -72,7 +72,7 @@ class Controller_Database
                 $results = array_merge($results, array_intersect_key($app->request()->post('database'), $results));
                 $results = $mgr->updateDB($id, $results, $website_id);
                 $app->flash('success', "Database login {$id} has been updated for website {$website['name']}.");
-                $response->redirect("/website/{$website['id']}");
+                $response->redirect($app->config('base_url')."website/{$website['id']}");
                 return $response;
             } catch (Validate_Exception $e) {
                 $app->render('database/edit.twig', array('website' => $website, 'results' => $results, 'errors' => $e->getErrors()));
@@ -110,7 +110,7 @@ class Controller_Database
             try {
                 $results = $mgr->deleteDB($id);
                 $app->flash('info', "Database {$id} deleted from website {$website['name']}.");
-                $response->redirect("/website/{$website_id}");
+                $response->redirect($app->config('base_url')."website/{$website_id}");
                 return $response;
             } catch (Validate_Exception $e) {
                 $app->render('database/delete.twig', array('website' => $website, 'errors' => $e->getErrors()));

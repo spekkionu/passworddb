@@ -89,7 +89,7 @@ class Controller_Website
                 $mgr = new Model_Website();
                 $website = $mgr->addWebsite($website);
                 $app->flash('success', "Website {$website['name']} added.");
-                $response->redirect("/website/{$website['id']}");
+                $response->redirect($app->config('base_url')."website/{$website['id']}");
                 return $response;
             } catch (Validate_Exception $e) {
                 $app->render('website/add.twig', array('website' => $website, 'errors' => $e->getErrors()));
@@ -122,14 +122,13 @@ class Controller_Website
                 $website = array_merge($website, array_intersect_key($app->request()->post('website'), $website));
                 $website = $mgr->updateWebsite($id, $website);
                 $app->flash('success', "Website {$website['name']} updated.");
-                $response->redirect("/website/{$website['id']}");
+                $response->redirect($app->config('base_url')."website/{$website['id']}");
                 return $response;
             } catch (Validate_Exception $e) {
                 $app->render('website/edit.twig', array('website' => $website, 'errors' => $e->getErrors()));
                 return $response;
             } catch (Exception $e) {
-                $app->flash('error', 'Error updating website.');
-                $response->redirect("/website/{$id}/edit");
+                $app->render('error/error.twig', array('exception' => $e, 'message' => 'Error updating website.'), 500);
                 return $response;
             }
         }
@@ -155,14 +154,13 @@ class Controller_Website
             try {
                 $website = $mgr->deleteWebsite($id);
                 $app->flash('info', "Website {$website['name']} deleted.");
-                $response->redirect("/");
+                $response->redirect($app->config('base_url'));
                 return $response;
             } catch (Validate_Exception $e) {
                 $app->render('website/delete.twig', array('website' => $website, 'errors' => $e->getErrors()));
                 return $response;
             } catch (Exception $e) {
-                $app->flash('error', 'Error deleting website.');
-                $response->redirect("/website/{$id}/delete");
+                $app->render('error/error.twig', array('exception' => $e, 'message' => 'Error deleting website.'), 500);
                 return $response;
             }
         }
