@@ -4,16 +4,19 @@ Slim_Route::setDefaultConditions(array(
   'website_id' => '\d+'
 ));
 
-########################
-# General API Methods  #
-########################
+//////////////////////////
+// General API Methods  //
+//////////////////////////
 $app->get('/api/', 'Api_Controller_Index::listAction');
 
 $app->notFound('Api_Controller_Error::notfoundAction');
 
-####################
-# Website Methods  #
-####################
+//////////////////////
+// Website Methods  //
+//////////////////////
+// Count Websites
+$app->get('/api/website/count', 'Api_Controller_Website::countAction');
+
 // List Websites
 $app->get('/api/website', 'Api_Controller_Website::listAction');
 
@@ -29,9 +32,9 @@ $app->put('/api/website/:id', 'Api_Controller_Website::updateAction');
 // Delete an individual website
 $app->delete('/api/website/:id', 'Api_Controller_Website::deleteAction');
 
-################
-# FTP Methods  #
-################
+//////////////////
+// FTP Methods  //
+//////////////////
 // List FTP logins
 $app->get('/api/ftp/:website_id', 'Api_Controller_FTP::listAction');
 
@@ -47,9 +50,9 @@ $app->put('/api/ftp/:website_id/:id', 'Api_Controller_FTP::updateAction');
 // Delete existing FTP login
 $app->delete('/api/ftp/:website_id/:id', 'Api_Controller_FTP::deleteAction');
 
-########################
-# Admin Login Methods  #
-########################
+//////////////////////////
+// Admin Login Methods  //
+//////////////////////////
 // List Admin logins
 $app->get('/api/admin/:website_id', 'Api_Controller_Admin::listAction');
 
@@ -65,9 +68,9 @@ $app->put('/api/admin/:website_id/:id', 'Api_Controller_Admin::updateAction');
 // Delete existing admin login
 $app->delete('/api/admin/:website_id/:id', 'Api_Controller_Admin::deleteAction');
 
-##########################
-# Control Panel Methods  #
-##########################
+////////////////////////////
+// Control Panel Methods  //
+////////////////////////////
 // List control panel logins
 $app->get('/api/controlpanel/:website_id', 'Api_Controller_ControlPanel::listAction');
 
@@ -83,9 +86,9 @@ $app->put('/api/controlpanel/:website_id/:id', 'Api_Controller_ControlPanel::upd
 // Delete existing control panel login
 $app->delete('/api/controlpanel/:website_id/:id', 'Api_Controller_ControlPanel::deleteAction');
 
-#####################
-# Database Methods  #
-#####################
+///////////////////////
+// Database Methods  //
+///////////////////////
 // List database credentials
 $app->get('/api/database/:website_id', 'Api_Controller_Database::listAction');
 
@@ -100,3 +103,4 @@ $app->put('/api/database/:website_id/:id', 'Api_Controller_Database::updateActio
 
 // Delete existing database credentials
 $app->delete('/api/database/:website_id/:id', 'Api_Controller_Database::deleteAction');
+

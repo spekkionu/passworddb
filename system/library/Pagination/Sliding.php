@@ -54,11 +54,11 @@ class Pagination_Sliding
     public function __construct(array $params)
     {
         $params = array_merge(array(
-          'itemsPerPage' => 10,
-          'totalItems' => 0,
-          'delta' => 5,
-          'page' => 1,
-          ), $params);
+            'itemsPerPage' => 10,
+            'totalItems' => 0,
+            'delta' => 5,
+            'page' => 1,
+                ), $params);
         if (!is_numeric($params['itemsPerPage']) || $params['itemsPerPage'] < 1) {
             throw new Exception("Invalid items per page.");
         }
@@ -94,7 +94,7 @@ class Pagination_Sliding
     protected function build()
     {
         $this->totalPages = max(1, ceil($this->totalItems / $this->itemsPerPage));
-        if($this->page > $this->totalPages){
+        if ($this->page > $this->totalPages) {
             $this->page = $this->totalPages;
         }
         if ($this->page == $this->totalPages) {
@@ -110,17 +110,17 @@ class Pagination_Sliding
             $lastIndex = min($this->totalPages, $this->delta * 2 + 1);
         }
         $this->data = array(
-          'page' => $this->page,
-          'totalItems' => $this->totalItems,
-          'totalPages' => $this->totalPages,
-          'itemsPerPage' => $this->itemsPerPage,
-          'first' => 1,
-          'last' => $this->totalPages,
-          'previous' => max(1, $this->page - 1),
-          'next' => min($this->totalPages, $this->page + 1),
-          'firstItem' => ($this->totalItems > 0) ? ($this->page - 1) * $this->itemsPerPage + 1 : 0,
-          'lastItem' => ($this->totalItems > 0) ? min($this->totalItems, $this->page * $this->itemsPerPage) : 0,
-          'range' => range($firstIndex, $lastIndex),
+            'page' => $this->page,
+            'totalItems' => $this->totalItems,
+            'totalPages' => $this->totalPages,
+            'itemsPerPage' => $this->itemsPerPage,
+            'first' => 1,
+            'last' => $this->totalPages,
+            'previous' => max(1, $this->page - 1),
+            'next' => min($this->totalPages, $this->page + 1),
+            'firstItem' => ($this->totalItems > 0) ? ($this->page - 1) * $this->itemsPerPage + 1 : 0,
+            'lastItem' => ($this->totalItems > 0) ? min($this->totalItems, $this->page * $this->itemsPerPage) : 0,
+            'range' => range($firstIndex, $lastIndex),
         );
     }
 

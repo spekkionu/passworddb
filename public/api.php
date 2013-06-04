@@ -10,7 +10,6 @@ require '../system/application.php';
 $app = new Slim(array(
     'mode' => SERVER_MODE,
     'debug' => (SERVER_MODE == 'development') ? true : false,
-    'templates.path' => SYSTEM . '/templates',
     'log.enabled' => false,
     'cookies.path' => $config['base_url'],
     'cookies.domain' => isset($config['domain']) ? $config['domain'] : null,

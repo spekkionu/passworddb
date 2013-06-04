@@ -1,5 +1,5 @@
 /*!
- * Bootstrap v2.2.2
+ * Bootstrap v2.3.1
  *
  * Copyright 2012 Twitter, Inc
  * Licensed under the Apache License v2.0
@@ -8,12 +8,13 @@
  * Designed and built with all the love in the world @twitter by @mdo and @fat.
  */
 
+
 // Core variables and mixins
 @import "../../vendor/bootstrap-sass/lib/_variables"; // Modify this for custom colors, font-sizes, etc
 @import "../../vendor/bootstrap-sass/lib/_mixins";
 
 // Variable Overrides
-$fontAwesomePath: "../vendor/font-awesome/font";
+$fontAwesomePath: "../vendor/font-awesome-more/font";
 
 // CSS Reset
 @import "../../vendor/bootstrap-sass/lib/_reset";
@@ -30,7 +31,7 @@ $fontAwesomePath: "../vendor/font-awesome/font";
 @import "../../vendor/bootstrap-sass/lib/_tables";
 
 // Components: common
-@import "../../vendor/font-awesome/sass/font-awesome.scss";
+@import "../../vendor/font-awesome-more/sass/font-awesome.scss";
 @import "../../vendor/bootstrap-sass/lib/_dropdowns";
 @import "../../vendor/bootstrap-sass/lib/_wells";
 @import "../../vendor/bootstrap-sass/lib/_component-animations";

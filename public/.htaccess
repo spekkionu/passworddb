@@ -15,7 +15,7 @@ RewriteRule ^api$ api.php [NC,L]
 RewriteRule ^api/(.*)$ api.php [NC,L]
 
 # Send the rest to the bootstrap
-RewriteRule ^.*$ index.php [NC,L]
+RewriteRule ^.*$ index.html [NC,L]
 
 # # with QSA flag (query string append),
 # # forces the rewrite engine to append a query string part of the

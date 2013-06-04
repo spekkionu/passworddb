@@ -32,6 +32,16 @@ class Model_WebsiteTest extends Test_DatabaseTest
         parent::tearDown();
     }
 
+  /**
+   * Model_Website::countWebsites
+   */
+  public function testCountWebsites()
+  {
+    $mgr = new Model_Website();
+    $result = $mgr->countWebsites();
+    $this->assertEquals(5, $result, "There should be 5 websites");
+  }
+
     /**
      * Model_Website::getWebsites
      */
@@ -215,7 +225,7 @@ class Model_WebsiteTest extends Test_DatabaseTest
         $this->assertInstanceOf('Error_Stack', $errors);
         $this->assertTrue($errors->hasErrors());
         $messages = $errors->getErrors();
-        $this->assertEquals(array('name' => array('Website name is required.')), $messages);
+        $this->assertEquals(array('name' => array('required' => 'Website name is required.')), $messages);
     }
 
     /**
@@ -234,9 +244,9 @@ class Model_WebsiteTest extends Test_DatabaseTest
         $this->assertInstanceOf('Error_Stack', $errors);
         $this->assertTrue($errors->hasErrors());
         $messages = $errors->getErrors();
-        $this->assertEquals(array('Website name must not be more than 100 characters.'), $messages['name']);
-        $this->assertEquals(array('Website domain must not be more than 100 characters.'), $messages['domain']);
-        $this->assertEquals(array('Website URL must not be more than 255 characters.'), $messages['url']);
+        $this->assertEquals(array('maxlength' => 'Website name must not be more than 100 characters.'), $messages['name']);
+        $this->assertEquals(array('maxlength' => 'Website domain must not be more than 100 characters.'), $messages['domain']);
+        $this->assertEquals(array('maxlength' => 'Website URL must not be more than 255 characters.'), $messages['url']);
     }
 
     /**
@@ -255,7 +265,7 @@ class Model_WebsiteTest extends Test_DatabaseTest
         $this->assertInstanceOf('Error_Stack', $errors);
         $this->assertTrue($errors->hasErrors());
         $messages = $errors->getErrors();
-        $this->assertEquals(array('name' => array('Website with name First Website already exists.')), $messages);
+        $this->assertEquals(array('name' => array('unique' => 'Website with name First Website already exists.')), $messages);
     }
 
 }

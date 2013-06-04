@@ -62,9 +62,11 @@ class Model_FTP extends Model_Abstract
 
     /**
      * Adds FTP login credentials
+     *
      * @param int $website_id
      * @param array $data
      * @return array Added record
+     * @throws Validate_Exception
      */
     public function addFTP($website_id, array $data)
     {
@@ -84,9 +86,12 @@ class Model_FTP extends Model_Abstract
 
     /**
      * Updates FTP login credentials
+     *
      * @param int $id
      * @param array $data
+     * @param int $website_id
      * @return array Updated record
+     * @throws Validate_Exception
      */
     public function updateFTP($id, array $data, $website_id)
     {
@@ -140,25 +145,25 @@ class Model_FTP extends Model_Abstract
             $count = $sth->fetchColumn();
             $sth->closeCursor();
             if ($count == 0) {
-                $errors->addError('website_id', "Website does not exist.");
+                $errors->addError('website_id', "Website does not exist.", 'invalid');
             }
         }
         if (empty($data['type'])) {
-            $errors->addError('type', 'FTP type is required.');
+            $errors->addError('type', 'FTP type is required.', 'required');
         } elseif (!in_array($data['type'], array('ftp', 'sftp', 'ftps', 'webdav', 'other'))) {
-            $errors->addError('type', 'Invalid FTP type.');
+            $errors->addError('type', 'Invalid FTP type.', 'invalid');
         }
         if (mb_strlen($data['hostname']) > 100) {
-            $errors->addError('hostname', 'Hostname must not be more than 100 characters.');
+            $errors->addError('hostname', 'Hostname must not be more than 100 characters.', 'maxlength');
         }
         if (mb_strlen($data['username']) > 100) {
-            $errors->addError('username', 'Username must not be more than 100 characters.');
+            $errors->addError('username', 'Username must not be more than 100 characters.', 'maxlength');
         }
         if (mb_strlen($data['password']) > 100) {
-            $errors->addError('password', 'Password must not be more than 100 characters.');
+            $errors->addError('password', 'Password must not be more than 100 characters.', 'maxlength');
         }
         if (mb_strlen($data['path']) > 255) {
-            $errors->addError('path', 'Path must not be more than 255 characters.');
+            $errors->addError('path', 'Path must not be more than 255 characters.', 'maxlength');
         }
         return $errors;
     }

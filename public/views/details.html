@@ -1,0 +1,242 @@
+<div class="page-header">
+  <h1>{{website.name}}</h1>
+</div>
+
+<div class="row-fluid">
+  <div class="span4">
+    <table id="website-details" class="table table-bordered">
+      <tr>
+        <th>Name</th>
+        <td>{{website.name}}</td>
+      </tr>
+        <tr ng-show="website.domain">
+          <th>Domain</th>
+          <td>{{website.domain}}</td>
+        </tr>
+        <tr ng-show="website.url">
+          <th>URL</th>
+          <td>{{website.url}}</td>
+        </tr>
+        <tr ng-show="website.notes">
+          <td colspan="2">{{website.notes}}</td>
+        </tr>
+      <tr>
+        <td colspan="2" style="text-align: center;">
+          <a class="btn btn-info" ng-href="/website/edit/{{website.id}}">
+            <i class="icon-pencil icon-white"></i>
+            Edit
+          </a>
+          <a class="btn btn-danger" ng-href="/website/delete/{{website.id}}">
+            <i class="icon-trash icon-white"></i>
+            Delete
+          </a>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<h2>FTP Info</h2>
+<nav class="well">
+  <a class="btn btn-success" ng-href="/ftp/{{website.id}}/add">
+    <i class="icon-plus icon-white"></i>
+    Add new FTP
+  </a>
+</nav>
+<ul id="website-ftp" class="thumbnails" ng-show="website.ftp.length > 0">
+    <li class="span4" ng-repeat="row in website.ftp">
+      <div class="thumbnail">
+        <table class="table">
+          <thead>
+            <tr>
+              <th colspan="2" style="text-align: center;">FTP</th>
+            </tr>
+          </thead>
+            <tr ng-show="row.hostname">
+              <th>Hostname</th>
+              <td>{{row.hostname}}</td>
+            </tr>
+            <tr ng-show="row.username">
+              <th>Username</th>
+              <td>{{row.username}}</td>
+            </tr>
+            <tr ng-show="row.password">
+              <th>Password</th>
+              <td>{{row.password}}</td>
+            </tr>
+            <tr ng-show="row.path">
+              <th>Path</th>
+              <td>{{row.path}}</td>
+            </tr>
+            <tr ng-show="row.notes">
+              <td colspan="2" style="white-space: pre;">{{row.notes}}</td>
+            </tr>
+          <tr>
+            <td colspan="2" style="text-align: center;">
+              <a class="btn btn-info" ng-href="/ftp/{{website.id}}/{{row.id}}/edit">
+                <i class="icon-pencil icon-white"></i>
+                Edit
+              </a>
+              <a class="btn btn-danger" ng-href="/ftp/{{website.id}}/{{row.id}}/delete">
+                <i class="icon-trash icon-white"></i>
+                Delete
+              </a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </li>
+</ul>
+
+<h2>Database Credentials</h2>
+<nav class="well">
+  <a class="btn btn-success" ng-href="/database/{{website.id}}/add">
+    <i class="icon-plus icon-white"></i>
+    Add new Database
+  </a>
+</nav>
+<ul id="website-database" class="thumbnails" ng-show="website.database.length > 0">
+  <li class="span4" ng-repeat="row in website.database">
+    <div class="thumbnail">
+      <table class="table">
+        <thead>
+        <tr>
+          <th colspan="2" style="text-align: center;">Database Credentials</th>
+        </tr>
+        </thead>
+        <tr ng-show="row.hostname">
+          <th>Hostname</th>
+          <td>{{row.hostname}}</td>
+        </tr>
+        <tr ng-show="row.username">
+          <th>Username</th>
+          <td>{{row.username}}</td>
+        </tr>
+        <tr ng-show="row.password">
+          <th>Password</th>
+          <td>{{row.password}}</td>
+        </tr>
+        <tr ng-show="row.database">
+          <th>Database</th>
+          <td>{{row.database}}</td>
+        </tr>
+        <tr ng-show="row.url">
+          <th>URL</th>
+          <td>{{row.url}}</td>
+        </tr>
+        <tr ng-show="row.notes">
+          <td colspan="2" style="white-space: pre;">{{row.notes}}</td>
+        </tr>
+        <tr>
+          <td colspan="2" style="text-align: center;">
+            <a class="btn btn-info" ng-href="/database/{{website.id}}/{{row.id}}/edit">
+              <i class="icon-pencil icon-white"></i>
+              Edit
+            </a>
+            <a class="btn btn-danger" ng-href="/database/{{website.id}}/{{row.id}}/delete">
+              <i class="icon-trash icon-white"></i>
+              Delete
+            </a>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </li>
+</ul>
+
+<h2>Admin Logins</h2>
+<nav class="well">
+  <a class="btn btn-success" ng-href="/admin/{{website.id}}/add">
+    <i class="icon-plus icon-white"></i>
+    Add new Admin Login
+  </a>
+</nav>
+<ul id="website-admin" class="thumbnails" ng-show="website.admin.length > 0">
+  <li class="span4" ng-repeat="row in website.admin">
+    <div class="thumbnail">
+      <table class="table">
+        <thead>
+        <tr>
+          <th colspan="2" style="text-align: center;">Admin Login</th>
+        </tr>
+        </thead>
+          <tr ng-show="row.username">
+            <th>Username</th>
+            <td>{{row.username}}</td>
+          </tr>
+          <tr ng-show="row.password">
+            <th>Password</th>
+            <td>{{row.password}}</td>
+          </tr>
+          <tr ng-show="row.url">
+            <th>URL</th>
+            <td>{{row.url}}</td>
+          </tr>
+          <tr ng-show="row.notes">
+            <td colspan="2" style="white-space: pre;">{{row.notes}}</td>
+          </tr>
+        <tr>
+          <td colspan="2" style="text-align: center;">
+            <a class="btn btn-info" ng-href="/admin/{{website.id}}/{{row.id}}/edit">
+              <i class="icon-pencil icon-white"></i>
+              Edit
+            </a>
+            <a class="btn btn-danger" ng-href="/admin/{{website.id}}/{{row.id}}/delete">
+              <i class="icon-trash icon-white"></i>
+              Delete
+            </a>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </li>
+</ul>
+
+<h2>Control Panel Logins</h2>
+<nav class="well">
+  <a class="btn btn-success" ng-href="/controlpanel/{{website.id}}/add">
+    <i class="icon-plus icon-white"></i>
+    Add new Control Panel
+  </a>
+</nav>
+<ul id="website-controlpanel" class="thumbnails" ng-show="website.controlpanel.length > 0">
+  <li class="span4" ng-repeat="row in website.controlpanel">
+    <div class="thumbnail">
+      <table class="table">
+        <thead>
+        <tr>
+          <th colspan="2" style="text-align: center;">Control Panel Login</th>
+        </tr>
+        </thead>
+          <tr ng-show="row.username">
+            <th>Username</th>
+            <td>{{row.username}}</td>
+          </tr>
+          <tr ng-show="row.password">
+            <th>Password</th>
+            <td>{{row.password}}</td>
+          </tr>
+          <tr ng-show="row.url">
+            <th>URL</th>
+            <td>{{row.url}}</td>
+          </tr>
+          <tr ng-show="row.notes">
+            <td colspan="2" style="white-space: pre;">{{row.notes}}</td>
+          </tr>
+        <tr>
+          <td colspan="2" style="text-align: center;">
+            <a class="btn btn-info" ng-href="/controlpanel/{{website.id}}/{{row.id}}/edit">
+              <i class="icon-pencil icon-white"></i>
+              Edit
+            </a>
+            <a class="btn btn-danger" ng-href="/controlpanel/{{website.id}}/{{row.id}}/delete">
+              <i class="icon-trash icon-white"></i>
+              Delete
+            </a>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </li>
+</ul>
+

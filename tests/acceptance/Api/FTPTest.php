@@ -67,8 +67,7 @@ class FTPTest extends \Test_DatabaseTest
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(200, $response->getStatusCode());
         $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertCount(1, $body['records']);
+        $this->assertCount(1, $body);
     }
 
     /**
@@ -83,8 +82,7 @@ class FTPTest extends \Test_DatabaseTest
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(200, $response->getStatusCode());
         $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertEquals($id, $body['record']['id']);
+        $this->assertEquals($id, $body['id']);
     }
 
     /**
@@ -106,14 +104,13 @@ class FTPTest extends \Test_DatabaseTest
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(201, $response->getStatusCode());
         $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
         $this->assertEquals($result, array(
-          'type' => $body['record']['type'],
-          'username' => $body['record']['username'],
-          'password' => $body['record']['password'],
-          'hostname' => $body['record']['hostname'],
-          'path' => $body['record']['path'],
-          'notes' => $body['record']['notes']
+          'type' => $body['type'],
+          'username' => $body['username'],
+          'password' => $body['password'],
+          'hostname' => $body['hostname'],
+          'path' => $body['path'],
+          'notes' => $body['notes']
         ));
     }
 
@@ -138,14 +135,13 @@ class FTPTest extends \Test_DatabaseTest
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(200, $response->getStatusCode());
         $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
         $this->assertEquals($result, array(
-          'type' => $body['record']['type'],
-          'username' => $body['record']['username'],
-          'password' => $body['record']['password'],
-          'hostname' => $body['record']['hostname'],
-          'path' => $body['record']['path'],
-          'notes' => $body['record']['notes']
+          'type' => $body['type'],
+          'username' => $body['username'],
+          'password' => $body['password'],
+          'hostname' => $body['hostname'],
+          'path' => $body['path'],
+          'notes' => $body['notes']
         ));
     }
 

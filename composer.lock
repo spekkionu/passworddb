@@ -1,5 +1,9 @@
 {
-    "hash": "9ae0525224625dd5ca537bf78c0c4e93",
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "d92a9ed38d1413cd12be3665c14589dd",
     "packages": [
         {
             "name": "phly/zf1-autoloaders",
@@ -34,7 +38,6 @@
             "require": {
                 "php": ">=5.2.0"
             },
-            "time": "2012-08-28 16:09:45",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -58,267 +61,11 @@
                 "microframework",
                 "rest",
                 "router"
-            ]
-        },
-        {
-            "name": "twig/twig",
-            "version": "v1.12.1",
-            "source": {
-                "type": "git",
-                "url": "git://github.com/fabpot/Twig.git",
-                "reference": "v1.12.1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/fabpot/Twig/archive/v1.12.1.zip",
-                "reference": "v1.12.1",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.4"
-            },
-            "time": "2013-01-15 20:03:52",
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.12-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Twig_": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3"
             ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Armin Ronacher",
-                    "email": "armin.ronacher@active-4.com"
-                }
-            ],
-            "description": "Twig, the flexible, fast, and secure template language for PHP",
-            "homepage": "http://twig.sensiolabs.org",
-            "keywords": [
-                "templating"
-            ]
+            "time": "2012-08-28 16:09:45"
         }
     ],
     "packages-dev": [
-        {
-            "name": "behat/mink",
-            "version": "v1.4.0",
-            "source": {
-                "type": "git",
-                "url": "git://github.com/Behat/Mink.git",
-                "reference": "v1.4.0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/Behat/Mink/zipball/v1.4.0",
-                "reference": "v1.4.0",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.1",
-                "symfony/css-selector": ">=2.0.0,<2.2.0-dev"
-            },
-            "require-dev": {
-                "behat/mink-goutte-driver": "*",
-                "behat/mink-sahi-driver": "*",
-                "behat/mink-selenium-driver": "*",
-                "behat/mink-selenium2-driver": "*",
-                "behat/mink-zombie-driver": "*",
-                "symfony/finder": ">=2.0.0,<2.2.0-dev"
-            },
-            "suggest": {
-                "behat/mink-goutte-driver": "to enable Goutte support",
-                "behat/mink-sahi-driver": "to enable Sahi.JS support",
-                "behat/mink-selenium-driver": "to enable Selenium1 support",
-                "behat/mink-selenium2-driver": "to enable Selenium2 (webdriver support)",
-                "behat/mink-zombie-driver": "to enable Zombie.js support"
-            },
-            "time": "2012-05-29 15:50:10",
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Behat\\Mink": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Konstantin Kudryashov",
-                    "email": "ever.zet@gmail.com",
-                    "homepage": "http://everzet.com"
-                }
-            ],
-            "description": "Web acceptance testing framework for PHP 5.3",
-            "homepage": "http://mink.behat.org/",
-            "keywords": [
-                "testing",
-                "browser",
-                "web"
-            ]
-        },
-        {
-            "name": "behat/mink-browserkit-driver",
-            "version": "v1.0.0",
-            "source": {
-                "type": "git",
-                "url": "git://github.com/Behat/MinkBrowserKitDriver.git",
-                "reference": "v1.0.0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/Behat/MinkBrowserKitDriver/zipball/v1.0.0",
-                "reference": "v1.0.0",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.1",
-                "symfony/browser-kit": ">=2.0.0,<2.2.0-dev",
-                "symfony/dom-crawler": ">=2.0.0,<2.2.0-dev"
-            },
-            "time": "2012-06-14 06:23:48",
-            "type": "mink-driver",
-            "autoload": {
-                "psr-0": {
-                    "Behat\\Mink\\Driver": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Konstantin Kudryashov",
-                    "email": "ever.zet@gmail.com",
-                    "homepage": "http://everzet.com"
-                }
-            ],
-            "description": "Symfony2 BrowserKit driver for Mink framework",
-            "homepage": "http://mink.behat.org/",
-            "keywords": [
-                "Symfony2",
-                "testing",
-                "browser"
-            ]
-        },
-        {
-            "name": "behat/mink-goutte-driver",
-            "version": "v1.0.3",
-            "source": {
-                "type": "git",
-                "url": "git://github.com/Behat/MinkGoutteDriver.git",
-                "reference": "v1.0.3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/Behat/MinkGoutteDriver/zipball/v1.0.3",
-                "reference": "v1.0.3",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.1",
-                "behat/mink": ">=1.4.0,<1.5.0-dev",
-                "behat/mink-browserkit-driver": "*",
-                "fabpot/goutte": "@dev",
-                "symfony/browser-kit": "2.1.*@dev",
-                "symfony/css-selector": "2.1.*@dev",
-                "symfony/dom-crawler": "2.1.*@dev",
-                "symfony/finder": "2.1.*@dev",
-                "symfony/process": "2.1.*@dev"
-            },
-            "time": "2012-07-05 01:30:36",
-            "type": "mink-driver",
-            "autoload": {
-                "psr-0": {
-                    "Behat\\Mink\\Driver": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Konstantin Kudryashov",
-                    "email": "ever.zet@gmail.com",
-                    "homepage": "http://everzet.com"
-                }
-            ],
-            "description": "Goutte driver for Mink framework",
-            "homepage": "http://mink.behat.org/",
-            "keywords": [
-                "testing",
-                "browser",
-                "goutte",
-                "headless"
-            ]
-        },
-        {
-            "name": "fabpot/goutte",
-            "version": "v0.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fabpot/Goutte",
-                "reference": "v0.1.0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/fabpot/Goutte/archive/v0.1.0.zip",
-                "reference": "v0.1.0",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0",
-                "ext-curl": "*",
-                "symfony/browser-kit": "2.1.*",
-                "symfony/css-selector": "2.1.*",
-                "symfony/dom-crawler": "2.1.*",
-                "symfony/finder": "2.1.*",
-                "symfony/process": "2.1.*",
-                "guzzle/guzzle": "3.0.*"
-            },
-            "time": "2012-12-02 13:44:35",
-            "type": "application",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Goutte": "."
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                }
-            ],
-            "description": "A simple PHP Web Scraper",
-            "homepage": "https://github.com/fabpot/Goutte",
-            "keywords": [
-                "scraper"
-            ]
-        },
         {
             "name": "guzzle/guzzle",
             "version": "v3.0.7",
@@ -334,8 +81,8 @@
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.2",
                 "ext-curl": "*",
+                "php": ">=5.3.2",
                 "symfony/event-dispatcher": ">=2.1"
             },
             "replace": {
@@ -363,15 +110,14 @@
             },
             "require-dev": {
                 "doctrine/common": "*",
-                "symfony/class-loader": "*",
                 "monolog/monolog": "1.*",
-                "zendframework/zend-cache": "2.0.*",
-                "zendframework/zend-log": "2.0.*",
-                "zend/zend-log1": "1.12",
+                "phpunit/phpunit": "3.7.*",
+                "symfony/class-loader": "*",
                 "zend/zend-cache1": "1.12",
-                "phpunit/phpunit": "3.7.*"
+                "zend/zend-log1": "1.12",
+                "zendframework/zend-cache": "2.0.*",
+                "zendframework/zend-log": "2.0.*"
             },
-            "time": "2012-12-19 23:06:35",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -402,185 +148,50 @@
             "description": "Guzzle is a PHP HTTP client library and framework for building RESTful web service clients",
             "homepage": "http://guzzlephp.org/",
             "keywords": [
-                "framework",
-                "curl",
-                "http",
-                "rest",
-                "http client",
                 "client",
+                "curl",
+                "framework",
+                "http",
+                "http client",
+                "rest",
                 "web service"
-            ]
-        },
-        {
-            "name": "symfony/browser-kit",
-            "version": "v2.1.7",
-            "target-dir": "Symfony/Component/BrowserKit",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/BrowserKit",
-                "reference": "v2.1.7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/symfony/BrowserKit/archive/v2.1.7.zip",
-                "reference": "v2.1.7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3",
-                "symfony/dom-crawler": "2.1.*"
-            },
-            "require-dev": {
-                "symfony/process": "2.1.*",
-                "symfony/css-selector": "2.1.*"
-            },
-            "suggest": {
-                "symfony/process": "2.1.*"
-            },
-            "time": "2013-01-09 08:51:07",
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\BrowserKit": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
             ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony BrowserKit Component",
-            "homepage": "http://symfony.com"
-        },
-        {
-            "name": "symfony/css-selector",
-            "version": "v2.1.7",
-            "target-dir": "Symfony/Component/CssSelector",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/CssSelector",
-                "reference": "v2.1.7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/symfony/CssSelector/archive/v2.1.7.zip",
-                "reference": "v2.1.7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "time": "2013-01-09 08:51:07",
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\CssSelector": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony CssSelector Component",
-            "homepage": "http://symfony.com"
-        },
-        {
-            "name": "symfony/dom-crawler",
-            "version": "v2.1.7",
-            "target-dir": "Symfony/Component/DomCrawler",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/DomCrawler",
-                "reference": "v2.1.7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/symfony/DomCrawler/archive/v2.1.7.zip",
-                "reference": "v2.1.7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "symfony/css-selector": "2.1.*"
-            },
-            "suggest": {
-                "symfony/css-selector": "2.1.*"
-            },
-            "time": "2013-01-09 08:51:07",
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\DomCrawler": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony DomCrawler Component",
-            "homepage": "http://symfony.com"
+            "time": "2012-12-19 23:06:35"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.1.7",
+            "version": "v2.3.0",
             "target-dir": "Symfony/Component/EventDispatcher",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/EventDispatcher",
-                "reference": "v2.1.7"
+                "url": "https://github.com/symfony/EventDispatcher.git",
+                "reference": "v2.3.0-RC1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/EventDispatcher/archive/v2.1.7.zip",
-                "reference": "v2.1.7",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/v2.3.0-RC1",
+                "reference": "v2.3.0-RC1",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "require-dev": {
-                "symfony/dependency-injection": "2.1.*"
+                "symfony/dependency-injection": ">=2.0,<3.0"
             },
             "suggest": {
-                "symfony/dependency-injection": "2.1.*",
-                "symfony/http-kernel": "2.1.*"
+                "symfony/dependency-injection": "",
+                "symfony/http-kernel": ""
             },
-            "time": "2013-01-11 00:31:43",
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.3-dev"
+                }
+            },
             "autoload": {
                 "psr-0": {
-                    "Symfony\\Component\\EventDispatcher": ""
+                    "Symfony\\Component\\EventDispatcher\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -598,98 +209,21 @@
                 }
             ],
             "description": "Symfony EventDispatcher Component",
-            "homepage": "http://symfony.com"
-        },
-        {
-            "name": "symfony/finder",
-            "version": "v2.1.7",
-            "target-dir": "Symfony/Component/Finder",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/Finder",
-                "reference": "v2.1.7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/symfony/Finder/archive/v2.1.7.zip",
-                "reference": "v2.1.7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "time": "2013-01-09 08:51:07",
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\Finder": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Finder Component",
-            "homepage": "http://symfony.com"
-        },
-        {
-            "name": "symfony/process",
-            "version": "v2.1.7",
-            "target-dir": "Symfony/Component/Process",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/Process",
-                "reference": "v2.1.7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/symfony/Process/archive/v2.1.7.zip",
-                "reference": "v2.1.7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "time": "2013-01-16 09:27:54",
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\Process": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Process Component",
-            "homepage": "http://symfony.com"
+            "homepage": "http://symfony.com",
+            "time": "2013-05-13 14:36:40"
         }
     ],
     "aliases": [
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "behat/mink": 0
+    "stability-flags": [
+
+    ],
+    "platform": {
+        "php": ">=5.2.4"
+    },
+    "platform-dev": {
+        "php": ">=5.3.3"
     }
 }

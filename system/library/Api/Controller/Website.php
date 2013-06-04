@@ -12,27 +12,70 @@ class Api_Controller_Website
 {
 
     /**
-     * Returns list of Websites
-     * @url /api/website
+     * Returns number of Websites
+     * @url /api/website/count
      * @method GET
      */
-    public static function listAction()
+    public static function countAction()
     {
         $app = Slim::getInstance();
         $response = $app->response();
         $response->header('Content-Type', 'application/json');
+        $search = trim($app->request()->get('search'));
+        if($search == ''){
+          $search = null;
+        }
         try {
             $mgr = new Model_Website();
-            $websites = $mgr->getWebsites();
-            $response->body(json_encode(array('success' => true, 'records' => $websites)));
+            $count = $mgr->countWebsites($search);
+            $response->body(json_encode(array("count"=>$count)));
             return $response;
         } catch (Exception $e) {
-            $app->getLog()->error("Error listing websites. - " . $e->getMessage());
+            $app->getLog()->error("Error counting websites. - " . $e->getMessage());
             $response->status(500);
             $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
             return $response;
         }
     }
+
+  /**
+   * Returns list of Websites
+   * @url /api/website
+   * @method GET
+   */
+  public static function listAction()
+  {
+    $app = Slim::getInstance();
+    $response = $app->response();
+    $response->header('Content-Type', 'application/json');
+    $limit = (int) $app->request()->get('limit');
+    if($limit <= 0){
+      $limit = null;
+    }
+    $offset = (int) $app->request()->get('offset');
+    if($offset < 0){
+      $offset = 0;
+    }
+    $sort = trim($app->request()->get('sort'));
+    $search = trim($app->request()->get('search'));
+    if($search == ''){
+      $search = null;
+    }
+    $dir = trim($app->request()->get('dir'));
+    try {
+      $mgr = new Model_Website();
+      $websites = $mgr->getWebsiteList($search, $limit, $offset, $sort, $dir);
+      $response->body(json_encode($websites));
+      return $response;
+    } catch (Exception $e) {
+      $app->getLog()->error("Error listing websites. - " . $e->getMessage());
+      $response->status(500);
+      $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+      return $response;
+    }
+  }
+
+
 
     /**
      * Returns details for a website
@@ -52,7 +95,7 @@ class Api_Controller_Website
                 $response->body(json_encode(array('success' => false, 'message' => 'Requested URI is not found.')));
                 return $response;
             }
-            $response->body(json_encode(array('success' => true, 'record' => $website)));
+            $response->body(json_encode($website));
             return $response;
         } catch (Exception $e) {
             $app->getLog()->error("Error showing website {$id}. - " . $e->getMessage());
@@ -74,10 +117,11 @@ class Api_Controller_Website
         $response->header('Content-Type', 'application/json');
         try {
             $mgr = new Model_Website();
-            $website = $mgr->addWebsite($app->request()->post());
+            $data = ($app->request()->getMediaType() == 'application/json') ? json_decode($app->request()->getBody(), true) : $app->request()->post();
+            $website = $mgr->addWebsite($data);
             $app->getLog()->info("Website {$website['id']} added.");
             $response->status(201);
-            $response->body(json_encode(array('success' => true, 'message' => 'Website has been added.', 'record' => $website)));
+            $response->body(json_encode($website));
             return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {
@@ -111,11 +155,12 @@ class Api_Controller_Website
                 $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
                 return $response;
             }
-            $website = array_merge($website, array_intersect_key($app->request()->post(), $website));
+            $data = ($app->request()->getMediaType() == 'application/json') ? json_decode($app->request()->getBody(), true) : $app->request()->post();
+            $website = array_merge($website, array_intersect_key($data, $website));
             $website = $mgr->updateWebsite($id, $website);
             $app->getLog()->info("Website {$id} updated.");
             $response->status(200);
-            $response->body(json_encode(array('success' => true, 'message' => 'Website has been updated.', 'record' => $website)));
+            $response->body(json_encode($website));
             return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {

@@ -63,6 +63,7 @@ class Model_ControlPanel extends Model_Abstract
      * @param int $website_id
      * @param array $data
      * @return array Added record
+     * @throws Validate_Exception
      */
     public function addControlPanelLogin($website_id, array $data)
     {
@@ -84,7 +85,9 @@ class Model_ControlPanel extends Model_Abstract
      * Updates Admin login credentials
      * @param int $id
      * @param array $data
+     * @param int $website_id
      * @return array Updated record
+     * @throws Validate_Exception
      */
     public function updateControlPanelLogin($id, array $data, $website_id)
     {
@@ -138,17 +141,17 @@ class Model_ControlPanel extends Model_Abstract
             $count = $sth->fetchColumn();
             $sth->closeCursor();
             if ($count == 0) {
-                $errors->addError('website_id', "Website does not exist.");
+                $errors->addError('website_id', "Website does not exist.", 'invalid');
             }
         }
         if (mb_strlen($data['username']) > 100) {
-            $errors->addError('username', 'Username must not be more than 100 characters.');
+            $errors->addError('username', 'Username must not be more than 100 characters.', 'maxlength');
         }
         if (mb_strlen($data['password']) > 100) {
-            $errors->addError('password', 'Password must not be more than 100 characters.');
+            $errors->addError('password', 'Password must not be more than 100 characters.', 'maxlength');
         }
         if (mb_strlen($data['url']) > 255) {
-            $errors->addError('url', 'URL must not be more than 255 characters.');
+            $errors->addError('url', 'URL must not be more than 255 characters.', 'maxlength');
         }
         return $errors;
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CSRF Guard
  *
@@ -9,11 +10,10 @@
  *
  * $app = new Slim();
  * $app->add(new Middleware_CsrfGuard());
- *
  */
-
 class Middleware_CsrfGuard extends Slim_Middleware
 {
+
     /**
      * CSRF token key name.
      *
@@ -29,7 +29,7 @@ class Middleware_CsrfGuard extends Slim_Middleware
      */
     public function __construct($key = 'csrf_token')
     {
-        if (! is_string($key) || empty($key) || preg_match('/[^a-zA-Z0-9\-\_]/', $key)) {
+        if (!is_string($key) || empty($key) || preg_match('/[^a-zA-Z0-9\-\_]/', $key)) {
             throw new Exception('Invalid CSRF token key "' . $key . '"');
         }
 
@@ -56,13 +56,14 @@ class Middleware_CsrfGuard extends Slim_Middleware
      *
      * @return void
      */
-    public function check() {
+    public function check()
+    {
         // Check sessions are enabled.
         if (session_id() === '') {
             throw new Exception('Sessions are required to use the CSRF Guard middleware.');
         }
 
-        if (! isset($_SESSION[$this->key])) {
+        if (!isset($_SESSION[$this->key])) {
             $_SESSION[$this->key] = sha1(serialize($_SERVER) . rand(0, 0xffffffff));
         }
 
@@ -72,15 +73,15 @@ class Middleware_CsrfGuard extends Slim_Middleware
         if (in_array($this->app->request()->getMethod(), array('POST', 'PUT', 'DELETE'))) {
             $userToken = $this->app->request()->post($this->key);
             if ($token !== $userToken) {
-                $this->app->response()->redirect($this->app->request()->getRootUri().$this->app->request()->getResourceUri());
+                $this->app->response()->redirect($this->app->request()->getRootUri() . $this->app->request()->getResourceUri());
                 $this->app->halt(302);
             }
         }
 
         // Assign CSRF token key and value to view.
         $this->app->view()->appendData(array(
-            'csrf_key'      => $this->key,
-            'csrf_token'    => $token,
+            'csrf_key' => $this->key,
+            'csrf_token' => $token,
         ));
     }
 }

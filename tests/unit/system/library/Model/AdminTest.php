@@ -185,10 +185,10 @@ class Model_AdminTest extends Test_DatabaseTest
         $this->assertInstanceOf('Error_Stack', $errors);
         $this->assertTrue($errors->hasErrors());
         $messages = $errors->getErrors();
-        $this->assertEquals(array('Website does not exist.'), $messages['website_id']);
-        $this->assertEquals(array('Username must not be more than 100 characters.'), $messages['username']);
-        $this->assertEquals(array('Password must not be more than 100 characters.'), $messages['password']);
-        $this->assertEquals(array('URL must not be more than 255 characters.'), $messages['url']);
+        $this->assertEquals(array('invalid' => 'Website does not exist.'), $messages['website_id']);
+        $this->assertEquals(array('maxlength' => 'Username must not be more than 100 characters.'), $messages['username']);
+        $this->assertEquals(array('maxlength' => 'Password must not be more than 100 characters.'), $messages['password']);
+        $this->assertEquals(array('maxlength' => 'URL must not be more than 255 characters.'), $messages['url']);
     }
 
 }

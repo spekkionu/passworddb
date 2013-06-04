@@ -31,7 +31,7 @@ class Api_Controller_ControlPanel
             }
             $mgr = new Model_ControlPanel();
             $results = $mgr->getControlPanelLogins($website_id);
-            $response->body(json_encode(array('success' => true, 'records' => $results)));
+            $response->body(json_encode($results));
             return $response;
         } catch (Exception $e) {
             $app->getLog()->error("Error listing control panels for website " . $website_id . ". - " . $e->getMessage());
@@ -66,7 +66,7 @@ class Api_Controller_ControlPanel
                 $response->body(json_encode(array('success' => false, 'message' => "Control panel login credentials not found")));
                 return $response;
             }
-            return $response->body(json_encode(array('success' => true, 'record' => $results)));
+            return $response->body(json_encode($results));
         } catch (Exception $e) {
             $app->getLog()->error("Error showing control panel {$id} for website " . $website_id . ". - " . $e->getMessage());
             $response->status(500);
@@ -93,11 +93,12 @@ class Api_Controller_ControlPanel
                 $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
                 return $response;
             }
+            $data = ($app->request()->getMediaType() == 'application/json') ? json_decode($app->request()->getBody(), true) : $app->request()->post();
             $mgr = new Model_ControlPanel();
-            $results = $mgr->addControlPanelLogin($website_id, $app->request()->post());
+            $results = $mgr->addControlPanelLogin($website_id, $data);
             $app->getLog()->info("Control panel {$results['id']} added for website " . $website_id . ".");
             $response->status(201);
-            $response->body(json_encode(array('success' => true, 'message' => 'Control panel Login has been added.', 'record' => $results)));
+            $response->body(json_encode($results));
             return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {
@@ -139,10 +140,11 @@ class Api_Controller_ControlPanel
                 $response->body(json_encode(array('success' => false, 'message' => "Control panel login credentials not found")));
                 return $response;
             }
-            $results = array_merge($results, array_intersect_key($app->request()->post(), $results));
+            $data = ($app->request()->getMediaType() == 'application/json') ? json_decode($app->request()->getBody(), true) : $app->request()->post();
+            $results = array_merge($results, array_intersect_key($data, $results));
             $results = $mgr->updateControlPanelLogin($id, $results, $website_id);
             $response->status(200);
-            $response->body(json_encode(array('success' => true, 'message' => 'Control panel login has been updated.', 'record' => $results)));
+            $response->body(json_encode($results));
             return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {

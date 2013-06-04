@@ -1,0 +1,94 @@
+<div class="page-header">
+  <h1>{{website.name}}</h1>
+</div>
+<div class="row-fluid">
+  <form name="formDatabase" ng-submit="saveDatabase()" class="form-horizontal">
+    <fieldset>
+      <legend>{{legend}}</legend>
+      <div class="control-group">
+        <label for="form-website-name" class="control-label">Website</label>
+        <div class="controls">
+          <span class="span5 uneditable-input" id="form-website-name">{{website.name}}<span ng-show="website.domain"> ({{website.domain}})</span></span>
+          <p class="help-block">The website the Database credentials are for.</p>
+        </div>
+      </div>
+      <div class="control-group" ng-class="{error: formDatabase.type.$invalid}">
+        <label for="form-database-type" class="control-label required">Database Type</label>
+        <div class="controls">
+          <select class="span2" id="form-database-type" name="type" ng-options="type.value as type.label for type in types" ng-model="database.type"></select>
+          <div class="help-inline control-error" ng-show="formDatabase.type.$invalid">
+            <i class="icon-exclamation-sign"></i>
+            <span ng-show="formDatabase.type.$error.required">Database type is required.</span>
+            <span ng-show="formDatabase.type.$error.invalid">Invalid database type.</span>
+          </div>
+          <p class="help-block">The type of database.</p>
+        </div>
+      </div>
+      <div class="control-group" ng-class="{error: formDatabase.hostname.$invalid}">
+        <label for="form-database-hostname" class="control-label">Hostname</label>
+        <div class="controls">
+          <input type="text" class="span3" id="form-database-hostname" name="hostname" ng-model="database.hostname" ng-maxlength="100" placeholder="localhost" />
+          <div class="help-inline control-error" ng-show="formDatabase.hostname.$invalid">
+            <i class="icon-exclamation-sign"></i>
+            <span ng-show="formDatabase.hostname.$error.maxlength">Hostname must not be more than 100 characters.</span>
+          </div>
+          <p class="help-block">The hostname of the database server.</p>
+        </div>
+      </div>
+      <div class="control-group" ng-class="{error: formDatabase.username.$invalid}">
+        <label for="form-database-username" class="control-label">Username</label>
+        <div class="controls">
+          <input type="text" class="span2" id="form-database-username" name="username" ng-model="database.username" ng-maxlength="100" />
+          <div class="help-inline control-error" ng-show="formDatabase.username.$invalid">
+            <i class="icon-exclamation-sign"></i>
+            <span ng-show="formDatabase.username.$error.maxlength">Username must not be more than 100 characters.</span>
+          </div>
+          <p class="help-block">The database username.</p>
+        </div>
+      </div>
+      <div class="control-group" ng-class="{error: formDatabase.password.$invalid}">
+        <label for="form-database-password" class="control-label">Password</label>
+        <div class="controls">
+          <input type="text" class="span2" id="form-database-password" name="password" ng-model="database.password" ng-maxlength="100" />
+          <div class="help-inline control-error" ng-show="formDatabase.password.$invalid">
+            <i class="icon-exclamation-sign"></i>
+            <span ng-show="formDatabase.password.$error.maxlength">Password must not be more than 100 characters.</span>
+          </div>
+          <p class="help-block">The database password.</p>
+        </div>
+      </div>
+      <div class="control-group" ng-class="{error: formDatabase.database.$invalid}">
+        <label for="form-database-database" class="control-label">Database</label>
+        <div class="controls">
+          <input type="text" class="span3" id="form-database-database" name="database" ng-model="database.database" ng-maxlength="100" />
+          <div class="help-inline control-error" ng-show="formDatabase.database.$invalid">
+            <i class="icon-exclamation-sign"></i>
+            <span ng-show="formDatabase.database.$error.maxlength">Database must not be more than 100 characters.</span>
+          </div>
+          <p class="help-block">The database name.</p>
+        </div>
+      </div>
+      <div class="control-group" ng-class="{error: formDatabase.url.$invalid}">
+        <label for="form-database-url" class="control-label">Admin URL</label>
+        <div class="controls">
+          <input type="text" class="span3" id="form-database-url" name="url" ng-model="database.url" ng-maxlength="255" />
+          <div class="help-inline control-error" ng-show="formDatabase.url.$invalid">
+            <i class="icon-exclamation-sign"></i>
+            <span ng-show="formDatabase.type.$error.maxlength">URL must not be more than 255 characters.</span>
+          </div>
+          <p class="help-block">URL of the phpMyAdmin or other basabase management.</p>
+        </div>
+      </div>
+      <div class="control-group" ng-class="{error: formDatabase.notes.$invalid}">
+        <label for="form-database-notes" class="control-label">Notes</label>
+        <div class="controls">
+          <textarea class="span4" rows="5" id="form-database-notes" name="notes" ng-model="database.notes"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <input type="submit" class="btn btn-primary" value="Save" />
+        <a class="btn" ng-href="/website/details/{{website.id}}">Cancel</a>
+      </div>
+    </fieldset>
+  </form>
+</div>

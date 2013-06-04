@@ -31,7 +31,7 @@ class Api_Controller_Database
             }
             $mgr = new Model_Database();
             $results = $mgr->getDBLogins($website_id);
-            $response->body(json_encode(array('success' => true, 'records' => $results)));
+            $response->body(json_encode($results));
             return $response;
         } catch (Exception $e) {
             $app->getLog()->error("Error listing databases for website " . $website_id . ". - " . $e->getMessage());
@@ -66,7 +66,7 @@ class Api_Controller_Database
                 $response->body(json_encode(array('success' => false, 'message' => "Database login credentials not found")));
                 return $response;
             }
-            return $response->body(json_encode(array('success' => true, 'record' => $results)));
+            return $response->body(json_encode($results));
         } catch (Exception $e) {
             $app->getLog()->error("Error showing database {$id} for website " . $website_id . ". - " . $e->getMessage());
             $response->status(500);
@@ -93,11 +93,12 @@ class Api_Controller_Database
                 $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
                 return $response;
             }
+            $data = ($app->request()->getMediaType() == 'application/json') ? json_decode($app->request()->getBody(), true) : $app->request()->post();
             $mgr = new Model_Database();
-            $results = $mgr->addDB($website_id, $app->request()->post());
+            $results = $mgr->addDB($website_id, $data);
             $app->getLog()->info("Database {$results['id']} added for website " . $website_id . ".");
             $response->status(201);
-            $response->body(json_encode(array('success' => true, 'message' => 'Database Login has been added.', 'record' => $results)));
+            $response->body(json_encode($results));
             return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {
@@ -138,11 +139,12 @@ class Api_Controller_Database
                 $response->body(json_encode(array('success' => false, 'message' => "Database login credentials not found")));
                 return $response;
             }
-            $results = array_merge($results, array_intersect_key($app->request()->post(), $results));
+            $data = ($app->request()->getMediaType() == 'application/json') ? json_decode($app->request()->getBody(), true) : $app->request()->post();
+            $results = array_merge($results, array_intersect_key($data, $results));
             $results = $mgr->updateDB($id, $results, $website_id);
             $app->getLog()->info("Database {$id} updated for website " . $website_id . ".");
             $response->status(200);
-            $response->body(json_encode(array('success' => true, 'message' => 'Database login has been updated.', 'record' => $results)));
+            $response->body(json_encode($results));
             return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {

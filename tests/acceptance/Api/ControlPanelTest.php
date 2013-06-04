@@ -67,8 +67,7 @@ class ControlPanelTest extends \Test_DatabaseTest
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(200, $response->getStatusCode());
         $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertCount(2, $body['records']);
+        $this->assertCount(2, $body);
     }
 
     /**
@@ -83,8 +82,7 @@ class ControlPanelTest extends \Test_DatabaseTest
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(200, $response->getStatusCode());
         $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertEquals($id, $body['record']['id']);
+        $this->assertEquals($id, $body['id']);
     }
 
     /**
@@ -103,11 +101,10 @@ class ControlPanelTest extends \Test_DatabaseTest
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(201, $response->getStatusCode());
         $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
         $this->assertEquals($result, array(
-          'username' => $body['record']['username'],
-          'password' => $body['record']['password'],
-          'url' => $body['record']['url']
+          'username' => $body['username'],
+          'password' => $body['password'],
+          'url' => $body['url']
         ));
     }
 
@@ -129,11 +126,10 @@ class ControlPanelTest extends \Test_DatabaseTest
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(200, $response->getStatusCode());
         $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
         $this->assertEquals($result, array(
-          'username' => $body['record']['username'],
-          'password' => $body['record']['password'],
-          'url' => $body['record']['url']
+          'username' => $body['username'],
+          'password' => $body['password'],
+          'url' => $body['url']
         ));
     }
 

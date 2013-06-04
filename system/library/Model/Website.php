@@ -20,6 +20,8 @@ class Model_Website extends Model_Abstract
 
     /**
      * Returns array of websites
+     *
+     * @param boolean $with_details If true child data is also returned.
      * @return array
      */
     public function getWebsites($with_details = true)
@@ -72,22 +74,44 @@ class Model_Website extends Model_Abstract
      * Returns array of websites
      *
      * @param string $search Search filter
-     * @param int $page The page of websites to return
-     * @param int $limit The total number of websites to return
+     * @param int $offset The number of records to skip
+     * @param int $limit The maximum number of websites to return
+     * @param string $sort id|name|domain|url The column to sort by
+     * @param string $dir ASC|DESC The direction to sort
      * @return array
      */
-    public function getWebsiteList($search = null, $page = 1, $limit = 25)
+    public function getWebsiteList($search = null, $limit = 25, $offset = 0, $sort = 'name', $dir = 'ASC')
     {
-        $offset = ($page - 1) * $limit;
-        if (empty($search)) {
-            $sth = self::getConnection()->prepare("SELECT * FROM `websites` ORDER BY `name` ASC LIMIT :offset, :limit");
-        } else {
-            $sth = self::getConnection()->prepare("SELECT * FROM `websites` WHERE (`name` LIKE :search) OR (`domain` LIKE :search) OR (`url` LIKE :search) ORDER BY `name` ASC LIMIT :offset, :limit");
-            $searchstring = "%".str_replace("%", "\\%", $search)."%";
-            $sth->bindValue(":search", $searchstring);
+        $sort = mb_strtolower($sort);
+        if(!in_array($sort, array('id','name', 'domain', 'url'))){
+          $sort = 'name';
         }
-        $sth->bindValue(":offset", $offset, PDO::PARAM_INT);
-        $sth->bindValue(":limit", $limit, PDO::PARAM_INT);
+        $dir = mb_strtoupper($dir);
+        if(!in_array($dir, array('ASC','DESC'))){
+          $dir = 'ASC';
+        }
+        $limit = (int)$limit;
+        $offset = (int)$offset;
+        $query = "SELECT * FROM `websites`";
+        if (is_null($search) || $search == '') {
+          $search = null;
+        } else {
+          $search = "%".str_replace("%", "\\%", $search)."%";
+          $query .= " WHERE (`name` LIKE :search) OR (`domain` LIKE :search) OR (`url` LIKE :search)";
+        }
+
+        $query .= " ORDER BY `{$sort}` {$dir}";
+        if($limit > 0){
+          $query .= " LIMIT :offset, :limit";
+        }
+        $sth = self::getConnection()->prepare($query);
+        if($limit > 0){
+            $sth->bindValue(":offset", $offset, PDO::PARAM_INT);
+            $sth->bindValue(":limit", $limit, PDO::PARAM_INT);
+        }
+        if (!is_null($search)) {
+          $sth->bindValue(":search", $search);
+        }
         $sth->execute();
         return $sth->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -218,7 +242,7 @@ class Model_Website extends Model_Abstract
 
     /**
      * Validates Data
-     * Retuns an Error_Stack instance with any error messages
+     * Returns an Error_Stack instance with any error messages
      * If all data is valid the Error_Stack will have no errors (Error_Stack::hasErrors() will return false)
      *
      * @param array Data
@@ -229,9 +253,9 @@ class Model_Website extends Model_Abstract
     {
         $errors = new Error_Stack();
         if (empty($data['name'])) {
-            $errors->addError('name', 'Website name is required.');
+            $errors->addError('name', 'Website name is required.', 'required');
         } elseif (mb_strlen($data['name']) > 100) {
-            $errors->addError('name', 'Website name must not be more than 100 characters.');
+            $errors->addError('name', 'Website name must not be more than 100 characters.', 'maxlength');
         } else {
             // Make sure name is unique
             if ($id) {
@@ -245,14 +269,14 @@ class Model_Website extends Model_Abstract
             $count = $sth->fetchColumn();
             $sth->closeCursor();
             if ($count > 0) {
-                $errors->addError('name', "Website with name {$data['name']} already exists.");
+                $errors->addError('name', "Website with name {$data['name']} already exists.", 'unique');
             }
         }
         if (mb_strlen($data['domain']) > 100) {
-            $errors->addError('domain', 'Website domain must not be more than 100 characters.');
+            $errors->addError('domain', 'Website domain must not be more than 100 characters.', 'maxlength');
         }
         if (mb_strlen($data['url']) > 255) {
-            $errors->addError('url', 'Website URL must not be more than 255 characters.');
+            $errors->addError('url', 'Website URL must not be more than 255 characters.', 'maxlength');
         }
         return $errors;
     }

@@ -1,0 +1,67 @@
+<div class="page-header">
+  <h1>{{website.name}}</h1>
+</div>
+<div class="alert alert-block alert-danger">
+  <h4 class="alert-heading">Warning!</h4>
+  This will delete these FTP credentials.<br>
+  This action cannot be undone.
+</div>
+<div class="row-fluid">
+  <form ng-submit="deleteFTP()" class="form-horizontal">
+    <fieldset>
+      <legend>Delete FTP Credentials</legend>
+      <div class="control-group">
+        <label for="form-ftp-website" class="control-label">Website</label>
+        <div class="controls">
+          <span class="span6 uneditable-input" id="form-ftp-website">{{website.name}}<span ng-show="website.domain"> ({{website.domain}})</span></span>
+          <p class="help-block">The website the FTP credentials are for.</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="form-ftp-type" class="control-label required">FTP Type</label>
+        <div class="controls">
+          <span class="span1 uneditable-input" id="form-ftp-type">{{ftp.type|uppercase}}</span>
+          <p class="help-block">The type of connection.</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="form-ftp-hostname" class="control-label">Hostname</label>
+        <div class="controls">
+          <span class="span3 uneditable-input" id="form-ftp-hostname">{{ftp.hostname}}</span>
+          <p class="help-block">The hostname of the FTP server.</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="form-ftp-username" class="control-label">Username</label>
+        <div class="controls">
+          <span class="span2 uneditable-input" id="form-ftp-username">{{ftp.username}}</span>
+          <p class="help-block">The FTP username.</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="form-ftp-password" class="control-label">Password</label>
+        <div class="controls">
+          <span class="span2 uneditable-input" id="form-ftp-password">{{ftp.password}}</span>
+          <p class="help-block">The FTP password.</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="form-ftp-path" class="control-label">Server Path</label>
+        <div class="controls">
+          <span class="span3 uneditable-input" id="form-ftp-path">{{ftp.path}}</span>
+          <p class="help-block">The FTP password.</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="form-ftp-notes" class="control-label">Notes</label>
+        <div class="controls">
+          <div class="span4 uneditable-input" style="height:150px;" id="form-ftp-notes">{{ftp.notes}}</div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <input type="submit" class="btn btn-danger" value="Delete" />
+        <a class="btn" ng-href="/website/details/{{website.id}}">Cancel</a>
+      </div>
+    </fieldset>
+  </form>
+</div>

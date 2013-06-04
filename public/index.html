@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Password Database</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Stylesheets -->
+    <link href="/styles/styles.css" media="all" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <header id="main-header" class="navbar navbar-fixed-top navbar-inverse">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="/index.html">
+            Password Database
+          </a>
+          <form ng-controller="SearchCtrl" ng-submit="searchWebsites()" class="navbar-search pull-right">
+            <input name="s" type="search" class="search-query" placeholder="Search" ng-model="globalSearch">
+          </form>
+        </div>
+      </div>
+    </header>
+    <section id="main-content" class="container-fluid">
+        <div class="flash-messages"></div>
+        <div ng-view></div>
+    </section>
+    <footer id="main-footer" class="container-fluid">&copy; Copyright 2013</footer>
+
+    <!-- Scripts -->
+    <script src="/vendor/angular/angular.min.js"></script>
+    <script src="/vendor/angular-resource/angular-resource.min.js"></script>
+    <!-- Application  JS -->
+    <script src="/scripts/project.js"></script>
+  </body>
+</html>

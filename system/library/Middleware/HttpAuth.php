@@ -30,7 +30,7 @@ class Middleware_HttpAuth extends Slim_Middleware
      * @param   string  $password   The HTTP Authentication password
      * @param   string  $realm      The HTTP Authentication realm
      */
-    public function __construct($realm = 'Protected Area', array $credentials)
+    public function __construct($realm = 'Protected Area', array $credentials = array())
     {
         $this->realm = $realm;
         $this->credentials = $credentials;

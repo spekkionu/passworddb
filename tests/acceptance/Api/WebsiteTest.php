@@ -66,8 +66,20 @@ class WebsiteTest extends \Test_DatabaseTest
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(200, $response->getStatusCode());
         $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertCount(5, $body['records']);
+        $this->assertCount(5, $body);
+    }
+
+    /**
+     * Controller_Website::countAction
+     */
+    public function testCountAction()
+    {
+        $request = $this->client->get('api/website/count');
+        $response = $request->send();
+        $this->assertEquals('application/json', $response->getContentType());
+        $this->assertEquals(200, $response->getStatusCode());
+        $body = json_decode($response->getBody(true), true);
+        $this->assertEquals(5, $body['count']);
     }
 
     /**
@@ -81,8 +93,7 @@ class WebsiteTest extends \Test_DatabaseTest
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(200, $response->getStatusCode());
         $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
-        $this->assertEquals($id, $body['record']['id']);
+        $this->assertEquals($id, $body['id']);
     }
 
     /**
@@ -101,12 +112,11 @@ class WebsiteTest extends \Test_DatabaseTest
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(201, $response->getStatusCode());
         $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
         $this->assertEquals($website, array(
-          'name' => $body['record']['name'],
-          'domain' => $body['record']['domain'],
-          'url' => $body['record']['url'],
-          'notes' => $body['record']['notes']
+          'name' => $body['name'],
+          'domain' => $body['domain'],
+          'url' => $body['url'],
+          'notes' => $body['notes']
         ));
     }
 
@@ -128,12 +138,11 @@ class WebsiteTest extends \Test_DatabaseTest
         $this->assertEquals('application/json', $response->getContentType());
         $this->assertEquals(200, $response->getStatusCode());
         $body = json_decode($response->getBody(true), true);
-        $this->assertTrue($body['success']);
         $this->assertEquals($website, array(
-          'name' => $body['record']['name'],
-          'domain' => $body['record']['domain'],
-          'url' => $body['record']['url'],
-          'notes' => $body['record']['notes']
+          'name' => $body['name'],
+          'domain' => $body['domain'],
+          'url' => $body['url'],
+          'notes' => $body['notes']
         ));
     }
 

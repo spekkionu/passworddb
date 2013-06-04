@@ -31,7 +31,7 @@ class Api_Controller_FTP
             }
             $mgr = new Model_FTP();
             $results = $mgr->getFTPLogins($website_id);
-            $response->body(json_encode(array('success' => true, 'records' => $results)));
+            $response->body(json_encode($results));
             return $response;
         } catch (Exception $e) {
             $app->getLog()->error("Error listing ftp logins for website " . $website_id . ". - " . $e->getMessage());
@@ -66,7 +66,7 @@ class Api_Controller_FTP
                 $response->body(json_encode(array('success' => false, 'message' => "FTP login credentials not found")));
                 return $response;
             }
-            return $response->body(json_encode(array('success' => true, 'record' => $results)));
+            return $response->body(json_encode($results));
         } catch (Exception $e) {
             $app->getLog()->error("Error showing ftp {$id} for website " . $website_id . ". - " . $e->getMessage());
             $response->status(500);
@@ -93,11 +93,12 @@ class Api_Controller_FTP
                 $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
                 return $response;
             }
+            $data = ($app->request()->getMediaType() == 'application/json') ? json_decode($app->request()->getBody(), true) : $app->request()->post();
             $mgr = new Model_FTP();
-            $results = $mgr->addFTP($website_id, $app->request()->post());
+            $results = $mgr->addFTP($website_id, $data);
             $app->getLog()->info("FTP {$results['id']} added for website " . $website_id . ".");
             $response->status(201);
-            $response->body(json_encode(array('success' => true, 'message' => 'FTP Login has been added.', 'record' => $results)));
+            $response->body(json_encode($results));
             return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {
@@ -138,11 +139,12 @@ class Api_Controller_FTP
                 $response->body(json_encode(array('success' => false, 'message' => "FTP login credentials not found")));
                 return $response;
             }
-            $results = array_merge($results, array_intersect_key($app->request()->post(), $results));
+            $data = ($app->request()->getMediaType() == 'application/json') ? json_decode($app->request()->getBody(), true) : $app->request()->post();
+            $results = array_merge($results, array_intersect_key($data, $results));
             $results = $mgr->updateFTP($id, $results, $website_id);
             $app->getLog()->info("FTP {$id} updated for website " . $website_id . ".");
             $response->status(200);
-            $response->body(json_encode(array('success' => true, 'message' => 'FTP login has been updated.', 'record' => $results)));
+            $response->body(json_encode($results));
             return $response;
         } catch (Exception $e) {
             if ($e instanceof Validate_Exception) {

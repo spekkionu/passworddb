@@ -196,12 +196,12 @@ class Model_FTPTest extends Test_DatabaseTest
         $this->assertInstanceOf('Error_Stack', $errors);
         $this->assertTrue($errors->hasErrors());
         $messages = $errors->getErrors();
-        $this->assertEquals(array('Website does not exist.'), $messages['website_id']);
-        $this->assertEquals(array('FTP type is required.'), $messages['type']);
-        $this->assertEquals(array('Username must not be more than 100 characters.'), $messages['username']);
-        $this->assertEquals(array('Password must not be more than 100 characters.'), $messages['password']);
-        $this->assertEquals(array('Hostname must not be more than 100 characters.'), $messages['hostname']);
-        $this->assertEquals(array('Path must not be more than 255 characters.'), $messages['path']);
+        $this->assertEquals(array('invalid' => 'Website does not exist.'), $messages['website_id']);
+        $this->assertEquals(array('required' => 'FTP type is required.'), $messages['type']);
+        $this->assertEquals(array('maxlength' => 'Username must not be more than 100 characters.'), $messages['username']);
+        $this->assertEquals(array('maxlength' => 'Password must not be more than 100 characters.'), $messages['password']);
+        $this->assertEquals(array('maxlength' => 'Hostname must not be more than 100 characters.'), $messages['hostname']);
+        $this->assertEquals(array('maxlength' => 'Path must not be more than 255 characters.'), $messages['path']);
     }
 
 }
