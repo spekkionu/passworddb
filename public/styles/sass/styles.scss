@@ -5,7 +5,23 @@
 body{
   // Add top padding to body for top bar
   // Must be added before responsive
-  padding-top:40px;
+  padding-top:45px;
+}
+@media (max-width: 450px) {
+  #main-header{
+    a.brand{
+      text-align:center;
+      padding:0px;
+      margin: 5px auto;
+      display:block;
+      float:none;
+    }
+    .navbar-search{
+      float:none;
+      text-align:center;
+      margin:0 auto;
+    }
+ }
 }
 @import "../../vendor/bootstrap-sass/lib/responsive";
 

@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="app">
+<html lang="en" xmlns:ng="http://angularjs.org" id="ng-app" ng-app="app">
   <head>
     <meta charset="UTF-8" />
     <title>Password Database</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="fragment" content="!" />
+    <!--[if lte IE 8]><script src="/vendor/html5shiv/dist/html5shiv.js"></script><![endif]-->
     <!-- Stylesheets -->
     <link href="/styles/styles.css" media="all" rel="stylesheet" type="text/css" />
   </head>
@@ -11,7 +13,7 @@
     <header id="main-header" class="navbar navbar-fixed-top navbar-inverse">
       <div class="navbar-inner">
         <div class="container-fluid">
-          <a class="brand" href="/index.html">
+          <a class="brand" href="/index.html" target="_self">
             Password Database
           </a>
           <form ng-controller="SearchCtrl" ng-submit="searchWebsites()" class="navbar-search pull-right">
@@ -21,12 +23,12 @@
       </div>
     </header>
     <section id="main-content" class="container-fluid">
-        <div class="flash-messages"></div>
         <div ng-view></div>
     </section>
     <footer id="main-footer" class="container-fluid">&copy; Copyright 2013</footer>
 
     <!-- Scripts -->
+    <!--[if lte IE 8]><script src="/vendor/json3/lib/json3.min.js"></script><![endif]-->
     <script src="/vendor/angular/angular.min.js"></script>
     <script src="/vendor/angular-resource/angular-resource.min.js"></script>
     <!-- Application  JS -->

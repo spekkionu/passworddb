@@ -26,6 +26,7 @@ app.config(function($routeProvider, $locationProvider) {
 
     otherwise({redirectTo: '/'});
    $locationProvider.html5Mode(true);
+   $locationProvider.hashPrefix = '!';
 });
 
 app.factory('Search',function(){
@@ -110,12 +111,13 @@ app.controller("ListCtrl", function($scope, $resource, Website, Search) {
  */
 app.controller("SearchCtrl", function($scope, Search, $location) {
   $scope.search = Search;
+  $scope.globalSearch = '';
   $scope.searchWebsites = function(){
     $scope.search.text = $scope.globalSearch;
     $scope.globalSearch = '';
     $scope.search.page = 1;
     $scope.search.next = false;
-    $location.path('/').replace();
+    $location.path('/').search({text:$scope.search.text});
   }
 });
 

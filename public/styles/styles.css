@@ -7660,9 +7660,25 @@ a.label:hover, a.label:focus, a.badge:hover, a.badge:focus {
 
 /* line 5, sass/styles.scss */
 body {
-  padding-top: 40px;
+  padding-top: 45px;
 }
 
+@media (max-width: 450px) {
+  /* line 12, sass/styles.scss */
+  #main-header a.brand {
+    text-align: center;
+    padding: 0px;
+    margin: 5px auto;
+    display: block;
+    float: none;
+  }
+  /* line 19, sass/styles.scss */
+  #main-header .navbar-search {
+    float: none;
+    text-align: center;
+    margin: 0 auto;
+  }
+}
 /*
  * Bootstrap Responsive v2.3.1
  *
@@ -9155,19 +9171,19 @@ body {
     overflow: visible !important;
   }
 }
-/* line 19, sass/styles.scss */
+/* line 35, sass/styles.scss */
 .form-horizontal input + .help-block,
 .form-horizontal textarea + .help-block,
 .form-horizontal .uneditable-input + .help-block {
   margin: 5px 0 0 0;
 }
 
-/* line 22, sass/styles.scss */
+/* line 38, sass/styles.scss */
 .thumbnail > .table {
   margin: 0;
 }
 
-/* line 25, sass/styles.scss */
+/* line 41, sass/styles.scss */
 #main-footer {
   padding-bottom: 17px;
   padding-top: 1em;
@@ -9175,14 +9191,14 @@ body {
   border-top: 1px solid #EEE;
 }
 
-/* line 31, sass/styles.scss */
+/* line 47, sass/styles.scss */
 .control-label.required:before {
   color: #FF0000;
   font-weight: bold;
   content: "* ";
 }
 
-/* line 36, sass/styles.scss */
+/* line 52, sass/styles.scss */
 .flash-messages {
   margin: 10px 0;
 }
