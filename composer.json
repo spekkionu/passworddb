@@ -13,8 +13,11 @@
   ],
   "config": {
     "vendor-dir": "system/library/vendor",
-    "bin-dir" : "bin"
+    "bin-dir" : "bin",
+    "preferred-install": "dist"
   },
+  "prefer-stable": true,
+  "minimum-stability": "dev",
   "require": {
     "php": ">=5.2.4",
     "slim/slim": "1.*",
