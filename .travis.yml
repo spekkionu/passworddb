@@ -2,12 +2,16 @@ language: php
 
 php:
   - 5.4
+  - 5.5
 env:
   - DB=sqlite SLIM_MODE=test
 
 before_script:
   - curl -s https://getcomposer.org/installer | php
   - php composer.phar install --dev
+  - wget https://scrutinizer-ci.com/ocular.phar
   - php -S 127.0.0.1:8000 -t public &
 
-script: phpunit --configuration sqlite.travis.xml --coverage-text
+script: phpunit --configuration sqlite.travis.xml --coverage-text --coverage-clover=coverage.clover
+
+after_script: php ocular.phar code-coverage:upload --format=php-clover coverage.clover
