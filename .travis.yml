@@ -12,6 +12,6 @@ before_script:
   - wget https://scrutinizer-ci.com/ocular.phar
   - php -S 127.0.0.1:8000 -t public &
 
-script: phpunit --configuration sqlite.travis.xml --coverage-text --coverage-clover=coverage.clover
+script: phpunit --configuration sqlite.travis.xml --coverage-text
 
 after_script: php ocular.phar code-coverage:upload --format=php-clover coverage.clover
