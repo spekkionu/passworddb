@@ -44,6 +44,9 @@ body{
   margin: 18px 0;
   border-top: 1px solid #EEE;
 }
+.control-error{
+    color: #FF0000;
+}
 .control-label.required:before{
   color: #FF0000;
   font-weight: bold;
