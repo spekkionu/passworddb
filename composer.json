@@ -42,7 +42,7 @@
       },
       "source": {
         "url": "https://github.com/weierophinney/zf1-autoloaders",
-        "type": "vcs",
+        "type": "git",
         "reference": "dev-master"
       }
     }
