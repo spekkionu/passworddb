@@ -53,7 +53,6 @@ class Api_Controller_Database
             if ($website instanceof Slim_Http_Response) {
                 return $website;
             }
-            $mgr = new Model_Database();
             $results = self::getDB($id, $website_id);
             if ($results instanceof Slim_Http_Response) {
                 return $results;

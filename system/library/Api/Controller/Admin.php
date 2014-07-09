@@ -53,7 +53,6 @@ class Api_Controller_Admin
             if ($website instanceof Slim_Http_Response) {
                 return $website;
             }
-            $mgr = new Model_Admin();
             $results = self::getAdmin($id, $website_id);
             if ($results instanceof Slim_Http_Response) {
                 return $results;

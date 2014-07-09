@@ -53,7 +53,6 @@ class Api_Controller_FTP
             if ($website instanceof Slim_Http_Response) {
                 return $website;
             }
-            $mgr = new Model_FTP();
             $results = self::getFTP($id, $website_id);
             if ($results instanceof Slim_Http_Response) {
                 return $results;

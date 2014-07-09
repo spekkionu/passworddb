@@ -53,7 +53,6 @@ class Api_Controller_ControlPanel
             if ($website instanceof Slim_Http_Response) {
                 return $website;
             }
-            $mgr = new Model_ControlPanel();
             $results = self::getControlPanel($id, $website_id);
             if ($results instanceof Slim_Http_Response) {
                 return $results;

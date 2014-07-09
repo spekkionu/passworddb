@@ -88,7 +88,6 @@ class Api_Controller_Website
         $response = $app->response();
         $response->header('Content-Type', 'application/json');
         try {
-            $mgr = new Model_Website();
             $website = self::getWebsite($id);
             if ($website instanceof Slim_Http_Response) {
                 return $website;
