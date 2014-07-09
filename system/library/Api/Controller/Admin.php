@@ -22,12 +22,9 @@ class Api_Controller_Admin
         $response = $app->response();
         $response->header('Content-Type', 'application/json');
         try {
-            $mgr = new Model_Website();
-            $website = $mgr->websiteExists($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
-                return $response;
+            $website = Api_Controller_Website::getWebsite($website_id);
+            if ($website instanceof Slim_Http_Response) {
+                return $website;
             }
             $mgr = new Model_Admin();
             $results = $mgr->getAdminLogins($website_id);
@@ -52,19 +49,14 @@ class Api_Controller_Admin
         $response = $app->response();
         $response->header('Content-Type', 'application/json');
         try {
-            $mgr = new Model_Website();
-            $website = $mgr->websiteExists($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
-                return $response;
+            $website = Api_Controller_Website::getWebsite($website_id);
+            if ($website instanceof Slim_Http_Response) {
+                return $website;
             }
             $mgr = new Model_Admin();
-            $results = $mgr->getAdminLoginDetails($id, $website_id);
-            if (!$results) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Admin login credentials not found")));
-                return $response;
+            $results = self::getAdmin($id, $website_id);
+            if ($results instanceof Slim_Http_Response) {
+                return $results;
             }
             $response->body(json_encode($results));
             return $response;
@@ -87,12 +79,9 @@ class Api_Controller_Admin
         $response = $app->response();
         $response->header('Content-Type', 'application/json');
         try {
-            $mgr = new Model_Website();
-            $website = $mgr->websiteExists($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
-                return $response;
+            $website = Api_Controller_Website::getWebsite($website_id);
+            if ($website instanceof Slim_Http_Response) {
+                return $website;
             }
             $data = ($app->request()->getMediaType() == 'application/json') ? json_decode($app->request()->getBody(), true) : $app->request()->post();
             $mgr = new Model_Admin();
@@ -126,19 +115,14 @@ class Api_Controller_Admin
         $response = $app->response();
         $response->header('Content-Type', 'application/json');
         try {
-            $mgr = new Model_Website();
-            $website = $mgr->getWebsite($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
-                return $response;
+            $website = Api_Controller_Website::getWebsite($website_id);
+            if ($website instanceof Slim_Http_Response) {
+                return $website;
             }
             $mgr = new Model_Admin();
-            $results = $mgr->getAdminLoginDetails($id, $website_id);
-            if (!$results) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Admin login credentials not found")));
-                return $response;
+            $results = self::getAdmin($id, $website_id);
+            if ($results instanceof Slim_Http_Response) {
+                return $results;
             }
             $data = ($app->request()->getMediaType() == 'application/json') ? json_decode($app->request()->getBody(), true) : $app->request()->post();
             $results = array_merge($results, array_intersect_key($data, $results));
@@ -172,20 +156,15 @@ class Api_Controller_Admin
         $response = $app->response();
         $response->header('Content-Type', 'application/json');
         try {
-            $mgr = new Model_Website();
-            $website = $mgr->getWebsite($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
-                return $response;
+            $website = Api_Controller_Website::getWebsite($website_id);
+            if ($website instanceof Slim_Http_Response) {
+                return $website;
+            }
+            $results = self::getAdmin($id, $website_id);
+            if ($results instanceof Slim_Http_Response) {
+                return $results;
             }
             $mgr = new Model_Admin();
-            $results = $mgr->getAdminLoginDetails($id, $website_id);
-            if (!$results) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Admin login credentials not found")));
-                return $response;
-            }
             $results = $mgr->deleteAdminLogin($id);
             $app->getLog()->info("Admin {$id} deleted from website " . $website_id . ".");
             $response->status(204);
@@ -202,6 +181,34 @@ class Api_Controller_Admin
                 $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
                 return $response;
             }
+        }
+    }
+
+    /**
+     * Gets admin login credentials
+     * @param int $id
+     * @param int $website_id
+     * @return array|Slim_Http_Response
+     */
+    public static function getAdmin($id, $website_id)
+    {
+        $app = Slim::getInstance();
+        $response = $app->response();
+        $response->header('Content-Type', 'application/json');
+        try {
+            $mgr = new Model_Admin();
+            $results = $mgr->getAdminLoginDetails($website_id);
+            if (!$results) {
+                $response->status(404);
+                $response->body(json_encode(array('success' => false, 'message' => "Admin login credentials not found")));
+                return $response;
+            }
+            return $results;
+        } catch (Exception $e) {
+            $app->getLog()->error("Error pulling admin login credentials {$id}. - " . $e->getMessage());
+            $response->status(500);
+            $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            return $response;
         }
     }
 }

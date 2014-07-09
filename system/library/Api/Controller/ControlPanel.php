@@ -22,12 +22,9 @@ class Api_Controller_ControlPanel
         $response = $app->response();
         $response->header('Content-Type', 'application/json');
         try {
-            $mgr = new Model_Website();
-            $website = $mgr->websiteExists($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
-                return $response;
+            $website = Api_Controller_Website::getWebsite($website_id);
+            if ($website instanceof Slim_Http_Response) {
+                return $website;
             }
             $mgr = new Model_ControlPanel();
             $results = $mgr->getControlPanelLogins($website_id);
@@ -52,19 +49,14 @@ class Api_Controller_ControlPanel
         $response = $app->response();
         $response->header('Content-Type', 'application/json');
         try {
-            $mgr = new Model_Website();
-            $website = $mgr->websiteExists($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
-                return $response;
+            $website = Api_Controller_Website::getWebsite($website_id);
+            if ($website instanceof Slim_Http_Response) {
+                return $website;
             }
             $mgr = new Model_ControlPanel();
-            $results = $mgr->getControlPanelDetails($id, $website_id);
-            if (!$results) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Control panel login credentials not found")));
-                return $response;
+            $results = self::getControlPanel($id, $website_id);
+            if ($results instanceof Slim_Http_Response) {
+                return $results;
             }
             return $response->body(json_encode($results));
         } catch (Exception $e) {
@@ -86,12 +78,9 @@ class Api_Controller_ControlPanel
         $response = $app->response();
         $response->header('Content-Type', 'application/json');
         try {
-            $mgr = new Model_Website();
-            $website = $mgr->websiteExists($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found")));
-                return $response;
+            $website = Api_Controller_Website::getWebsite($website_id);
+            if ($website instanceof Slim_Http_Response) {
+                return $website;
             }
             $data = ($app->request()->getMediaType() == 'application/json') ? json_decode($app->request()->getBody(), true) : $app->request()->post();
             $mgr = new Model_ControlPanel();
@@ -125,24 +114,19 @@ class Api_Controller_ControlPanel
         $response = $app->response();
         $response->header('Content-Type', 'application/json');
         try {
-            $mgr = new Model_Website();
-            $website = $mgr->getWebsite($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
-                return $response;
+            $website = Api_Controller_Website::getWebsite($website_id);
+            if ($website instanceof Slim_Http_Response) {
+                return $website;
             }
             $mgr = new Model_ControlPanel();
-            $results = $mgr->getControlPanelDetails($id, $website_id);
-            $app->getLog()->info("Control panel {$id} updated for website " . $website_id . ".");
-            if (!$results) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Control panel login credentials not found")));
-                return $response;
+            $results = self::getControlPanel($id, $website_id);
+            if ($results instanceof Slim_Http_Response) {
+                return $results;
             }
             $data = ($app->request()->getMediaType() == 'application/json') ? json_decode($app->request()->getBody(), true) : $app->request()->post();
             $results = array_merge($results, array_intersect_key($data, $results));
             $results = $mgr->updateControlPanelLogin($id, $results, $website_id);
+            $app->getLog()->info("Control panel {$id} updated for website " . $website_id . ".");
             $response->status(200);
             $response->body(json_encode($results));
             return $response;
@@ -171,19 +155,14 @@ class Api_Controller_ControlPanel
         $response = $app->response();
         $response->header('Content-Type', 'application/json');
         try {
-            $mgr = new Model_Website();
-            $website = $mgr->getWebsite($website_id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
-                return $response;
+            $website = Api_Controller_Website::getWebsite($website_id);
+            if ($website instanceof Slim_Http_Response) {
+                return $website;
             }
             $mgr = new Model_ControlPanel();
-            $results = $mgr->getControlPanelDetails($id, $website_id);
-            if (!$results) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Control panel login credentials not found")));
-                return $response;
+            $results = self::getControlPanel($id, $website_id);
+            if ($results instanceof Slim_Http_Response) {
+                return $results;
             }
             $results = $mgr->deleteControlPanelLogin($id);
             $app->getLog()->info("Control panel {$id} deleted from website " . $website_id . ".");
@@ -201,6 +180,34 @@ class Api_Controller_ControlPanel
                 $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
                 return $response;
             }
+        }
+    }
+
+    /**
+     * Gets control panel login
+     * @param int $id
+     * @param int $website_id
+     * @return array|Slim_Http_Response
+     */
+    public static function getControlPanel($id, $website_id)
+    {
+        $app = Slim::getInstance();
+        $response = $app->response();
+        $response->header('Content-Type', 'application/json');
+        try {
+            $mgr = new Model_ControlPanel();
+            $results = $mgr->getControlPanelDetails($website_id);
+            if (!$results) {
+                $response->status(404);
+                $response->body(json_encode(array('success' => false, 'message' => "Control panel login credentials not found")));
+                return $response;
+            }
+            return $results;
+        } catch (Exception $e) {
+            $app->getLog()->error("Error pulling control panel login {$id}. - " . $e->getMessage());
+            $response->status(500);
+            $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            return $response;
         }
     }
 }

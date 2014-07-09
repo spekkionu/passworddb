@@ -89,11 +89,9 @@ class Api_Controller_Website
         $response->header('Content-Type', 'application/json');
         try {
             $mgr = new Model_Website();
-            $website = $mgr->getWebsite($id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => 'Requested URI is not found.')));
-                return $response;
+            $website = self::getWebsite($id);
+            if ($website instanceof Slim_Http_Response) {
+                return $website;
             }
             $response->body(json_encode($website));
             return $response;
@@ -149,11 +147,9 @@ class Api_Controller_Website
         $response->header('Content-Type', 'application/json');
         try {
             $mgr = new Model_Website();
-            $website = $mgr->getWebsite($id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
-                return $response;
+            $website = self::getWebsite($id);
+            if ($website instanceof Slim_Http_Response) {
+                return $website;
             }
             $data = ($app->request()->getMediaType() == 'application/json') ? json_decode($app->request()->getBody(), true) : $app->request()->post();
             $website = array_merge($website, array_intersect_key($data, $website));
@@ -188,11 +184,9 @@ class Api_Controller_Website
         $response->header('Content-Type', 'application/json');
         try {
             $mgr = new Model_Website();
-            $website = $mgr->getWebsite($id);
-            if (!$website) {
-                $response->status(404);
-                $response->body(json_encode(array('success' => false, 'message' => "Website not found.")));
-                return $response;
+            $website = self::getWebsite($id);
+            if ($website instanceof Slim_Http_Response) {
+                return $website;
             }
             $website = $mgr->deleteWebsite($id);
             $app->getLog()->info("Website {$id} deleted.");
@@ -210,6 +204,33 @@ class Api_Controller_Website
                 $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
                 return $response;
             }
+        }
+    }
+
+    /**
+     * Checks if a website exists
+     * @param int $website_id
+     * @return array|Slim_Http_Response
+     */
+    public static function getWebsite($website_id)
+    {
+        $app = Slim::getInstance();
+        $response = $app->response();
+        $response->header('Content-Type', 'application/json');
+        try {
+            $mgr = new Model_Website();
+            $website = $mgr->getWebsite($website_id);
+            if (!$website) {
+                $response->status(404);
+                $response->body(json_encode(array('success' => false, 'message' => 'Website is not found.')));
+                return $response;
+            }
+            return $website;
+        } catch (Exception $e) {
+            $app->getLog()->error("Error pulling website {$id}. - " . $e->getMessage());
+            $response->status(500);
+            $response->body(json_encode(array('success' => false, 'message' => $e->getMessage())));
+            return $response;
         }
     }
 }
