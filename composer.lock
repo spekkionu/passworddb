@@ -4,36 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6b90710e0405734b03e91626c9d6c5d4",
+    "hash": "5718b630dc2021f5574af9125113d89d",
     "packages": [
-        {
-            "name": "phly/zf1-autoloaders",
-            "version": "1.0.0",
-            "source": {
-                "type": "vcs",
-                "url": "https://github.com/weierophinney/zf1-autoloaders",
-                "reference": "dev-master as 1.0.0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/weierophinney/zf1-autoloaders/archive/master.zip",
-                "reference": null,
-                "shasum": null
-            },
-            "type": "library"
-        },
         {
             "name": "slim/slim",
             "version": "1.6.7",
             "source": {
                 "type": "git",
-                "url": "https://github.com/codeguy/Slim",
-                "reference": "1.6.7"
+                "url": "https://github.com/codeguy/Slim.git",
+                "reference": "18d6d035c983f5c3d1a16399a44bfa3a24e35813"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/codeguy/Slim/zipball/1.6.7",
-                "reference": "1.6.7",
+                "url": "https://api.github.com/repos/codeguy/Slim/zipball/18d6d035c983f5c3d1a16399a44bfa3a24e35813",
+                "reference": "18d6d035c983f5c3d1a16399a44bfa3a24e35813",
                 "shasum": ""
             },
             "require": {
@@ -63,7 +47,7 @@
                 "rest",
                 "router"
             ],
-            "time": "2012-08-28 16:09:45"
+            "time": "2012-08-28 23:09:45"
         }
     ],
     "packages-dev": [
@@ -72,13 +56,13 @@
             "version": "v3.0.7",
             "source": {
                 "type": "git",
-                "url": "https://github.com/guzzle/guzzle",
-                "reference": "v3.0.7"
+                "url": "https://github.com/guzzle/guzzle.git",
+                "reference": "f31f35d1669382936861533bd0217fcf830dc9a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/guzzle/guzzle/archive/v3.0.7.zip",
-                "reference": "v3.0.7",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/f31f35d1669382936861533bd0217fcf830dc9a9",
+                "reference": "f31f35d1669382936861533bd0217fcf830dc9a9",
                 "shasum": ""
             },
             "require": {
@@ -223,7 +207,7 @@
     "minimum-stability": "dev",
     "stability-flags": [],
     "platform": {
-        "php": ">=5.2.4"
+        "php": ">=5.3.3"
     },
     "platform-dev": []
 }

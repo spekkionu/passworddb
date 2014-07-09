@@ -39,27 +39,7 @@ if (!defined('SERVER_MODE')) {
     define('SERVER_MODE', $mode);
 }
 
-
-if (version_compare(PHP_VERSION, '5.3.2') >= 0) {
-    require (VENDOR . '/autoload.php');
-} else {
-    require_once VENDOR . '/phly/zf1-autoloaders/library/ZendX/Loader/AutoloaderFactory.php';
-    ZendX_Loader_AutoloaderFactory::factory(array(
-      'ZendX_Loader_ClassMapAutoloader' => array(
-        VENDOR . '/composer/autoload_classmap.php',
-      ),
-      'ZendX_Loader_StandardAutoloader' => array(
-        'prefixes' => array(
-          "Slim" => VENDOR . "/slim/slim/Slim",
-          "Model" => LIBRARY . "/Model",
-          "Controller" => LIBRARY . "/Controller",
-          "Validate" => LIBRARY . "/Validate",
-          "Error" => LIBRARY . "/Error"
-        ),
-        'fallback_autoloader' => false,
-      ),
-    ));
-}
+require (VENDOR . '/autoload.php');
 
 if (SERVER_MODE == 'test') {
     $config['base_url'] = $config['test']['base_url'];

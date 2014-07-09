@@ -19,9 +19,8 @@
   "prefer-stable": true,
   "minimum-stability": "dev",
   "require": {
-    "php": ">=5.2.4",
-    "slim/slim": "1.*",
-    "phly/zf1-autoloaders": "1.0.0"
+    "php": ">=5.3.3",
+    "slim/slim": "1.*"
   },
   "require-dev": {
     "guzzle/guzzle": "3.0.*"
@@ -29,24 +28,6 @@
   "suggest": {
     "phpunit/phpunit": "4.1.*"
   },
-  "repositories": [
-  {
-    "type": "package",
-    "package": {
-      "name": "phly/zf1-autoloaders",
-      "version": "1.0.0",
-      "dist": {
-        "url": "https://github.com/weierophinney/zf1-autoloaders/archive/master.zip",
-        "type": "zip"
-      },
-      "source": {
-        "url": "git@github.com:weierophinney/zf1-autoloaders.git",
-        "type": "git",
-        "reference": "dev-master"
-      }
-    }
-  }
-  ],
   "autoload": {
     "classmap": [
       "system/library/Test/",
