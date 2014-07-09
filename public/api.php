@@ -18,13 +18,6 @@ $app = new Slim(array(
     'base_url' => $config['api_url']
   ));
 
-// Add HTTP Authentication middleware
-if(SERVER_MODE == 'test'){
-    $app->add(new Middleware_HttpAuth("API Authentication", array('admin'=>'password')));
-}elseif ($config['secure']) {
-    $app->add(new Middleware_HttpAuth("API Authentication", $config['logins']));
-}
-
 // Include Routes
 require_once("../system/api_routes.php");
 

@@ -91,6 +91,7 @@ class Model_ControlPanelTest extends Test_DatabaseTest
      */
     public function testAddControlPanelLoginFail()
     {
+        $this->setExpectedException('Validate_Exception');
         $mgr = new Model_ControlPanel();
         $website_id = 'bad-id';
         $result = array(
@@ -124,6 +125,7 @@ class Model_ControlPanelTest extends Test_DatabaseTest
      */
     public function testUpdateControlPanelLoginFail()
     {
+        $this->setExpectedException('Validate_Exception');
         $mgr = new Model_ControlPanel();
         $website_id = null;
         $id = 1;

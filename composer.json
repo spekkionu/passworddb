@@ -24,11 +24,10 @@
     "phly/zf1-autoloaders": "1.0.0"
   },
   "require-dev": {
-    "php": ">=5.3.3",
     "guzzle/guzzle": "3.0.*"
   },
   "suggest": {
-    "phpunit/phpunit": "3.7.*"
+    "phpunit/phpunit": "4.1.*"
   },
   "repositories": [
   {
@@ -41,8 +40,8 @@
         "type": "zip"
       },
       "source": {
-        "url": "https://github.com/weierophinney/zf1-autoloaders",
-        "type": "git",
+        "url": "git@github.com:weierophinney/zf1-autoloaders.git",
+        "type": "vcs",
         "reference": "dev-master"
       }
     }

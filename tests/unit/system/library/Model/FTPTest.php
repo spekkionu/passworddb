@@ -94,6 +94,7 @@ class Model_FTPTest extends Test_DatabaseTest
      */
     public function testAddFTPLoginFail()
     {
+        $this->setExpectedException('Validate_Exception');
         $mgr = new Model_FTP();
         $website_id = null;
         $result = array(
@@ -130,6 +131,7 @@ class Model_FTPTest extends Test_DatabaseTest
      */
     public function testUpdateFTPLoginFail()
     {
+        $this->setExpectedException('Validate_Exception');
         $mgr = new Model_FTP();
         $website_id = 1;
         $id = 1;

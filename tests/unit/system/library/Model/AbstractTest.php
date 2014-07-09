@@ -77,6 +77,7 @@ class Model_AbstractTest extends PHPUnit_Framework_TestCase
      */
     public function testConnectFail()
     {
+        $this->setExpectedException('PDOException');
         $credentials = array(
           'phptype' => 'badtype',
           'hostname' => '127.0.0.1',

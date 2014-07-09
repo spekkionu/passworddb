@@ -40,7 +40,7 @@ class IndexTest extends \Test_DatabaseTest
         $url = $config['test']['hostname'] . $config['test']['api_url'];
         $this->client = new \Guzzle\Http\Client($url);
         $this->client->getEventDispatcher()->addListener('request.before_send', function(Event $event) {
-              $event['request']->addHeader('X-SERVER-MODE', 'test')->setAuth('admin', 'password');
+              $event['request']->addHeader('X-SERVER-MODE', 'test');
           });
         $this->config = $config;
     }
@@ -53,62 +53,6 @@ class IndexTest extends \Test_DatabaseTest
     {
         \Model_Abstract::close();
         parent::tearDown();
-    }
-
-
-    /**
-     * Test HTTP Authentication
-     */
-    public function testAuth()
-    {
-        $url = $this->config['test']['hostname'] . $this->config['test']['api_url'];
-        $client = new \Guzzle\Http\Client($url);
-        $request = $client->get('api/');
-        $request->addHeader('X-SERVER-MODE', 'test');
-        $request->setAuth('admin', 'password');
-        $response = $request->send();
-        $this->assertEquals(200, $response->getStatusCode());
-    }
-
-    /**
-     * Test request with missing authentication
-     * @expectedException \Guzzle\Http\Exception\ClientErrorResponseException
-     */
-    public function testAuthMissing()
-    {
-        try{
-            $url = $this->config['test']['hostname'] . $this->config['test']['api_url'];
-            $client = new \Guzzle\Http\Client($url);
-            $request = $client->get('api/');
-            $request->addHeader('X-SERVER-MODE', 'test');
-            $request->setAuth('bad_username', 'bad_password');
-            $response = $request->send();
-        }catch(\Guzzle\Http\Exception\BadResponseException $e){
-            $response = $e->getResponse();
-            $this->assertEquals(401, $response->getStatusCode());
-            throw $e;
-        }
-    }
-
-
-    /**
-     * Test request with invalid login credentials
-     * @expectedException \Guzzle\Http\Exception\ClientErrorResponseException
-     */
-    public function testAuthFail()
-    {
-        try{
-            $url = $this->config['test']['hostname'] . $this->config['test']['api_url'];
-            $client = new \Guzzle\Http\Client($url);
-            $request = $client->get('api/');
-            $request->addHeader('X-SERVER-MODE', 'test');
-            $request->setAuth('bad_username', 'bad_password');
-            $response = $request->send();
-        }catch(\Guzzle\Http\Exception\BadResponseException $e){
-            $response = $e->getResponse();
-            $this->assertEquals(401, $response->getStatusCode());
-            throw $e;
-        }
     }
 
     /**

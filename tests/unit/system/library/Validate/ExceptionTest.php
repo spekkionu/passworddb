@@ -13,10 +13,12 @@ class Validate_ExceptionTest extends PHPUnit_Framework_TestCase
 
     /**
      * Test exception throwing
+     *
      * @expectedException Validate_Exception
      */
     public function testException()
     {
+        $this->setExpectedException('Validate_Exception');
         $error = new Error_Stack();
         $element = 'name';
         $message = 'error message';

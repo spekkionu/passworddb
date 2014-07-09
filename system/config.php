@@ -10,16 +10,8 @@ $config['ssl'] = false;
 $config['base_url'] = '/';
 $config['api_url'] = '/';
 
-// If true force login to access
-$config['secure'] = false;
-
 // Environment Mode development, test, or production
 $config['mode'] = 'production';
-
-// Default logins, should be overwritten in config.local.php with desired usernames and passwords
-$config['logins'] = array(
-  'admin' => 'password',
-);
 
 // Settings for testing
 $config['test']['hostname'] = 'http://127.0.0.1:8000';

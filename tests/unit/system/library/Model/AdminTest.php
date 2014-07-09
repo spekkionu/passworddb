@@ -91,6 +91,7 @@ class Model_AdminTest extends Test_DatabaseTest
      */
     public function testAddAdminLoginFail()
     {
+        $this->setExpectedException('Validate_Exception');
         $mgr = new Model_Admin();
         $website_id = 'bad-id';
         $result = array(
@@ -124,6 +125,7 @@ class Model_AdminTest extends Test_DatabaseTest
      */
     public function testUpdateAdminLoginFail()
     {
+        $this->setExpectedException('Validate_Exception');
         $mgr = new Model_Admin();
         $website_id = null;
         $id = 1;

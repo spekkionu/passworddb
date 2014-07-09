@@ -41,7 +41,7 @@ class ErrorTest extends \Test_DatabaseTest
         $url = $config['test']['hostname'] . $config['test']['api_url'];
         $this->client = new Client($url);
         $this->client->getEventDispatcher()->addListener('request.before_send', function(Event $event) {
-              $event['request']->addHeader('X-SERVER-MODE', 'test')->setAuth('admin', 'password');
+              $event['request']->addHeader('X-SERVER-MODE', 'test');
           });
         $this->config = $config;
     }
@@ -58,14 +58,15 @@ class ErrorTest extends \Test_DatabaseTest
 
     /**
      * Test 404 Errors
-     * @expectedException Guzzle\Http\Exception\ClientErrorResponseException
+     * @expectedException \Guzzle\Http\Exception\BadResponseException
      */
     public function testNotfoundAction()
     {
+        $this->setExpectedException('\\Guzzle\\Http\\Exception\\BadResponseException');
         try {
             $request = $this->client->get('api/bad-request');
             $request->send();
-        } catch (Guzzle\Http\Exception\ClientErrorResponseException $e) {
+        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
             $response = $e->getResponse();
             $this->assertEquals(404, $response->getStatusCode());
             throw $e;

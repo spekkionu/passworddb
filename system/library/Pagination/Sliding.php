@@ -63,7 +63,7 @@ class Pagination_Sliding
             throw new Exception("Invalid items per page.");
         }
         if (!is_numeric($params['page']) || $params['page'] < 1) {
-            $page = 1;
+            $params['page'] = 1;
         }
         if (!is_numeric($params['delta']) || $params['delta'] < 1) {
             throw new Exception("Invalid pagination delta.");

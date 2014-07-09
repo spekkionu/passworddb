@@ -94,6 +94,7 @@ class Model_DatabaseTest extends Test_DatabaseTest
      */
     public function testAddDatabaseLoginFail()
     {
+        $this->setExpectedException('Validate_Exception');
         $mgr = new Model_Database();
         $website_id = null;
         $result = array(
@@ -132,6 +133,7 @@ class Model_DatabaseTest extends Test_DatabaseTest
      */
     public function testUpdateDatabaseLoginFail()
     {
+        $this->setExpectedException('Validate_Exception');
         $mgr = new Model_Database();
         $website_id = 496;
         $id = 1;

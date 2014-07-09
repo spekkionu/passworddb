@@ -41,7 +41,7 @@ class FTPTest extends \Test_DatabaseTest
         $url = $config['test']['hostname'] . $config['test']['api_url'];
         $this->client = new Client($url);
         $this->client->getEventDispatcher()->addListener('request.before_send', function(Event $event) {
-              $event['request']->addHeader('X-SERVER-MODE', 'test')->setAuth('admin', 'password');
+              $event['request']->addHeader('X-SERVER-MODE', 'test');
           });
         $this->config = $config;
     }

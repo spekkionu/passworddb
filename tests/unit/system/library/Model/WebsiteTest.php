@@ -128,6 +128,7 @@ class Model_WebsiteTest extends Test_DatabaseTest
      */
     public function testAddWebsiteFail()
     {
+        $this->setExpectedException('Validate_Exception');
         $mgr = new Model_Website();
         $website = array(
           'name' => null,
@@ -169,6 +170,7 @@ class Model_WebsiteTest extends Test_DatabaseTest
      */
     public function testUpdateWebsiteFail()
     {
+        $this->setExpectedException('Validate_Exception');
         $mgr = new Model_Website();
         $id = 1;
         $website = $mgr->getWebsite($id, false);
