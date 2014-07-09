@@ -62,12 +62,3 @@ if (SERVER_MODE == 'test') {
         Test_Database::initTestDatabase(SYSTEM . '/data/schema.sql', $dbh);
     }
 }
-
-if (!function_exists('http_get_request_body')) {
-
-    function http_get_request_body()
-    {
-        return @file_get_contents('php://input');
-    }
-}
-
