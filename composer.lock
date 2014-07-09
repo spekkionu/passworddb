@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d46f607a6fe7276da14466fb4fc1990d",
+    "hash": "6b90710e0405734b03e91626c9d6c5d4",
     "packages": [
         {
             "name": "phly/zf1-autoloaders",
