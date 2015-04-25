@@ -25,7 +25,7 @@ app.config(function($routeProvider, $locationProvider) {
     when('/controlpanel/:website_id/:id/delete', {controller: "DeleteControlPanelCtrl", templateUrl: '/views/controlpanel/delete.html'}).
 
     otherwise({redirectTo: '/'});
-   $locationProvider.html5Mode(true);
+    $locationProvider.html5Mode(window.history && window.history.pushState);
    $locationProvider.hashPrefix = '!';
 });
 
