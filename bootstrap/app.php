@@ -1,9 +1,12 @@
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-$dotenv = new Dotenv\Dotenv(dirname(__DIR__));
-$dotenv->load();
+if (file_exists(dirname(__DIR__) . DIRECTORY_SEPARATOR . '.env')) {
+    $dotenv = new Dotenv\Dotenv(dirname(__DIR__));
+    $dotenv->load();
+}
+
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +20,7 @@ $dotenv->load();
 */
 
 $app = new Laravel\Lumen\Application(
-	dirname(__DIR__)
+    dirname(__DIR__)
 );
 
 $app->withFacades();
@@ -94,7 +97,7 @@ $app->singleton(
 */
 
 $app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
-    require __DIR__.'/../app/Http/routes.php';
+    require __DIR__ . '/../app/Http/routes.php';
 });
 
 return $app;
