@@ -1,0 +1,83 @@
+<div class="page-header">
+    <h1>{{website.name}}</h1>
+</div>
+<form name="formControlPanel" ng-submit="saveControlPanel()">
+    <fieldset>
+        <legend>{{legend}}</legend>
+        <div class="form-group">
+            <label for="form-website-name" class="control-label">Website</label>
+
+            <div class="controls">
+                <p class="form-control-static" id="form-website-name">{{website.name}}<span ng-show="website.domain"> ({{website.domain}})</span>
+                </p>
+
+                <p class="help-block">The website the control panel login is for.</p>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': formControlPanel.username.$invalid}">
+            <label for="form-controlpanel-username" class="control-label">Username</label>
+
+            <div class="controls">
+                <input type="text" class="form-control" id="form-controlpanel-username" name="username"
+                       ng-model="controlpanel.username" ng-maxlength="100"/>
+
+                <div class="help-block" ng-show="formControlPanel.username.$invalid">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <span ng-show="formControlPanel.username.$error.maxlength">Username must not be more than 100 characters.</span>
+                    <span ng-show="formControlPanel.username.$error.remote" ng-repeat="error in errors.username">{{ error }}</span>
+                </div>
+                <p class="help-block">The control panel login username.</p>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': formControlPanel.password.$invalid}">
+            <label for="form-controlpanel-password" class="control-label">Password</label>
+
+            <div class="controls">
+                <input type="text" class="form-control" id="form-controlpanel-password" name="password"
+                       ng-model="controlpanel.password" ng-maxlength="100"/>
+
+                <div class="help-block" ng-show="formControlPanel.password.$invalid">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <span ng-show="formControlPanel.password.$error.maxlength">Password must not be more than 100 characters.</span>
+                    <span ng-show="formControlPanel.password.$error.remote" ng-repeat="error in errors.password">{{ error }}</span>
+                </div>
+                <p class="help-block">The control panel login password.</p>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': formControlPanel.url.$invalid}">
+            <label for="form-controlpanel-url" class="control-label">Login URL</label>
+
+            <div class="controls">
+                <input type="text" class="form-control" id="form-controlpanel-url" name="url"
+                       ng-model="controlpanel.url" ng-maxlength="255"/>
+
+                <div class="help-block" ng-show="formControlPanel.url.$invalid">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <span ng-show="formControlPanel.url.$error.maxlength">URL must not be more than 255 characters.</span>
+                    <span ng-show="formControlPanel.url.$error.remote"
+                          ng-repeat="error in errors.url">{{ error }}</span>
+                </div>
+                <p class="help-block">URL to the control panel.</p>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': formControlPanel.notes.$invalid}">
+            <label for="form-controlpanel-notes" class="control-label">Notes</label>
+
+            <div class="controls">
+                <textarea class="form-control" rows="5" id="form-controlpanel-notes" name="notes"
+                          ng-model="controlpanel.notes"></textarea>
+
+                <div class="help-block" ng-show="formControlPanel.notes.$invalid">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <span ng-show="formControlPanel.notes.$error.remote"
+                          ng-repeat="error in errors.notes">{{ error }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Save"/>
+            <a class="btn btn-default" ng-href="/website/details/{{website.id}}">Cancel</a>
+        </div>
+    </fieldset>
+</form>
+

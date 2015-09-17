@@ -1,3 +1,0 @@
-[submodule "tests/phpcs/Spekkionu"]
-	path = tests/phpcs/Spekkionu
-	url = git://github.com/spekkionu/spekkionu-coding-standard.git

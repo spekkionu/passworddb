@@ -1,0 +1,60 @@
+<div class="page-header">
+    <h1>{{website.name}}</h1>
+</div>
+<div class="alert alert-danger">
+    <h4 class="alert-heading">Warning!</h4>
+    This will delete these control panel credentials.<br>
+    This action cannot be undone.
+</div>
+<form ng-submit="deleteControlPanel()">
+    <fieldset>
+        <legend>Delete Control Panel Login</legend>
+        <div class="form-group">
+            <label for="form-website-name" class="control-label">Website</label>
+
+            <div class="controls">
+                <span class="form-control-static" id="form-website-name">{{website.name}}<span ng-show="website.domain"> ({{website.domain}})</span></span>
+
+                <p class="help-block">The website the control panel login is for.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="form-controlpanel-username" class="control-label">Username</label>
+
+            <div class="controls">
+                <span class="form-control-static" id="form-controlpanel-username">{{controlpanel.username}}</span>
+
+                <p class="help-block">The control panel username.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="form-controlpanel-password" class="control-label">Password</label>
+
+            <div class="controls">
+                <span class="form-control-static" id="form-controlpanel-password">{{controlpanel.password}}</span>
+
+                <p class="help-block">The control panel password.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="form-controlpanel-url" class="control-label">Login URL</label>
+
+            <div class="controls">
+                <span class="form-control-static" id="form-controlpanel-url">{{controlpanel.url}}</span>
+
+                <p class="help-block">The URL to the control panel.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="form-controlpanel-notes" class="control-label">Notes</label>
+
+            <div class="controls">
+                <div class="form-control-static prewrap" id="form-controlpanel-notes">{{controlpanel.notes}}</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-danger" value="Delete"/>
+            <a class="btn btn-default" ng-href="/website/details/{{website.id}}">Cancel</a>
+        </div>
+    </fieldset>
+</form>

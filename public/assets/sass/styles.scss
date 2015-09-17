@@ -1,0 +1,19 @@
+// Variables and Mixins
+@import 'variables';
+// Vendor Libraries
+@import '../vendor/font-awesome/scss/font-awesome';
+@import '../vendor/bootstrap-sass/assets/stylesheets/bootstrap';
+
+body {
+  padding-top: 150px;
+}
+
+@media (max-width: $screen-xs-max) {
+  body {
+    padding-top: 70px;
+  }
+}
+
+.prewrap {
+  white-space: pre-wrap;
+}

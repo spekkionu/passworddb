@@ -1,0 +1,88 @@
+<div class="page-header">
+    <h1>{{website.name}}</h1>
+</div>
+<div class="alert alert-danger">
+    <h4 class="alert-heading">Warning!</h4>
+    This will delete these database credentials.<br>
+    This action cannot be undone.
+</div>
+<form ng-submit="deleteDatabase()">
+    <fieldset>
+        <legend>Delete Database Credentials</legend>
+        <div class="form-group">
+            <label for="form-website-name" class="control-label">Website</label>
+
+            <div class="controls">
+                <p class="form-control-static" id="form-website-name">{{website.name}}<span ng-show="website.domain"> ({{website.domain}})</span>
+                </p>
+
+                <p class="help-block">The website the database credentials are for.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="form-database-type" class="control-label required">Database Type</label>
+
+            <div class="controls">
+                <p class="form-control-static" id="form-database-type">{{database.type|uppercase}}</p>
+
+                <p class="help-block">The type of connection.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="form-ftp-hostname" class="control-label">Hostname</label>
+
+            <div class="controls">
+                <p class="form-control-static" id="form-ftp-hostname">{{database.hostname}}</p>
+
+                <p class="help-block">The hostname of the database server.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="form-database-username" class="control-label">Username</label>
+
+            <div class="controls">
+                <p class="form-control-static" id="form-database-username">{{database.username}}</p>
+
+                <p class="help-block">The database username.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="form-database-password" class="control-label">Password</label>
+
+            <div class="controls">
+                <p class="form-control-static" id="form-database-password">{{database.password}}</p>
+
+                <p class="help-block">The database password.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="form-database-database" class="control-label">Database</label>
+
+            <div class="controls">
+                <p class="form-control-static" id="form-database-database">{{database.database}}</p>
+
+                <p class="help-block">The database name.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="form-database-url" class="control-label">Admin URL</label>
+
+            <div class="controls">
+                <p class="form-control-static" id="form-database-url">{{database.url}}</p>
+
+                <p class="help-block">URL of the phpMyAdmin or other basabase management.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="form-database-notes" class="control-label">Notes</label>
+
+            <div class="controls">
+                <p class="form-control-static" id="form-database-notes">{{database.notes}}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-danger" value="Delete"/>
+            <a class="btn btn-default" ng-href="/website/details/{{website.id}}">Cancel</a>
+        </div>
+    </fieldset>
+</form>

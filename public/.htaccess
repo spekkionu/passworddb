@@ -1,23 +1,26 @@
+DirectoryIndex index.html index.php
+
 <IfModule mod_rewrite.c>
-RewriteEngine on
-#
-# # if your app is in a subfolder:
-# RewriteBase /
-#
-# Let existing files / directories through
-RewriteCond %{REQUEST_FILENAME} -s [OR]
-RewriteCond %{REQUEST_FILENAME} -l [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^.*$ - [NC,L]
+    <IfModule mod_negotiation.c>
+        Options -MultiViews
+    </IfModule>
 
-# Rewrite API Routes
-RewriteRule ^api$ api.php [NC,L]
-RewriteRule ^api/(.*)$ api.php [NC,L]
+    RewriteEngine On
 
-# Send the rest to the bootstrap
-RewriteRule ^.*$ index.html [NC,L]
+    # Let existing files / directories through
+    RewriteCond %{REQUEST_FILENAME} -s [OR]
+    RewriteCond %{REQUEST_FILENAME} -l [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^.*$ - [NC,L]
 
-# # with QSA flag (query string append),
-# # forces the rewrite engine to append a query string part of the
-# # substitution string to the existing string, instead of replacing it.
+    # Redirect Trailing Slashes...
+    RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+    # Rewrite API Routes
+    RewriteRule ^api$ index.php [NC,L]
+    RewriteRule ^api/(.*)$ index.php [NC,L]
+
+    # Send the rest to the bootstrap
+    RewriteRule ^.*$ index.html [NC,L]
+
 </IfModule>

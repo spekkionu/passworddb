@@ -1,0 +1,113 @@
+<div class="page-header">
+    <h1>{{website.name}}</h1>
+</div>
+<form name="formFTP" ng-submit="saveFTP()">
+    <fieldset>
+        <legend>{{legend}}</legend>
+        <div class="form-group">
+            <label for="form-website-name" class="control-label">Website</label>
+
+            <div class="controls">
+                <span class="form-control-static" id="form-website-name">{{website.name}}<span ng-show="website.domain"> ({{website.domain}})</span></span>
+
+                <p class="help-block">The website the FTP credentials are for.</p>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': formFTP.type.$invalid}">
+            <label for="form-ftp-type" class="control-label required">FTP Type</label>
+
+            <div class="controls">
+                <select class="form-control" id="form-ftp-type" name="type"
+                        ng-options="type.value as type.label for type in types" ng-model="ftp.type"></select>
+
+                <div class="help-block control-error" ng-show="formFTP.type.$invalid">
+                    <i class="icon-exclamation-sign"></i>
+                    <span ng-show="formFTP.type.$error.required">FTP type is required.</span>
+                    <span ng-show="formFTP.type.$error.invalid">Invalid FTP type.</span>
+                    <span ng-show="formFTP.type.$error.remote" ng-repeat="error in errors.type">{{ error }}</span>
+                </div>
+                <p class="help-block">The type of connection.</p>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': formFTP.hostname.$invalid}">
+            <label for="form-ftp-hostname" class="control-label">Hostname</label>
+
+            <div class="controls">
+                <input type="text" class="form-control" id="form-ftp-hostname" name="hostname" ng-model="ftp.hostname"
+                       ng-maxlength="100" placeholder="example.com"/>
+
+                <div class="help-block control-error" ng-show="formFTP.hostname.$invalid">
+                    <i class="icon-exclamation-sign"></i>
+                    <span ng-show="formFTP.hostname.$error.maxlength">Hostname must not be more than 100 characters.</span>
+                    <span ng-show="formFTP.hostname.$error.remote"
+                          ng-repeat="error in errors.hostname">{{ error }}</span>
+                </div>
+                <p class="help-block">The hostname of the FTP server.</p>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': formFTP.username.$invalid}">
+            <label for="form-ftp-username" class="control-label">Username</label>
+
+            <div class="controls">
+                <input type="text" class="form-control" id="form-ftp-username" name="username" ng-model="ftp.username"
+                       ng-maxlength="100"/>
+
+                <div class="help-block control-error" ng-show="formFTP.usertname.$invalid">
+                    <i class="icon-exclamation-sign"></i>
+                    <span ng-show="formFTP.username.$error.maxlength">Username must not be more than 100 characters.</span>
+                    <span ng-show="formFTP.username.$error.remote"
+                          ng-repeat="error in errors.username">{{ error }}</span>
+                </div>
+                <p class="help-block">The FTP username.</p>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': formFTP.password.$invalid}">
+            <label for="form-ftp-password" class="control-label">Password</label>
+
+            <div class="controls">
+                <input type="text" class="form-control" id="form-ftp-password" name="password" ng-model="ftp.password"
+                       ng-maxlength="100"/>
+
+                <div class="help-block control-error" ng-show="formFTP.password.$invalid">
+                    <i class="icon-exclamation-sign"></i>
+                    <span ng-show="formFTP.password.$error.maxlength">Password must not be more than 100 characters.</span>
+                    <span ng-show="formFTP.password.$error.remote"
+                          ng-repeat="error in errors.password">{{ error }}</span>
+                </div>
+                <p class="help-block">The FTP password.</p>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': formFTP.path.$invalid}">
+            <label for="form-ftp-path" class="control-label">Server Path</label>
+
+            <div class="controls">
+                <input type="text" class="form-control" id="form-ftp-path" name="path" ng-model="ftp.path"
+                       ng-maxlength="255" placeholder="/public_html"/>
+
+                <div class="help-block control-error" ng-show="formFTP.path.$invalid">
+                    <i class="icon-exclamation-sign"></i>
+                    <span ng-show="formFTP.path.$error.maxlength">Path must not be more than 255 characters.</span>
+                    <span ng-show="formFTP.path.$error.remote" ng-repeat="error in errors.path">{{ error }}</span>
+                </div>
+                <p class="help-block">The FTP password.</p>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': formFTP.notes.$invalid}">
+            <label for="form-ftp-notes" class="control-label">Notes</label>
+
+            <div class="controls">
+                <textarea class="form-control" rows="5" id="form-ftp-notes" name="notes"
+                          ng-model="ftp.notes"></textarea>
+
+                <div class="help-block control-error" ng-show="formFTP.notes.$invalid">
+                    <i class="icon-exclamation-sign"></i>
+                    <span ng-show="formFTP.notes.$error.remote" ng-repeat="error in errors.notes">{{ error }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Save"/>
+            <a class="btn btn-default" ng-href="/website/details/{{website.id}}">Cancel</a>
+        </div>
+    </fieldset>
+</form>

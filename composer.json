@@ -1,49 +1,31 @@
 {
-  "name": "spekkionu/password",
-  "description": "A password database for storing website passwords.",
-  "keywords": ["php","rest","password"],
-  "homepage": "http://github.com/spekkionu/passworddb",
+  "name": "spekkionu/passworddb",
+  "description": "Password Database",
   "license": "MIT",
-  "authors": [
-  {
-    "name": "Jonathan Bernardi",
-    "email": "spekkionu@spekkionu.com",
-    "homepage": "http://www.thedevfiles.com/"
-  }
-  ],
-  "config": {
-    "vendor-dir": "system/library/vendor",
-    "bin-dir" : "bin",
-    "preferred-install": "dist"
-  },
-  "prefer-stable": true,
-  "minimum-stability": "dev",
+  "type": "project",
   "require": {
-    "php": ">=5.3.3",
-    "slim/slim": "1.*"
+    "laravel/lumen-framework": "5.1.*",
+    "vlucas/phpdotenv": "~2.0.1"
   },
   "require-dev": {
-    "guzzle/guzzle": "3.0.*"
-  },
-  "suggest": {
-    "phpunit/phpunit": "4.1.*"
+    "phpunit/phpunit": "~4.0",
+    "fzaninotto/faker": "~1.0"
   },
   "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    },
     "classmap": [
-      "system/library/Test/",
-      "system/library/vendor/slim/slim/Slim/Slim.php"
-    ],
-    "psr-0": {
-      "Slim_": "system/library/vendor/slim/slim/",
-      "Model_": "system/library/",
-      "Controller_": "system/library/",
-      "View_": "system/library/",
-      "Pagination_": "system/library/",
-      "Api_": "system/library/",
-      "Validate_": "system/library/",
-      "Error_": "system/library/",
-      "Middleware_": "system/library/",
-      "Auth_": "system/library/"
-    }
+      "database/"
+    ]
+  },
+  "autoload-dev": {
+    "classmap": [
+      "tests/"
+    ]
+  },
+  "prefer-stable": true,
+  "config": {
+    "preferred-install": "dist"
   }
 }
