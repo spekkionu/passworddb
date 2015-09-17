@@ -5,3 +5,5 @@
 /public/assets/vendor
 /node_modules
 /storage
+
+/coverage.clover
