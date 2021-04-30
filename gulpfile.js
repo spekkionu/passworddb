@@ -4,26 +4,28 @@ var sourcemaps = require('gulp-sourcemaps');
 var minifyCSS = require('gulp-minify-css');
 var uglify = require('gulp-uglify');
 var autoprefixer = require('gulp-autoprefixer');
-var sass = require('gulp-sass');
+var Fiber = require('fibers');
+var sass = require('gulp-sass-no-nodesass');
 var ngAnnotate = require('gulp-ng-annotate');
+sass.compiler = require('sass');
+
+function angular(){
+  return gulp.src([
+    'public/assets/application/**/module.js',
+    'public/assets/application/models/**/*.js',
+    'public/assets/application/controllers/**/*.js',
+    'public/assets/application/**/*.js'
+  ], {base: 'public/assets/application'})
+    .pipe(sourcemaps.init({sourceRoot: 'public/assets/js'}))
+    .pipe(concat('app.js'))
+    .pipe(ngAnnotate())
+    .pipe(uglify())
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest('public/assets/js'));
+}
 
 
-gulp.task('angular', function () {
-    gulp.src([
-        'public/assets/application/**/module.js',
-        'public/assets/application/models/**/*.js',
-        'public/assets/application/controllers/**/*.js',
-        'public/assets/application/**/*.js'
-    ], {base: 'public/assets/application'})
-        .pipe(sourcemaps.init({sourceRoot: 'public/assets/js'}))
-        .pipe(concat('app.js'))
-        .pipe(ngAnnotate())
-        .pipe(uglify())
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('public/assets/js'));
-})
-
-gulp.task('vendor', function () {
+function vendor() {
 
     return gulp.src([
         'public/assets/vendor/jquery/dist/jquery.js',
@@ -41,23 +43,35 @@ gulp.task('vendor', function () {
         .pipe(gulp.dest('public/assets/js'));
 
 
-});
+}
 
-gulp.task('css', function () {
+function css() {
     return gulp.src('public/assets/sass/**/*.scss', {base: 'public/assets/sass'})
         .pipe(sourcemaps.init({sourceRoot: 'public/assets/css'}))
-        .pipe(sass())
+        .pipe(sass({fiber: Fiber}).on('error', sass.logError))
         .pipe(autoprefixer())
         .pipe(minifyCSS({rebase: false}))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('public/assets/css'));
-});
+}
 
-gulp.task('build', ['css', 'vendor', 'angular']);
+function watch() {
+  gulp.watch('public/assets/sass/**/*.scss', css);
+  gulp.watch('public/assets/application/**/*.js', angular);
+}
 
-gulp.task("watch", function () {
-    gulp.watch('public/assets/sass/**/*.scss', ['css']);
-    gulp.watch('public/assets/application/**/*.js', ['angular']);
-});
+var build = gulp.series(css, vendor, angular);
+var serve = gulp.series(watch, build);
 
-gulp.task('default', ['watch', 'build']);
+/*
+ * You can use CommonJS `exports` module notation to declare tasks
+ */
+exports.css = css;
+exports.vendor = vendor;
+exports.angular = angular;
+exports.watch = watch;
+exports.build = build;
+/*
+ * Define default task that can be called by just running `gulp` from cli
+ */
+exports.default = serve;
