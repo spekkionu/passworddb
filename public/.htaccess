@@ -1,26 +1,21 @@
-DirectoryIndex index.html index.php
-
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
-        Options -MultiViews
+        Options -MultiViews -Indexes
     </IfModule>
 
     RewriteEngine On
 
-    # Let existing files / directories through
-    RewriteCond %{REQUEST_FILENAME} -s [OR]
-    RewriteCond %{REQUEST_FILENAME} -l [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule ^.*$ - [NC,L]
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Redirect Trailing Slashes...
-    RewriteRule ^(.*)/$ /$1 [L,R=301]
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
 
-    # Rewrite API Routes
-    RewriteRule ^api$ index.php [NC,L]
-    RewriteRule ^api/(.*)$ index.php [NC,L]
-
-    # Send the rest to the bootstrap
-    RewriteRule ^.*$ index.html [NC,L]
-
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
 </IfModule>
