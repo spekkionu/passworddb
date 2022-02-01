@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@inertiajs/inertia": "^0.10.1",
-        "@inertiajs/inertia-svelte": "^0.7.4",
+        "@inertiajs/inertia-svelte": "^0.8.0",
         "@inertiajs/progress": "^0.2.6",
         "@tailwindcss/forms": "^0.4.0",
         "autoprefixer": "^10.4.0",
