@@ -10,7 +10,7 @@
         "production": "mix --production"
     },
     "dependencies": {
-        "@inertiajs/inertia": "^0.10.1",
+        "@inertiajs/inertia": "^0.11.0",
         "@inertiajs/inertia-svelte": "^0.7.4",
         "@inertiajs/progress": "^0.2.6",
         "@tailwindcss/forms": "^0.4.0",
